@@ -1,8 +1,8 @@
 object Versions {
     const val gradle = "8.1.2"
     const val kotlin = "1.8.21"
-    const val hilt_android_gradle_plugin = "2.44.2"
-    const val google_services = "4.3.15"
+    const val hilt_android_gradle_plugin = "2.46.1"
+    const val google_services = "4.4.0"
     const val compose = "1.4.3"
     const val junit = "1.12.0"
     const val junit_test = "4.13.2"
@@ -25,7 +25,7 @@ object Versions {
     const val javax_inject = "1"
     const val kotlinx_coroutines_core = "1.7.1"
     const val compose_bom = "2023.05.01"
-    const val compose_navigation = "2.5.3"
+    const val compose_navigation = "2.7.4"
     const val paging_runtime = "3.1.1"
     const val toggle = "1.1.1"
 }
