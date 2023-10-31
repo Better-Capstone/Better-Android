@@ -10,7 +10,7 @@ object Versions {
     const val espresso_core = "3.5.1"
     const val security_crypto = "1.1.0-alpha06"
     const val lifecycle_runtime_ktx = "2.6.2"
-    const val activity_compose = "1.7.2"
+    const val activity_compose = "1.8.0"
     const val lifecycle_viewmodel_compose = "2.6.1"
     const val hilt = "2.46.1"
     const val hilt_navigation_compose = "1.0.0"
