@@ -1,4 +1,3 @@
 package com.ssu.better.data
 
-class MyClass {
-}
+class MyClass

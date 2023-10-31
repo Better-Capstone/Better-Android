@@ -27,7 +27,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -37,6 +37,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = Apps.jvmTarget
+    }
+    lint {
+        baseline = file("lint-baseline.xml")
     }
     buildFeatures {
         compose = true
@@ -51,8 +54,9 @@ android {
     }
 }
 
-dependencies {
+tasks.getByPath("preBuild").dependsOn("ktlintFormat")
 
+dependencies {
     implementation("androidx.core:core-ktx:${Versions.junit}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle_runtime_ktx}")
     implementation("androidx.activity:activity-compose:${Versions.activity_compose}")
@@ -94,7 +98,6 @@ dependencies {
     // Logging
     implementation("com.jakewharton.timber:timber:${Versions.timber}")
 
-    //toggle button
+    // toggle button
     implementation("com.robertlevonyan.compose:buttontogglegroup:${Versions.toggle}")
-
 }
