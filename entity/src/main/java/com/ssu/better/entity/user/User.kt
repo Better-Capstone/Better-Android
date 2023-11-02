@@ -10,5 +10,5 @@ data class User(
     val name: String,
 
     @SerializedName("nickname")
-    val nickname: String
+    val nickname: String,
 )

@@ -10,7 +10,7 @@ class EnumConverterFactory : Converter.Factory() {
     override fun stringConverter(
         type: Type,
         annotations: Array<Annotation>,
-        retrofit: Retrofit
+        retrofit: Retrofit,
     ): Converter<Enum<*>, String>? =
         if (type is Class<*> && type.isEnum) {
             Converter { enum ->

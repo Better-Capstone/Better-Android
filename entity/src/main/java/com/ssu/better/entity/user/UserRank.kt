@@ -16,5 +16,5 @@ data class UserRank(
     val createdAt: String,
 
     @SerializedName("updated_at")
-    val updatedAt: String
+    val updatedAt: String,
 )

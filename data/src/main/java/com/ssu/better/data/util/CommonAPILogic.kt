@@ -7,7 +7,7 @@ import retrofit2.Response
 object CommonAPILogic {
     suspend fun <T> checkError(response: Response<T>): Flow<T> {
         return flow {
-            if(response.isSuccessful) {
+            if (response.isSuccessful) {
                 response.body()?.let {
                     emit(it)
                 }

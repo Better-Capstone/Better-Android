@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    private val userRemoteDataSource: UserRemoteDataSource
-): UserRepository {
+    private val userRemoteDataSource: UserRemoteDataSource,
+) : UserRepository {
     override suspend fun registerUser(userRegisterRequest: UserRegisterRequest): Flow<User> {
         return CommonAPILogic.checkError(userRemoteDataSource.registerUser(userRegisterRequest))
     }
@@ -39,5 +39,4 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserChallenges(userId: Long): Flow<List<Challenge>> {
         return CommonAPILogic.checkError(userRemoteDataSource.getUserChallenges(userId))
     }
-
 }

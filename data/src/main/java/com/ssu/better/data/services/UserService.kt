@@ -31,5 +31,4 @@ interface UserService {
 
     @GET("/user/{id}/challenges")
     suspend fun getUserChallenges(@Path("id") userId: Long): Response<List<Challenge>>
-
 }

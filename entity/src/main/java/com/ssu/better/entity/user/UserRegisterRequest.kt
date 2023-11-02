@@ -7,5 +7,5 @@ data class UserRegisterRequest(
     val kakaoToken: String,
 
     @SerializedName("nickname")
-    val nickName: String
+    val nickName: String,
 )

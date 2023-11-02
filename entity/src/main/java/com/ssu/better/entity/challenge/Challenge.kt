@@ -19,5 +19,5 @@ data class Challenge(
     val createdAt: String,
 
     @SerializedName("updatedAt")
-    val updatedAt: String
+    val updatedAt: String,
 )

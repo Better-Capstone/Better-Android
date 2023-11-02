@@ -9,7 +9,6 @@ import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRegisterRequest
 import kotlinx.coroutines.flow.Flow
 
-
 interface UserRepository {
     suspend fun registerUser(userRegisterRequest: UserRegisterRequest): Flow<User>
 
@@ -22,5 +21,4 @@ interface UserRepository {
     suspend fun getUserTasks(userId: Long): Flow<List<Task>>
 
     suspend fun getUserChallenges(userId: Long): Flow<List<Challenge>>
-
 }

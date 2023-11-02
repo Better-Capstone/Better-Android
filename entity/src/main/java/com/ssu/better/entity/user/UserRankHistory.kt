@@ -19,5 +19,5 @@ data class UserRankHistory(
     val score: Int,
 
     @SerializedName("description")
-    val description: String
+    val description: String,
 )

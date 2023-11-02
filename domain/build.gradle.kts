@@ -26,5 +26,4 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:${Versions.okhttp}")
     implementation("com.squareup.okhttp3:okhttp-urlconnection:${Versions.okhttp_urlconnection}")
     implementation("com.squareup.okhttp3:logging-interceptor:${Versions.logging_interceptor}")
-
 }
