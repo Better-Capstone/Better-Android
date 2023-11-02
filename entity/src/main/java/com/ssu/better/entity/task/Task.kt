@@ -1,4 +1,4 @@
-package task
+package com.ssu.better.entity.task
 
 import com.google.gson.annotations.SerializedName
 

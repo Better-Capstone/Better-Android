@@ -1,4 +1,4 @@
-package challenge
+package com.ssu.better.entity.challenge
 
 import com.google.gson.annotations.SerializedName
 
