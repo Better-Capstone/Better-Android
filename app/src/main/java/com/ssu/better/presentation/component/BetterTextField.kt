@@ -2,15 +2,11 @@ package com.ssu.better.presentation.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -26,7 +22,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
@@ -45,13 +40,11 @@ fun BetterTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = BetterAndroidTheme.typography.body,
-    placeholder: String = "",
     helperTextEnabled: Boolean = false,
     helperText: String = "",
     counterMaxLength: Int = 0,
     enabled: Boolean = true,
     isError: Boolean = false,
-    colorBlush: SolidColor = SolidColor(BetterColors.Primary00),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions(),
     minHeight: Dp = TextFieldMinHeight,
@@ -91,29 +84,19 @@ fun BetterTextField(
                 interactionSource = interactionSource,
                 visualTransformation = visualTransformation,
                 decorationBox = @Composable { innerTextField ->
-                    Surface(modifier = Modifier.wrapContentHeight()) {
-                        Column {
-                            Surface(
-                                modifier = if (isError) borderModifier else baseModifier,
-                                color = BetterColors.Gray00,
-                                shape = RoundedCornerShape(TextFieldRound),
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(vertical = 14.dp, horizontal = 10.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                ) {
-                                    Box(
-                                        modifier = Modifier.weight(1f),
-                                        contentAlignment = Alignment.CenterStart,
-                                    ) {
+                    Surface(
+                        modifier = if (isError) borderModifier else baseModifier,
+                        color = BetterColors.Gray00,
+                        shape = RoundedCornerShape(TextFieldRound),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 14.dp, horizontal = 10.dp),
+                            contentAlignment = Alignment.CenterStart,
+                        ) {
 //
-                                        innerTextField()
-                                    }
-                                }
-                            }
+                            innerTextField()
                         }
                     }
                 },
