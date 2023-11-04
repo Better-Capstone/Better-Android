@@ -16,4 +16,14 @@ dependencies {
 
     // alternatively - without Android dependencies for tests
     implementation("androidx.paging:paging-common:${Versions.paging_common}")
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:${Versions.retrofit}")
+    implementation("com.squareup.retrofit2:converter-gson:${Versions.retrofit_converter_gson}")
+    implementation("com.squareup.retrofit2:converter-scalars:${Versions.retrofit}")
+
+    // okHttp
+    implementation("com.squareup.okhttp3:okhttp:${Versions.okhttp}")
+    implementation("com.squareup.okhttp3:okhttp-urlconnection:${Versions.okhttp_urlconnection}")
+    implementation("com.squareup.okhttp3:logging-interceptor:${Versions.logging_interceptor}")
 }
