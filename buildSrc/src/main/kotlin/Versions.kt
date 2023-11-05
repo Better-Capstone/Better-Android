@@ -28,4 +28,6 @@ object Versions {
     const val compose_navigation = "2.7.4"
     const val paging_runtime = "3.1.1"
     const val toggle = "1.1.1"
+    const val compose_lifecycle = "2.6.2"
+    const val datastore = "1.0.0"
 }

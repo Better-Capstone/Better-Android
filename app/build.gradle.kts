@@ -75,6 +75,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // compose lifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:${Versions.compose_lifecycle}")
+
     // data
     implementation(project(":data"))
 
@@ -101,4 +104,8 @@ dependencies {
 
     // toggle button
     implementation("com.robertlevonyan.compose:buttontogglegroup:${Versions.toggle}")
+
+    // datastore
+    implementation("androidx.datastore:datastore-preferences-core:${Versions.datastore}")
+    implementation("androidx.datastore:datastore-preferences:${Versions.datastore}")
 }
