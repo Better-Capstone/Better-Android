@@ -1,10 +1,12 @@
 package com.ssu.better.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.ssu.better.presentation.ui.login.LoginScreen
+import com.ssu.better.presentation.ui.main.home.HomeScreen
 import com.ssu.better.presentation.ui.onboard.OnBoardScreen
 import com.ssu.better.presentation.ui.splash.SplashScreen
 
@@ -31,4 +33,13 @@ fun RootNavGraph(navController: NavHostController) {
     }
 }
 
-       
+fun NavHostController.navigateSingleTopTo(route: String) =
+    this.navigate(route) {
+        popUpTo(
+            this@navigateSingleTopTo.graph.findStartDestination().id,
+        ) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
