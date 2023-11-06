@@ -30,4 +30,5 @@ object Versions {
     const val toggle = "1.1.1"
     const val compose_lifecycle = "2.6.2"
     const val datastore = "1.0.0"
+    const val kakao ="2.17.0"
 }
