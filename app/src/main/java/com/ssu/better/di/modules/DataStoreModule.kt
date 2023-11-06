@@ -2,11 +2,14 @@ package com.ssu.better.di.modules
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
+import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.datastore.preferences.preferencesDataStoreFile
-import com.ssu.better.data.repositoryimpls.DataStoreRepositoryImpl
-import com.ssu.better.domain.repository.DataStoreRepository
+import com.ssu.better.data.util.TokenManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +30,10 @@ object DataStoreModule {
     @Provides
     fun providePreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
         return PreferenceDataStoreFactory.create(
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { emptyPreferences() },
+            ),
+            migrations = listOf(SharedPreferencesMigration(context, USER_PREFERENCES)),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
             produceFile = { context.preferencesDataStoreFile(USER_PREFERENCES) },
         )
@@ -34,9 +41,11 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun providesDataStoreRepository(
-        dataStore: DataStore<Preferences>,
-    ): DataStoreRepository {
-        return DataStoreRepositoryImpl(dataStore)
+    fun providesTokenManager(
+        @ApplicationContext context: Context,
+    ): TokenManager {
+        return TokenManager(context.dataStore)
     }
+
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = USER_PREFERENCES)
 }
