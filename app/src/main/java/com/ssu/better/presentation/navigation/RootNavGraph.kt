@@ -10,9 +10,9 @@ import com.ssu.better.ui.theme.main.MainScreen
 fun RootNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Main.Home.route,
+        startDestination = Screen.Home.route,
     ) {
-        composable(route = Screen.Main.Home.route) {
+        composable(route = Screen.Home.route) {
             MainScreen()
         }
     }

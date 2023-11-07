@@ -15,7 +15,7 @@ import com.ssu.better.presentation.navigation.Screen
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    val DefaultScreen = Screen.Main.Home
+    val DefaultScreen = Screen.Home
 
     Scaffold(
         bottomBar = {
@@ -37,9 +37,9 @@ fun getBottomVisible(
     root: String,
 ): Boolean {
     return when (root) {
-        Screen.Main.Home.route -> true
-        Screen.Main.Search.route -> true
-        Screen.Main.MyPage.route -> true
+        Screen.Home.route -> true
+        Screen.Search.route -> true
+        Screen.MyPage.route -> true
         else -> false
     }
 }

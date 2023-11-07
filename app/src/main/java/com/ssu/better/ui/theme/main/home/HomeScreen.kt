@@ -13,7 +13,7 @@ fun HomeScreen(navHostController: NavHostController) {
         Text(text = "home")
         Button(
             onClick = {
-                navHostController.navigate(Screen.Main.Sample.route)
+                navHostController.navigate(Screen.Sample.route)
             },
         ) {
             Text(text = "navigate to bottom invisible screen")

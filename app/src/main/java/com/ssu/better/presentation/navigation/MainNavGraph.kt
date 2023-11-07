@@ -13,18 +13,18 @@ import com.ssu.better.ui.theme.main.search.SearchScreen
 fun MainNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Main.Home.route,
+        startDestination = Screen.Home.route,
     ) {
-        composable(route = Screen.Main.Home.route) {
+        composable(route = Screen.Home.route) {
             HomeScreen(navController)
         }
-        composable(route = Screen.Main.Search.route) {
+        composable(route = Screen.Search.route) {
             SearchScreen(navController)
         }
-        composable(route = Screen.Main.MyPage.route) {
+        composable(route = Screen.MyPage.route) {
             MyPageScreen(navController)
         }
-        composable(route = Screen.Main.Sample.route) {
+        composable(route = Screen.Sample.route) {
             SampleScreen(navController)
         }
     }
