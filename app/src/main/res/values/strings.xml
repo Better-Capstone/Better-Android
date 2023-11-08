@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Better-Android</string>
+    <string name="tab_home">홈</string>
+    <string name="tab_search">둘러보기</string>
+    <string name="tab_mypage">마이페이지</string>
+
+
 </resources>
