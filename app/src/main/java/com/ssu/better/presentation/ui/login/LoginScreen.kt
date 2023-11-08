@@ -51,7 +51,7 @@ fun LoginScreen(
                     navController.navigate(Screen.OnBoard.route)
                 }
                 else -> {
-                    navController.navigate(Screen.Main.route) {
+                    navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Login.route) {
                             inclusive = true
                         }
