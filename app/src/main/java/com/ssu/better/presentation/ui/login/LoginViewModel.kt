@@ -10,16 +10,12 @@ import com.kakao.sdk.user.UserApiClient
 import com.ssu.better.data.util.TokenManager
 import com.ssu.better.domain.usecase.PostUserLoginRequestUseCase
 import com.ssu.better.domain.usecase.PostUserRegisterUseCase
-import com.ssu.better.entity.user.UserLoginRequest
-import com.ssu.better.entity.user.UserRegisterRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +28,8 @@ class LoginViewModel @Inject constructor(
 
     private val _loginEvents = MutableSharedFlow<LoginEvent>()
     val loginEvents get() = _loginEvents.asSharedFlow()
+
+    var userInfo: KaKaoUserInfo? = null
 
     private val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
@@ -78,6 +76,7 @@ class LoginViewModel @Inject constructor(
                     Timber.d("kakao_nick", nickname)
                     Timber.d("kakao_id", id.toString())
 
+                    userInfo = KaKaoUserInfo(id, nickname)
                     postUserInfo(token, nickname)
                 }
             }
@@ -87,6 +86,8 @@ class LoginViewModel @Inject constructor(
     private fun postUserInfo(token: OAuthToken, nickname: String = "") {
         viewModelScope.launch {
             _loginEvents.emit(LoginEvent.NavToOnBoard)
+            tokenManager.saveAccessToken("token") // test
+            /*
             try {
                 loginRequestUseCase.login(UserLoginRequest(token.accessToken)).collectLatest {
                     tokenManager.saveAccessToken(it.accessToken)
@@ -100,13 +101,17 @@ class LoginViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Timber.e(e)
-                _loginEvents.emit(LoginEvent.LoginFail)
             }
+            */
         }
     }
 
+    data class KaKaoUserInfo(
+        val id: Long,
+        val nickname: String,
+    )
+
     sealed class LoginEvent {
-        object LoginFail : LoginEvent()
         object NavToMain : LoginEvent()
         object NavToOnBoard : LoginEvent()
     }

@@ -6,9 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.ssu.better.presentation.ui.login.LoginScreen
+import com.ssu.better.presentation.ui.main.MainScreen
 import com.ssu.better.presentation.ui.onboard.OnBoardScreen
 import com.ssu.better.presentation.ui.splash.SplashScreen
-import com.ssu.better.ui.theme.main.MainScreen
 
 @Composable
 fun RootNavGraph(navController: NavHostController) {
