@@ -50,7 +50,7 @@ fun BetterBottomBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .width(screenWidth / 2).padding(10.dp),
+                    .width(screenWidth / 2),
             ) {
                 navItems.forEach {
                     getBottomTab(
@@ -92,9 +92,15 @@ fun BetterTab(
             painter = painterResource(id = icon),
             contentDescription = null,
             tint = selectedColor,
+            modifier = Modifier.padding(top = 10.dp),
         )
 
-        Text(text = label, style = BetterAndroidTheme.typography.subtitle, color = selectedColor, modifier = Modifier.padding(top = 2.dp))
+        Text(
+            text = label,
+            style = BetterAndroidTheme.typography.subtitle,
+            color = selectedColor,
+            modifier = Modifier.padding(top = 2.dp, bottom = 10.dp),
+        )
     }
 }
 
