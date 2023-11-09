@@ -26,9 +26,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.presentation.navigation.Screen
@@ -42,18 +45,21 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
 
-    LaunchedEffect(true) {
-        viewModel.loginEvents.collectLatest {
-            when (it) {
-                is LoginViewModel.LoginEvent.NavToOnBoard -> {
-                    delay(500)
-                    navController.navigate(Screen.OnBoard.route)
-                }
-                else -> {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route) {
-                            inclusive = true
+    LaunchedEffect(Unit) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.loginEvents.collectLatest {
+                when (it) {
+                    is LoginViewModel.LoginEvent.NavToOnBoard -> {
+                        delay(500)
+                        navController.navigate(Screen.OnBoard.route)
+                    }
+                    else -> {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) {
+                                inclusive = true
+                            }
                         }
                     }
                 }

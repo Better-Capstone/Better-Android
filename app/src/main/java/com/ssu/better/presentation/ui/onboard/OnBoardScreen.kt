@@ -15,14 +15,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
@@ -41,19 +44,23 @@ fun OnBoardScreen(
     navController: NavHostController,
     viewModel: OnBoardViewModel = hiltViewModel(),
 ) {
-    val uistate by viewModel.uiState.collectAsState()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+
+    val uistate by viewModel.uiState.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val loginViewModel: LoginViewModel = hiltViewModel(navController.getBackStackEntry(Screen.Login.route))
 
-    LaunchedEffect(true) {
-        viewModel.inputNickname(loginViewModel.userInfo?.nickname ?: "")
+    LaunchedEffect(Unit) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.inputNickname(loginViewModel.userInfo?.nickname ?: "")
 
-        viewModel.events.collectLatest {
-            delay(1000)
-            navController.navigate(Screen.Home.route) {
-                popUpTo(Screen.OnBoard.route) {
-                    inclusive = true
+            viewModel.events.collectLatest {
+                delay(1000)
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.OnBoard.route) {
+                        inclusive = true
+                    }
                 }
             }
         }
