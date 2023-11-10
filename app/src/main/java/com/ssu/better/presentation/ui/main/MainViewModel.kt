@@ -1,4 +1,4 @@
-package com.ssu.better.ui.theme.main
+package com.ssu.better.presentation.ui.main
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
