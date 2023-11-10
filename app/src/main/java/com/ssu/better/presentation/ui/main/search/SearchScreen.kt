@@ -1,10 +1,10 @@
-package com.ssu.better.ui.theme.main.mypage
+package com.ssu.better.presentation.ui.main.search
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 
 @Composable
-fun MyPageScreen(navHostController: NavHostController) {
-    Text(text = "mypage")
+fun SearchScreen(navHostController: NavHostController) {
+    Text(text = "search")
 }

@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.ssu.better.ui.theme.main.home.HomeScreen
-import com.ssu.better.ui.theme.main.home.SampleScreen
-import com.ssu.better.ui.theme.main.mypage.MyPageScreen
-import com.ssu.better.ui.theme.main.search.SearchScreen
+import com.ssu.better.presentation.ui.main.home.HomeScreen
+import com.ssu.better.presentation.ui.main.home.SampleScreen
+import com.ssu.better.presentation.ui.main.mypage.MyPageScreen
+import com.ssu.better.presentation.ui.main.search.SearchScreen
 
 @Composable
 fun MainNavGraph(navController: NavHostController) {

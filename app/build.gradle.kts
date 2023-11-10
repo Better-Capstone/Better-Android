@@ -1,9 +1,13 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
 }
+
+val localProperties = gradleLocalProperties(rootDir)
 
 android {
     namespace = "com.ssu.better"
@@ -20,6 +24,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        addManifestPlaceholders(mapOf("KAKAO_KEY" to getApiKey("KAKAO_KEY")))
+        buildConfigField("String", "KAKAO_KEY", "\"${getApiKey("KAKAO_KEY")}\"")
     }
 
     buildTypes {
@@ -75,6 +82,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // compose lifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:${Versions.compose_lifecycle}")
+
     // data
     implementation(project(":data"))
 
@@ -101,4 +111,15 @@ dependencies {
 
     // toggle button
     implementation("com.robertlevonyan.compose:buttontogglegroup:${Versions.toggle}")
+
+    // datastore
+    implementation("androidx.datastore:datastore-preferences-core:${Versions.datastore}")
+    implementation("androidx.datastore:datastore-preferences:${Versions.datastore}")
+
+    // kakao
+    implementation("com.kakao.sdk:v2-user:${Versions.kakao}")
+}
+
+fun getApiKey(propertyKey: String): String {
+    return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }

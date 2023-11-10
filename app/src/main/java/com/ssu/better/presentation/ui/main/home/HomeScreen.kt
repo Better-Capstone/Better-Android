@@ -1,4 +1,4 @@
-package com.ssu.better.ui.theme.main.home
+package com.ssu.better.presentation.ui.main.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button

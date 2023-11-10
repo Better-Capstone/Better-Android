@@ -1,6 +1,8 @@
 package com.ssu.better.di
 
 import android.app.Application
+import com.kakao.sdk.common.KakaoSdk
+import com.ssu.better.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -13,5 +15,7 @@ class App : Application() {
         instance = this
 
         Timber.plant(Timber.DebugTree())
+
+        KakaoSdk.init(this, "${BuildConfig.KAKAO_KEY}")
     }
 }

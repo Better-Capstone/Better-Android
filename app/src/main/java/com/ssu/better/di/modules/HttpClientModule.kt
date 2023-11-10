@@ -1,13 +1,15 @@
 package com.ssu.better.di.modules
 
-import android.content.SharedPreferences
 import com.ssu.better.BuildConfig
 import com.ssu.better.di.qualifiers.ForAccessToken
 import com.ssu.better.di.qualifiers.ForLogging
+import com.ssu.better.data.util.TokenManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -36,9 +38,12 @@ object HttpClientModule {
 
     @Provides
     @ForAccessToken
-    fun provideAccessTokenHttpClient(sharedPreferences: SharedPreferences): OkHttpClient {
+    fun provideAccessTokenHttpClient(tokenManager: TokenManager): OkHttpClient {
         val builder = OkHttpClient.Builder()
-        val accessToken = sharedPreferences.getString(SharedPreferenceModule.ACCESS_TOKEN, "")
+
+        // sharedPreferences.getString(SharedPreferenceModule.ACCESS_TOKEN, "")
+        val accessToken: String = runBlocking { tokenManager.getAccessToken().first() ?: "" }
+
         builder.addInterceptor(
             Interceptor { chain ->
                 var request = chain.request()

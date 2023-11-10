@@ -1,4 +1,4 @@
-package com.ssu.better.ui.theme.main
+package com.ssu.better.presentation.ui.main
 
 import android.annotation.SuppressLint
 import androidx.compose.material3.Scaffold
