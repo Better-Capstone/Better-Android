@@ -1,6 +1,7 @@
 package com.ssu.better.ui.theme
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -34,5 +35,9 @@ class BetterColors {
 
         val Bg = Color(0xFFF9F9F9)
         val White = Color(0xFFFDFDFD)
+
+        val gradation = Brush.verticalGradient(
+            listOf(Primary10, Primary50),
+        )
     }
 }
