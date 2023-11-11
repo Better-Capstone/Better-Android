@@ -7,7 +7,7 @@ data class Task(
     val id: Long,
 
     @SerializedName("challenge_id")
-    val challengeId: String,
+    val challengeId: Long,
 
     @SerializedName("daedline")
     val deadline: String,

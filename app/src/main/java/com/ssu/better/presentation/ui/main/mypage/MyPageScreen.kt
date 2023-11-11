@@ -26,22 +26,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ssu.better.R
+import com.ssu.better.entity.member.Member
+import com.ssu.better.entity.member.MemberType
+import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.Study
+import com.ssu.better.entity.study.StudyCategory
+import com.ssu.better.entity.study.StudyCheckDay
+import com.ssu.better.entity.study.StudyPeriod
+import com.ssu.better.entity.study.StudyStatus
+import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRank
+import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
 @Composable
 fun MyPageScreen(navHostController: NavHostController) {
-    Text(text = "mypage")
+    PreviewMyPage()
 }
 
 @Composable
 fun MyPage(
     userRank: UserRank,
     isNotifyEnabled: Boolean,
+    studyList: ArrayList<Study>,
     onClickNotifyEnabledChange: (Boolean) -> Unit,
     onClickLogout: () -> Unit,
-    onClickWithDraw: () -> Unit
+    onClickWithDraw: () -> Unit,
 ) {
     Surface(color = BetterColors.Gray00) {
         Column {
@@ -58,7 +70,8 @@ fun MyPage(
                 modifier = Modifier.padding(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                items(10) {
+                items(studyList.size) { index ->
+                    val item = studyList[index]
                     Card(
                         modifier = Modifier
                             .width(141.dp)
@@ -103,7 +116,7 @@ fun MyPage(
                     .clickable { onClickLogout() },
                 text = "로그아웃",
                 style = BetterAndroidTheme.typography.headline3,
-                color = BetterColors.Black
+                color = BetterColors.Black,
             )
 
             Text(
@@ -112,7 +125,7 @@ fun MyPage(
                     .clickable { onClickWithDraw() },
                 text = "회원탈퇴",
                 style = BetterAndroidTheme.typography.headline3,
-                color = BetterColors.Primary50
+                color = BetterColors.Primary50,
             )
         }
     }
@@ -122,12 +135,39 @@ fun MyPage(
 @Preview(showSystemUi = true)
 fun PreviewMyPage() {
     val testUserRank = UserRank(id = 3, userId = 1, score = 7530, createdAt = "", updatedAt = "")
+    val testUser = User(1, "배현빈", "개발하는 북극곰")
+    val testMember = Member(1, 1, MemberType.MEMBER, "")
+    val testTask = Task(1, 1, "", 1, 1, "", "", "제목")
+    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
+    val testCategory = StudyCategory(1, "개발")
+    val testGroupRank = GroupRank(1, 18000)
+    val testStudy = Study(
+        1,
+        testUser,
+        testCategory,
+        "제목",
+        "설명",
+        StudyStatus.INPROGRESS,
+        StudyPeriod.EVERYDAY,
+        StudyCheckDay.EVERYDAY,
+        5,
+        1,
+        10,
+        1500,
+        arrayListOf(testMember),
+        arrayListOf(testTask),
+        arrayListOf(testUserRankHistory),
+        testGroupRank,
+    )
+
+    val testStudyList = arrayListOf(testStudy, testStudy, testStudy)
     MyPage(
         userRank = testUserRank,
         isNotifyEnabled = true,
+        studyList = testStudyList,
         onClickNotifyEnabledChange = { },
         onClickLogout = { },
-        onClickWithDraw = { }
+        onClickWithDraw = { },
     )
 }
 
