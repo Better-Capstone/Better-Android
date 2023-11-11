@@ -1,4 +1,4 @@
-package com.ssu.better.domain.usecase
+package com.ssu.better.domain.usecase.user
 
 import com.ssu.better.domain.repository.UserRepository
 import com.ssu.better.entity.user.UserRegisterRequest
