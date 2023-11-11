@@ -37,7 +37,7 @@ class BetterColors {
         val White = Color(0xFFFDFDFD)
 
         val gradation = Brush.verticalGradient(
-            listOf(Primary10, Primary50),
+            listOf(Color(0XFFFF2424), Color(0XFFFF7772)),
         )
     }
 }
