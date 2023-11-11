@@ -8,8 +8,8 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.ssu.better.data.util.TokenManager
-import com.ssu.better.domain.usecase.PostUserLoginRequestUseCase
-import com.ssu.better.domain.usecase.PostUserRegisterUseCase
+import com.ssu.better.domain.usecase.user.PostUserLoginRequestUseCase
+import com.ssu.better.domain.usecase.user.PostUserRegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
