@@ -1,12 +1,20 @@
 package com.ssu.better.di.modules
 
+import com.ssu.better.domain.repository.StudyRepository
 import com.ssu.better.domain.repository.UserRepository
-import com.ssu.better.domain.usecase.GetUserChallengeUseCase
-import com.ssu.better.domain.usecase.GetUserRankUseCase
-import com.ssu.better.domain.usecase.GetUserTasksUseCase
-import com.ssu.better.domain.usecase.GetUserUseCase
-import com.ssu.better.domain.usecase.PostUserLoginRequestUseCase
-import com.ssu.better.domain.usecase.PostUserRegisterUseCase
+import com.ssu.better.domain.usecase.study.GetGroupRankHistoryUseCase
+import com.ssu.better.domain.usecase.study.GetStudyListByCategoryUseCase
+import com.ssu.better.domain.usecase.study.GetStudyListByUserUseCase
+import com.ssu.better.domain.usecase.study.GetStudyListUseCase
+import com.ssu.better.domain.usecase.study.GetStudyUseCase
+import com.ssu.better.domain.usecase.study.PostCreateStudyUseCase
+import com.ssu.better.domain.usecase.study.PostJoinStudyUseCase
+import com.ssu.better.domain.usecase.user.GetUserChallengeUseCase
+import com.ssu.better.domain.usecase.user.GetUserRankUseCase
+import com.ssu.better.domain.usecase.user.GetUserTasksUseCase
+import com.ssu.better.domain.usecase.user.GetUserUseCase
+import com.ssu.better.domain.usecase.user.PostUserLoginRequestUseCase
+import com.ssu.better.domain.usecase.user.PostUserRegisterUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,5 +58,47 @@ object UseCaseModule {
     @Singleton
     fun providesPostUserRegisterUseCase(repository: UserRepository): PostUserRegisterUseCase {
         return PostUserRegisterUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetGroupRankHistoryUseCase(repository: StudyRepository): GetGroupRankHistoryUseCase {
+        return GetGroupRankHistoryUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetStudyListByCategoryUseCase(repository: StudyRepository): GetStudyListByCategoryUseCase {
+        return GetStudyListByCategoryUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetStudyListByUserUseCase(repository: StudyRepository): GetStudyListByUserUseCase {
+        return GetStudyListByUserUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetStudyListUseCase(repository: StudyRepository): GetStudyListUseCase {
+        return GetStudyListUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetStudyUseCase(repository: StudyRepository): GetStudyUseCase {
+        return GetStudyUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesPostCreateStudyUseCase(repository: StudyRepository): PostCreateStudyUseCase {
+        return PostCreateStudyUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesPostJoinStudyUseCase(repository: StudyRepository): PostJoinStudyUseCase {
+        return PostJoinStudyUseCase(repository)
     }
 }
