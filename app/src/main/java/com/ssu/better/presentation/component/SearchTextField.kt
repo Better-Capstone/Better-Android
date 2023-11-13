@@ -37,13 +37,16 @@ private val TextFieldRound = 3.dp
 fun SearchTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    onClickSearch: (String) -> Unit,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = BetterAndroidTheme.typography.body,
     enabled: Boolean = true,
     counterMaxLength: Int = 0,
     hint: String = "",
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions(),
+    keyboardActions: KeyboardActions = KeyboardActions(onDone = {
+        onClickSearch(value)
+    },),
     visualTransformation: VisualTransformation = VisualTransformation.None,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
@@ -98,6 +101,7 @@ fun SearchTextField(
 
                         Box(
                             modifier = Modifier.padding(8.dp).clickable {
+                                onClickSearch(value)
                             },
                         ) {
                             Icon(
