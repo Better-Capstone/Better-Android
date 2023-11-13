@@ -21,7 +21,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ssu.better.R
 import com.ssu.better.entity.study.Category
-import com.ssu.better.entity.study.Rank
 import com.ssu.better.entity.study.Study
 import com.ssu.better.presentation.utils.getCategoryIcon
 import com.ssu.better.ui.theme.BetterAndroidTheme
@@ -93,7 +92,14 @@ fun StudyCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = "${Rank.values()[study.minRank]}이상",
+                    text = "${
+                    when (study.minRank) {
+                        1 -> "꺼진촛불"
+                        2 -> "촛불"
+                        3 -> "불꽃"
+                        else -> "모닥불"
+                    }
+                    }이상",
                     style = BetterAndroidTheme.typography.subtitle,
                     color = BetterColors.Gray20,
                 )
