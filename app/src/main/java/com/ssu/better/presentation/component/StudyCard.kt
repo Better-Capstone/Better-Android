@@ -71,7 +71,14 @@ fun StudyCard(
                     maxLines = 1,
                 )
             }
-            Text(text = "${study.title}", style = BetterAndroidTheme.typography.title)
+            Text(
+                text = if (study.title.length > 10) {
+                    study.title.slice(0..9) + "..."
+                } else {
+                    study.title
+                },
+                style = BetterAndroidTheme.typography.headline2,
+            )
             Row(
                 modifier = Modifier.padding(bottom = 30.dp, top = 7.dp),
                 verticalAlignment = Alignment.CenterVertically,
