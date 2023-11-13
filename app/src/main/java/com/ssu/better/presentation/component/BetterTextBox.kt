@@ -1,6 +1,7 @@
 package com.ssu.better.presentation.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -24,13 +25,15 @@ fun BetterTextBox(
     textColor: Color,
     width: Dp,
     height: Dp,
+    onClick: () -> Unit = { },
 ) {
     Box(
         modifier = Modifier
             .width(width)
             .height(height)
             .background(backgroundColor)
-            .clip(RoundedCornerShape(5.dp)),
+            .clip(RoundedCornerShape(5.dp))
+            .clickable { onClick() },
         contentAlignment = Alignment.Center,
     ) {
         Text(
