@@ -33,6 +33,7 @@ class BetterColors {
         val Gray10 = Color(0xFFE3E3E3)
         val Gray00 = Color(0xFFF3F3F3)
         val TextGray = Color(0xFF808080)
+        val DescriptionGray = Color(0xFF6C6C6C)
 
         val Bg = Color(0xFFF9F9F9)
         val White = Color(0xFFFDFDFD)
