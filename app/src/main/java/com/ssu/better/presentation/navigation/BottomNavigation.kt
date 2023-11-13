@@ -34,7 +34,7 @@ fun BetterBottomBar(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
 
-    val navItems = listOf(Screen.Home, Screen.Search, Screen.MyPage)
+    val navItems = listOf(Screen.Home, Screen.Search.Main, Screen.MyPage)
     var selectedScreen by remember { mutableStateOf(navItems.first()) }
 
     Box(
@@ -117,7 +117,7 @@ fun getBottomTab(screen: Screen, isSelected: Boolean, onClick: () -> Unit, modif
             modifier = modifier,
         )
 
-        Screen.Search -> BetterTab(
+        Screen.Search.Main -> BetterTab(
             selected = isSelected,
             icon = R.drawable.ic_search,
             label = context.getString(R.string.tab_search),
