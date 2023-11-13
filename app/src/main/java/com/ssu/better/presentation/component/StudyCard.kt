@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ssu.better.R
@@ -34,7 +33,6 @@ fun StudyCard(
     onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
     Surface(
         shadowElevation = 3.dp,
         shape = RoundedCornerShape(10.dp),
@@ -79,7 +77,7 @@ fun StudyCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 GradientIcon(src = R.drawable.ic_study_fire, modifier = Modifier.width(20.dp).height(20.dp))
-                Text(text = "50%", style = BetterAndroidTheme.typography.title)
+                Text(text = "${study.groupRank.score}", style = BetterAndroidTheme.typography.title)
             }
 
             Row(

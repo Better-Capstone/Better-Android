@@ -28,7 +28,7 @@ class BetterColors {
         val Gray90 = Color(0xFF131313)
         val Gray70 = Color(0xFF2B2B2B)
         val Gray50 = Color(0xFF373737)
-        val Gray30 = Color(0xFF474747)
+        val Gray30 = Color(0xFF6C6C6C)
         val Gray20 = Color(0xFFC9C9C9)
         val Gray10 = Color(0xFFE3E3E3)
         val Gray00 = Color(0xFFF3F3F3)
