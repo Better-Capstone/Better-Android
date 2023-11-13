@@ -1,6 +1,7 @@
 package com.ssu.better.presentation.ui.main.search
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,15 +12,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,25 +31,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.SortOption
 import com.ssu.better.entity.study.Study
-import com.ssu.better.entity.study.StudyCategory
-import com.ssu.better.entity.study.StudyCheckDay
-import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.StudyStatus
-import com.ssu.better.entity.user.User
 import com.ssu.better.presentation.component.CircleCategoryButton
 import com.ssu.better.presentation.component.SearchTextField
 import com.ssu.better.presentation.component.StudyCard
+import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
 @Composable
-fun SearchScreen(navHostController: NavHostController) {
+fun SearchScreen(
+    navHostController: NavHostController,
+    viewModel: SearchViewModel = hiltViewModel(),
+) {
     val query = remember { mutableStateOf("") }
+    val option = remember { mutableStateOf(SortOption.LATEST) }
+
+    val studyList by viewModel.studyList.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 30.dp),
     ) {
@@ -67,29 +77,34 @@ fun SearchScreen(navHostController: NavHostController) {
             onValueChange = { s -> query.value = s },
             hint = "스터디 이름",
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
-        )
-        StudyCategoryTab()
-        StudyListView(
-            list = List<Study>(20) {
-                Study(
-                    studyId = 1,
-                    status = StudyStatus.END,
-                    title = "알고리즘 스터디",
-                    owner = User(id = 333, name = "ejfie", nickname = "user"),
-                    category = StudyCategory(1, "HEALTH"),
-                    period = StudyPeriod.BIWEEKLY,
-                    checkDay = StudyCheckDay.FRI,
-                    maximumCount = 29,
-                    minRank = 1,
-                    memberList = arrayListOf(),
-                    taskList = arrayListOf(),
-                    userRankHistoryList = arrayListOf(),
-                    kickCondition = 3,
-                    groupRank = GroupRank(1, 1),
-                    description = "",
-                    memberCount = 8,
-                )
+            onClickSearch = { query ->
+                navHostController.navigate(route = Screen.Search.Detail.route + "?query=$query")
             },
+        )
+        StudyCategoryTab(
+            onClickCategory = { category ->
+                navHostController.navigate(route = Screen.Search.Detail.route + "?category=${category.name}") {
+                }
+            },
+            selectedCategory = Category.ALL,
+        )
+        Box(
+            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            contentAlignment = Alignment.CenterEnd,
+        ) {
+            StudySortingToggle(option = option.value, onClick = {
+                if (option.value == SortOption.LATEST) {
+                    option.value = SortOption.RANK
+                } else {
+                    option.value = SortOption.LATEST
+                }
+                viewModel.sort(option.value)
+            },)
+        }
+
+        StudyListView(
+            list = studyList,
+            modifier = Modifier.fillMaxSize().padding(bottom = 30.dp),
         )
     }
 }
@@ -97,9 +112,11 @@ fun SearchScreen(navHostController: NavHostController) {
 @Composable
 fun StudyListView(
     list: List<Study>,
+    modifier: Modifier = Modifier,
+
 ) {
     LazyVerticalGrid(
-        modifier = Modifier.fillMaxSize().padding(bottom = 30.dp),
+        modifier = modifier,
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -116,14 +133,57 @@ fun StudyListView(
 }
 
 @Composable
-fun StudyCategoryTab() {
+fun StudyCategoryTab(
+    onClickCategory: (Category) -> Unit,
+    selectedCategory: Category? = null,
+) {
     LazyRow() {
         item() {
-            CircleCategoryButton(category = Category.ALL, onClick = { /*TODO*/ }, selected = true, modifier = Modifier.padding(10.dp))
+            CircleCategoryButton(
+                category = Category.ALL,
+                onClick = { onClickCategory(Category.ALL) },
+                selected = selectedCategory == Category.ALL,
+                modifier = Modifier.padding(10.dp),
+            )
             Category.values().forEach {
-                CircleCategoryButton(category = it, onClick = { /*TODO*/ }, selected = false, modifier = Modifier.padding(10.dp))
+                if (Category.ALL != it) {
+                    CircleCategoryButton(
+                        category = it,
+                        onClick = { onClickCategory(it) },
+                        selected = selectedCategory == it,
+                        modifier = Modifier.padding(10.dp),
+
+                    )
+                }
             }
         }
+    }
+}
+
+@Composable
+fun StudySortingToggle(
+    option: SortOption,
+    onClick: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable {
+            onClick()
+        },
+    ) {
+        Text(
+            text = SortOption.RANK.kor,
+            color = if (option == SortOption.RANK) BetterColors.Gray90 else BetterColors.Gray10,
+            style = BetterAndroidTheme.typography.headline3,
+        )
+        Text(text = "|", Modifier.padding(horizontal = 2.dp))
+        Text(
+            text = SortOption.LATEST.kor,
+            color = if (option == SortOption.LATEST) BetterColors.Gray90 else BetterColors.Gray10,
+            style = BetterAndroidTheme.typography.headline3,
+            modifier = Modifier.padding(end = 2.dp),
+        )
+        Icon(painter = painterResource(id = R.drawable.ic_sort), contentDescription = null, modifier = Modifier.size(12.dp))
     }
 }
 
