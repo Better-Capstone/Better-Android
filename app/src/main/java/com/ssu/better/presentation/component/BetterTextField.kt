@@ -72,7 +72,7 @@ fun BetterTextField(
                     }
                     onValueChange(newValue)
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = modifier
                     .heightIn(min = minHeight, max = maxHeight),
                 enabled = enabled,
                 textStyle = textStyle,
