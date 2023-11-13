@@ -16,13 +16,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,7 +57,13 @@ fun SearchScreen(
     val query = remember { mutableStateOf("") }
     val option = remember { mutableStateOf(SortOption.LATEST) }
 
+    val listState = rememberLazyGridState()
+
     val studyList by viewModel.studyList.collectAsStateWithLifecycle()
+
+    LaunchedEffect(studyList) {
+        listState.animateScrollToItem(0)
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 30.dp),
@@ -105,6 +114,7 @@ fun SearchScreen(
         StudyListView(
             list = studyList,
             modifier = Modifier.fillMaxSize().padding(bottom = 30.dp),
+            listState = listState,
         )
     }
 }
@@ -113,9 +123,10 @@ fun SearchScreen(
 fun StudyListView(
     list: List<Study>,
     modifier: Modifier = Modifier,
-
+    listState: LazyGridState = rememberLazyGridState(),
 ) {
     LazyVerticalGrid(
+        state = listState,
         modifier = modifier,
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(10.dp),
