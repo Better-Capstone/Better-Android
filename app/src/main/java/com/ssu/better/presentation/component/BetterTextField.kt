@@ -45,7 +45,7 @@ fun BetterTextField(
     counterMaxLength: Int = 0,
     enabled: Boolean = true,
     isError: Boolean = false,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
     keyboardActions: KeyboardActions = KeyboardActions(),
     minHeight: Dp = TextFieldMinHeight,
     maxHeight: Dp = minHeight,
@@ -72,13 +72,11 @@ fun BetterTextField(
                     }
                     onValueChange(newValue)
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = modifier
                     .heightIn(min = minHeight, max = maxHeight),
                 enabled = enabled,
                 textStyle = textStyle,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password, // for remove underline
-                ),
+                keyboardOptions = keyboardOptions,
                 keyboardActions = keyboardActions,
                 singleLine = true,
                 interactionSource = interactionSource,

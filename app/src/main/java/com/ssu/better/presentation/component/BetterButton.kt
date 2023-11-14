@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
-enum class BetterButtonType { PRIMARY, DEFAULT }
+enum class BetterButtonType { PRIMARY, DEFAULT, GRAY }
 
 @Composable
 fun BetterButton(
@@ -29,7 +29,12 @@ fun BetterButton(
         shape = RoundedCornerShape(10.dp),
         onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (type == BetterButtonType.PRIMARY) BetterColors.Primary50 else BetterColors.Gray90,
+            // if (type == BetterButtonType.PRIMARY) BetterColors.Primary50 else BetterColors.Gray90,
+            containerColor = when (type) {
+                BetterButtonType.DEFAULT -> BetterColors.Gray90
+                BetterButtonType.PRIMARY -> BetterColors.Primary50
+                else -> BetterColors.Gray00
+            },
             contentColor = textColor,
             disabledContainerColor = BetterColors.Gray20,
             disabledContentColor = BetterColors.White,
