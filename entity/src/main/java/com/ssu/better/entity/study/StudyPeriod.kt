@@ -2,13 +2,13 @@ package com.ssu.better.entity.study
 
 import com.google.gson.annotations.SerializedName
 
-enum class StudyPeriod {
+enum class StudyPeriod(val kor: String) {
     @SerializedName("EVERYDAY")
-    EVERYDAY,
+    EVERYDAY("매일"),
 
     @SerializedName("WEEKLY")
-    WEEKLY,
+    WEEKLY("매주"),
 
     @SerializedName("BIWEEKLY")
-    BIWEEKLY,
+    BIWEEKLY("격주"),
 }

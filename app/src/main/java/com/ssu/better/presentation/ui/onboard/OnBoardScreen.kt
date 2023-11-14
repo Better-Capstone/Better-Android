@@ -87,6 +87,7 @@ fun OnBoardScreen(
                 Text("사용하실 닉네임을 설정해주세요", style = BetterAndroidTheme.typography.subtitle, color = BetterColors.Gray30)
                 Spacer(modifier = Modifier.height(14.dp).fillMaxWidth())
                 BetterTextField(
+                    modifier = Modifier.fillMaxWidth(),
                     value = uistate.nickname ?: "",
                     onValueChange = viewModel::inputNickname,
                     isError = !uistate.isValidNickName && uistate.nickname.isNotEmpty(),

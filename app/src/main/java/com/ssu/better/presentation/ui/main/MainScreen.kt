@@ -38,7 +38,7 @@ fun getBottomVisible(
 ): Boolean {
     return when (root) {
         Screen.Home.route -> true
-        Screen.Search.route -> true
+        Screen.Search.Main.route -> true
         Screen.MyPage.route -> true
         else -> false
     }
