@@ -1,5 +1,6 @@
 package com.ssu.better.presentation.ui.main.search
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -21,7 +23,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,6 +54,7 @@ import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SearchScreen(
     navHostController: NavHostController,
@@ -64,57 +70,87 @@ fun SearchScreen(
     LaunchedEffect(studyList) {
         listState.animateScrollToItem(0)
     }
-
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 30.dp),
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            AddStudyButton(
+                modifier = Modifier.size(50.dp).offset(y = -60.dp),
+                onClick = {},
+            )
+        },
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(10.dp),
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 30.dp),
         ) {
-            Column() {
-                Text(text = "사용자" + ",님", style = BetterAndroidTheme.typography.headline2, color = BetterColors.Gray30)
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(text = "어떤 스터디를 찾고 신가요?", style = BetterAndroidTheme.typography.headline2, color = BetterColors.Gray70)
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(10.dp),
+            ) {
+                Column() {
+                    Text(text = "사용자" + ",님", style = BetterAndroidTheme.typography.headline2, color = BetterColors.Gray30)
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(text = "어떤 스터디를 찾고 신가요?", style = BetterAndroidTheme.typography.headline2, color = BetterColors.Gray70)
+                }
+
+                UserRankProfile(rank = 1)
+            }
+            SearchTextField(
+                value = query.value,
+                onValueChange = { s -> query.value = s },
+                hint = "스터디 이름",
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
+                onClickSearch = { query ->
+                    navHostController.navigate(route = Screen.Search.Detail.route + "?query=$query")
+                },
+            )
+            StudyCategoryTab(
+                onClickCategory = { category ->
+                    navHostController.navigate(route = Screen.Search.Detail.route + "?category=${category.name}") {
+                    }
+                },
+                selectedCategory = Category.ALL,
+            )
+            Box(
+                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                StudySortingToggle(option = option.value, onClick = {
+                    if (option.value == SortOption.LATEST) {
+                        option.value = SortOption.RANK
+                    } else {
+                        option.value = SortOption.LATEST
+                    }
+                    viewModel.sort(option.value)
+                },)
             }
 
-            UserRankProfile(rank = 1)
+            StudyListView(
+                list = studyList,
+                modifier = Modifier.fillMaxSize().padding(bottom = 30.dp),
+                listState = listState,
+            )
         }
-        SearchTextField(
-            value = query.value,
-            onValueChange = { s -> query.value = s },
-            hint = "스터디 이름",
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
-            onClickSearch = { query ->
-                navHostController.navigate(route = Screen.Search.Detail.route + "?query=$query")
-            },
-        )
-        StudyCategoryTab(
-            onClickCategory = { category ->
-                navHostController.navigate(route = Screen.Search.Detail.route + "?category=${category.name}") {
-                }
-            },
-            selectedCategory = Category.ALL,
-        )
-        Box(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
-            contentAlignment = Alignment.CenterEnd,
-        ) {
-            StudySortingToggle(option = option.value, onClick = {
-                if (option.value == SortOption.LATEST) {
-                    option.value = SortOption.RANK
-                } else {
-                    option.value = SortOption.LATEST
-                }
-                viewModel.sort(option.value)
-            },)
-        }
+    }
+}
 
-        StudyListView(
-            list = studyList,
-            modifier = Modifier.fillMaxSize().padding(bottom = 30.dp),
-            listState = listState,
+@Composable
+fun AddStudyButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    FloatingActionButton(
+        modifier = modifier,
+        onClick = onClick,
+        containerColor = BetterColors.Primary50,
+        shape = CircleShape,
+        elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(3.dp),
+    ) {
+        Icon(
+            modifier = Modifier.size(30.dp),
+            painter = painterResource(id = R.drawable.ic_plus),
+            contentDescription = null,
+            tint = BetterColors.White,
         )
     }
 }

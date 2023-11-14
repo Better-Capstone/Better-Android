@@ -1,5 +1,6 @@
 package com.ssu.better.presentation.ui.main.search
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,10 +9,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +38,7 @@ import com.ssu.better.entity.study.SortOption
 import com.ssu.better.presentation.component.SearchTextField
 import com.ssu.better.ui.theme.BetterAndroidTheme
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchDetailScreen(
@@ -60,69 +64,79 @@ fun SearchDetailScreen(
         listState.animateScrollToItem(0)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(12.dp),
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            AddStudyButton(
+                modifier = Modifier.size(50.dp).offset(y = -10.dp),
+                onClick = {},
+            )
+        },
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_back),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable {
-                        navHostController.popBackStack()
-                    },
-            )
-            SearchTextField(
-                value = query.value ?: "",
-                onValueChange = { s -> query.value = s },
-                hint = "스터디 이름",
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
-                onClickSearch = {
-                    query.value = it
-                    Toast.makeText(context, "search" + it, Toast.LENGTH_SHORT).show()
-                    keyboardController?.hide()
-                },
-            )
-        }
-
-        Column(modifier = Modifier.padding(start = 12.dp)) {
-            Text(text = "스터디 카테고리", style = BetterAndroidTheme.typography.headline3, modifier = Modifier.padding(vertical = 12.dp))
-            StudyCategoryTab(onClickCategory = {
-                    selected ->
-                category.value = selected
-            }, selectedCategory = category.value,)
-        }
-
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(12.dp),
-            contentAlignment = Alignment.CenterEnd,
         ) {
-            StudySortingToggle(
-                option = option.value,
-                onClick = {
-                    if (option.value == SortOption.LATEST) {
-                        option.value = SortOption.RANK
-                    } else {
-                        option.value = SortOption.LATEST
-                    }
-                    viewModel.sort(option.value)
-                },
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_back),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            navHostController.popBackStack()
+                        },
+                )
+                SearchTextField(
+                    value = query.value ?: "",
+                    onValueChange = { s -> query.value = s },
+                    hint = "스터디 이름",
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
+                    onClickSearch = {
+                        query.value = it
+                        Toast.makeText(context, "search" + it, Toast.LENGTH_SHORT).show()
+                        keyboardController?.hide()
+                    },
+                )
+            }
+
+            Column(modifier = Modifier.padding(start = 12.dp)) {
+                Text(text = "스터디 카테고리", style = BetterAndroidTheme.typography.headline3, modifier = Modifier.padding(vertical = 12.dp))
+                StudyCategoryTab(onClickCategory = {
+                        selected ->
+                    category.value = selected
+                }, selectedCategory = category.value,)
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                StudySortingToggle(
+                    option = option.value,
+                    onClick = {
+                        if (option.value == SortOption.LATEST) {
+                            option.value = SortOption.RANK
+                        } else {
+                            option.value = SortOption.LATEST
+                        }
+                        viewModel.sort(option.value)
+                    },
+                )
+            }
+
+            StudyListView(
+                list = studyList,
+                modifier = Modifier.fillMaxSize(),
+                listState = listState,
             )
         }
-
-        StudyListView(
-            list = studyList,
-            modifier = Modifier.fillMaxSize(),
-            listState = listState,
-        )
     }
 }
