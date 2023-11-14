@@ -1,7 +1,6 @@
 package com.ssu.better.presentation.ui.study_join
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +41,6 @@ import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
-import com.ssu.better.presentation.component.BetterTextBox
 import com.ssu.better.presentation.component.BetterTextField
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
@@ -191,7 +189,7 @@ fun StudyJoin(
                         style = BetterAndroidTheme.typography.subtitle,
                     )
 
-                    StudyRepeatPeriod(study = study)
+                    StudyCheckDayCard(study.checkDay)
 
                     Row(modifier = Modifier.padding(start = 20.dp, top = 30.dp)) {
                         Text(
@@ -290,99 +288,5 @@ fun StudyJoin(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun StudyRepeatPeriod(study: Study) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, top = 30.dp, end = 20.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        BetterTextBox(
-            text = "월",
-            backgroundColor = if ((study.checkDay == StudyCheckDay.MON || study.checkDay == StudyCheckDay.EVERYDAY)) {
-                BetterColors.Primary00
-            } else {
-                BetterColors.Gray00
-            },
-            textColor = BetterColors.Gray90,
-            width = 35.dp,
-            height = 35.dp,
-        )
-
-        BetterTextBox(
-            text = "화",
-            backgroundColor = if ((study.checkDay == StudyCheckDay.TUE || study.checkDay == StudyCheckDay.EVERYDAY)) {
-                BetterColors.Primary00
-            } else {
-                BetterColors.Gray00
-            },
-            textColor = BetterColors.Gray90,
-            width = 35.dp,
-            height = 35.dp,
-        )
-
-        BetterTextBox(
-            text = "수",
-            backgroundColor = if ((study.checkDay == StudyCheckDay.WED || study.checkDay == StudyCheckDay.EVERYDAY)) {
-                BetterColors.Primary00
-            } else {
-                BetterColors.Gray00
-            },
-            textColor = BetterColors.Gray90,
-            width = 35.dp,
-            height = 35.dp,
-        )
-
-        BetterTextBox(
-            text = "목",
-            backgroundColor = if ((study.checkDay == StudyCheckDay.THU || study.checkDay == StudyCheckDay.EVERYDAY)) {
-                BetterColors.Primary00
-            } else {
-                BetterColors.Gray00
-            },
-            textColor = BetterColors.Gray90,
-            width = 35.dp,
-            height = 35.dp,
-        )
-
-        BetterTextBox(
-            text = "금",
-            backgroundColor = if ((study.checkDay == StudyCheckDay.FRI || study.checkDay == StudyCheckDay.EVERYDAY)) {
-                BetterColors.Primary00
-            } else {
-                BetterColors.Gray00
-            },
-            textColor = BetterColors.Gray90,
-            width = 35.dp,
-            height = 35.dp,
-        )
-
-        BetterTextBox(
-            text = "토",
-            backgroundColor = if ((study.checkDay == StudyCheckDay.SAT || study.checkDay == StudyCheckDay.EVERYDAY)) {
-                BetterColors.Primary00
-            } else {
-                BetterColors.Gray00
-            },
-            textColor = BetterColors.Gray90,
-            width = 35.dp,
-            height = 35.dp,
-        )
-
-        BetterTextBox(
-            text = "일",
-            backgroundColor = if ((study.checkDay == StudyCheckDay.SUN || study.checkDay == StudyCheckDay.EVERYDAY)) {
-                BetterColors.Primary00
-            } else {
-                BetterColors.Gray00
-            },
-            textColor = BetterColors.Gray90,
-            width = 35.dp,
-            height = 35.dp,
-        )
     }
 }
