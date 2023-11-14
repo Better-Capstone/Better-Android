@@ -33,7 +33,6 @@ import com.ssu.better.R
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.SortOption
 import com.ssu.better.presentation.component.SearchTextField
-import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -77,11 +76,7 @@ fun SearchDetailScreen(
                 modifier = Modifier
                     .size(24.dp)
                     .clickable {
-                        navHostController.navigate(route = Screen.Search.Main.route) {
-                            popUpTo(route = Screen.Search.Detail.route) {
-                                inclusive = true
-                            }
-                        }
+                        navHostController.popBackStack()
                     },
             )
             SearchTextField(

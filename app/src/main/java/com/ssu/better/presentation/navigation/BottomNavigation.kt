@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +37,14 @@ fun BetterBottomBar(
 
     val navItems = listOf(Screen.Home, Screen.Search.Main, Screen.MyPage)
     var selectedScreen by remember { mutableStateOf(navItems.first()) }
+    val context = LocalContext.current
+
+    LaunchedEffect(navHostController.currentDestination?.route) {
+        val route = navHostController.currentDestination?.route
+        navItems.forEach {
+            if (it.route == route) selectedScreen = it
+        }
+    }
 
     Box(
         modifier = modifier.fillMaxWidth(),
