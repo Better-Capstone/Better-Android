@@ -28,6 +28,7 @@ import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
+import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
@@ -38,6 +39,7 @@ import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRankHistory
+import com.ssu.better.presentation.component.StudyCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
@@ -72,13 +74,12 @@ fun MyPage(
             ) {
                 items(studyList.size) { index ->
                     val item = studyList[index]
-                    Card(
+                    StudyCard(
                         modifier = Modifier
                             .width(141.dp)
-                            .height(155.dp)
-                            .padding(top = 5.dp, bottom = 5.dp),
-                    ) {
-                    }
+                            .height(165.dp),
+                        study = item,
+                    )
                 }
             }
 
@@ -139,7 +140,7 @@ fun PreviewMyPage() {
     val testMember = Member(1, 1, MemberType.MEMBER, "")
     val testTask = Task(1, 1, "", 1, 1, "", "", "제목")
     val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
-    val testCategory = StudyCategory(1, "개발")
+    val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
     val testStudy = Study(
         1,
