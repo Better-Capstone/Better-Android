@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -80,8 +81,14 @@ fun BetterCalendar(
         if (selectedDate != null) dateState = selectedDate
     }
 
+    val calendarModifier = if (isDialogType) {
+        Modifier.height(385.dp).clip(shape = RoundedCornerShape(10.dp)).background(BetterColors.White)
+    } else {
+        modifier
+    }
+
     Column(
-        modifier = modifier,
+        modifier = calendarModifier,
     ) {
         val headerText = currentDate.dateFormat("yyyy년 M월")
         val pageCount = (config.yearRange.last - config.yearRange.first) * 12
@@ -94,7 +101,7 @@ fun BetterCalendar(
         )
 
         HorizontalPager(
-            modifier = modifier.fillMaxHeight().padding(bottom = 10.dp),
+            modifier = calendarModifier.fillMaxHeight().padding(bottom = 10.dp),
             verticalAlignment = Alignment.Top,
             state = pagerState,
             pageSpacing = 0.dp,
