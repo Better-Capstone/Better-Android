@@ -44,7 +44,7 @@ import com.ssu.better.entity.user.UserRankName
 import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
 import com.ssu.better.presentation.component.BetterTextField
-import com.ssu.better.presentation.ui.study_join.StudyCheckDayCard
+import com.ssu.better.presentation.ui.study.join.StudyCheckDayCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 

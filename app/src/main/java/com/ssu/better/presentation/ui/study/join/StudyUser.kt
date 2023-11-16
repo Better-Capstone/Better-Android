@@ -1,4 +1,4 @@
-package com.ssu.better.presentation.ui.study_join
+package com.ssu.better.presentation.ui.study.join
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
