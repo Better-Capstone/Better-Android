@@ -39,7 +39,6 @@ fun SampleScreen(navHostController: NavHostController) {
 
     val checkDays = listOf(CheckDay.SAT, CheckDay.MON, CheckDay.SUN).map { it.convertToDayOfWeek() }
 
-
     Scaffold() {
         if (isDialogOpen) {
             AnimatedTransitionDialog(
@@ -68,12 +67,12 @@ fun SampleScreen(navHostController: NavHostController) {
                             checkDays.contains(it.dayOfWeek)
                         },
                         // activateDayList.size >0 일시, 선택 가능 날찌 지정하는 것으로 간주하여 이외의 날짜 클릭 disable됨
-                        //LocalDate 형식으로 전달하기 때문에 위와 같은 형식으로 사용하면 해당요일의 체크데이만 가져올 수 있음
+                        // LocalDate 형식으로 전달하기 때문에 위와 같은 형식으로 사용하면 해당요일의 체크데이만 가져올 수 있음
                     )
                 },
             )
         }
-        
+
         // 전체화면 사용 시
         BetterCalendar(
             modifier = Modifier.fillMaxSize(),

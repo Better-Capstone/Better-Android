@@ -55,7 +55,6 @@ fun convertToDateViaInstant(dateToConvert: LocalDate): Date? {
     )
 }
 
-
 @SuppressLint("SimpleDateFormat")
 fun String.toCalendar(): Calendar? {
     val simpleDateFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
