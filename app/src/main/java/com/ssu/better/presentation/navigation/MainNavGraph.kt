@@ -13,6 +13,7 @@ import com.ssu.better.presentation.ui.main.home.SampleScreen
 import com.ssu.better.presentation.ui.main.mypage.MyPageScreen
 import com.ssu.better.presentation.ui.main.search.SearchDetailScreen
 import com.ssu.better.presentation.ui.main.search.SearchScreen
+import com.ssu.better.presentation.ui.study.create.CreateStudyScreen
 
 @Composable
 fun MainNavGraph(navController: NavHostController) {
@@ -54,8 +55,13 @@ fun MainNavGraph(navController: NavHostController) {
         composable(route = Screen.MyPage.route) {
             MyPageScreen(navController)
         }
+
         composable(route = Screen.Sample.route) {
             SampleScreen(navController)
+        }
+
+        composable(route = Screen.CreateStudy.route) {
+            CreateStudyScreen(navController)
         }
     }
 }

@@ -25,8 +25,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +52,29 @@ import com.ssu.better.ui.theme.BetterColors
 
 @Composable
 fun CreateStudyScreen(navHostController: NavHostController) {
+    var kickCondition by remember { mutableStateOf("0") }
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var checkDay by remember { mutableStateOf(StudyCheckDay.MON) }
+    var period by remember { mutableStateOf(StudyPeriod.EVERYDAY) }
+    var minRank by remember { mutableStateOf(UserRankName.CANDLE) }
+
+    CreateStudy(
+        onClickFinish = { },
+        title = title,
+        onTitleChanged = { value -> title = value },
+        description = description,
+        onDescriptionChanged = { value -> description = value },
+        period = period,
+        onClickPeriod = { period = it },
+        checkDay = checkDay,
+        onCheckDayChanged = { checkDay = it },
+        minRank = minRank,
+        onMinRankChanged = { minRank = it },
+        kickCondition = kickCondition,
+        onKickConditionChanged = { value -> kickCondition },
+        onClickComplete = { },
+    )
 }
 
 @SuppressLint("UnrememberedMutableState")
@@ -98,7 +123,7 @@ fun CreateStudy(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                modifier = Modifier.shadow(elevation = 3.dp),
+                modifier = Modifier.background(color = BetterColors.Bg).shadow(elevation = 3.dp),
                 title = {
                     Text(
                         text = "스터디 개설",
@@ -121,17 +146,20 @@ fun CreateStudy(
         Column(
             modifier = Modifier
                 .padding(paddingValues = paddingValues)
+                .background(color = BetterColors.Bg)
                 .verticalScroll(scrollState),
         ) {
             BetterTextField(
                 modifier = Modifier.padding(top = 30.dp, start = 20.dp, end = 20.dp),
                 value = title,
+                hint = "스터디 명",
                 onValueChange = onTitleChanged,
             )
 
             BetterTextField(
                 modifier = Modifier.padding(top = 30.dp, start = 20.dp, end = 20.dp),
                 value = description,
+                hint = "설명",
                 onValueChange = onDescriptionChanged,
             )
 
@@ -322,7 +350,8 @@ fun CreateStudy(
             Spacer(modifier = Modifier.height(50.dp))
 
             BetterButton(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp),
                 text = "완료",
                 type = BetterButtonType.DEFAULT,

@@ -37,6 +37,7 @@ private val TextFieldRound = 10.dp
 @Composable
 fun BetterTextField(
     value: String,
+    hint: String = "",
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = BetterAndroidTheme.typography.body,
@@ -52,7 +53,10 @@ fun BetterTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
-    val baseModifier = Modifier.fillMaxWidth().heightIn(min = minHeight, max = maxHeight).fillMaxWidth()
+    val baseModifier = Modifier
+        .fillMaxWidth()
+        .heightIn(min = minHeight, max = maxHeight)
+        .fillMaxWidth()
     val borderModifier = baseModifier.border(1.dp, color = BetterColors.Primary50, shape = RoundedCornerShape(TextFieldRound))
 
     val customTextSelectionColors = TextSelectionColors(
@@ -93,7 +97,13 @@ fun BetterTextField(
                                 .padding(vertical = 14.dp, horizontal = 10.dp),
                             contentAlignment = Alignment.CenterStart,
                         ) {
-//
+                            if (value.isEmpty()) {
+                                Text(
+                                    text = hint,
+                                    color = BetterColors.Gray30,
+                                    style = BetterAndroidTheme.typography.body,
+                                )
+                            }
                             innerTextField()
                         }
                     }
@@ -102,7 +112,9 @@ fun BetterTextField(
 
             if (helperTextEnabled) {
                 Text(
-                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
                     text = helperText,
                     style = BetterAndroidTheme.typography.body,
                     color = if (isError) BetterColors.Primary50 else BetterColors.Gray70,
