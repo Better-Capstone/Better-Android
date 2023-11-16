@@ -1,4 +1,4 @@
-package com.ssu.better.presentation.utils
+package com.ssu.better.util
 
 import com.ssu.better.R
 import com.ssu.better.entity.study.Category
