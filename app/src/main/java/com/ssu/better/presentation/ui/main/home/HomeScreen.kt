@@ -1,22 +1,16 @@
 package com.ssu.better.presentation.ui.main.home
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import android.annotation.SuppressLint
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import com.ssu.better.presentation.navigation.Screen
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(navHostController: NavHostController) {
-    Column {
-        Text(text = "home")
-        Button(
-            onClick = {
-                navHostController.navigate(Screen.Sample.route)
-            },
-        ) {
-            Text(text = "navigate to bottom invisible screen")
-        }
+    Scaffold() {
+        SampleScreen(navHostController = navHostController)
     }
 }
