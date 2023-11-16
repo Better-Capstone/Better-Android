@@ -35,8 +35,8 @@ enum class CheckDay(val checkDay: String) {
             return this.checkDay.uppercase(Locale.getDefault())
         }
 
-        fun CheckDay.convertToDayOfWeek(): DayOfWeek?{
-            if(this == CheckDay.EVERYDAY) return null
+        fun CheckDay.convertToDayOfWeek(): DayOfWeek? {
+            if (this == EVERYDAY) return null
             return DayOfWeek.valueOf(this.getUpperName())
         }
     }

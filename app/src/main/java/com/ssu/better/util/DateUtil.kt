@@ -19,10 +19,8 @@ fun LocalDate.dateFormat(pattern: String, locale: Locale = Locale.KOREA): String
 fun LocalTime.timeFormat(pattern: String, locale: Locale = Locale.KOREA): String =
     format(DateTimeFormatter.ofPattern(pattern, locale))
 
-fun getDaysOfWeek(localDate: LocalDate, pattern: String): ArrayList<LocalDate> {
-    val df = DateTimeFormatter.ofPattern("yyyy.MM.dd", Locale.KOREA)
-
-    val list = arrayListOf<LocalDate>()
+fun getDaysOfWeek(localDate: LocalDate): ArrayList<LocalDate> {
+    val days = arrayListOf<LocalDate>()
     try {
         val systemTimeZone = ZoneId.systemDefault()
         val zonedDateTime = localDate.atStartOfDay(systemTimeZone)
@@ -34,11 +32,11 @@ fun getDaysOfWeek(localDate: LocalDate, pattern: String): ArrayList<LocalDate> {
         for (i in 1..7) {
             cal.set(Calendar.DAY_OF_WEEK, i)
             val day = convertToLocalDateViaInstant(cal.time)
-            if (day != null)list.add(day)
+            if (day != null) days.add(day)
         }
     } catch (e: ParseException) {
     }
-    return list
+    return days
 }
 
 fun convertToLocalDateViaInstant(dateToConvert: Date): LocalDate? {

@@ -53,7 +53,7 @@ private val DAY_SIZE = 35.dp
 @Composable
 fun BetterCalendar(
     modifier: Modifier = Modifier,
-    config: HorizontalCalendarConfig = HorizontalCalendarConfig(),
+    config: BetterCalendarConfig = BetterCalendarConfig(),
     selectedDate: LocalDate? = null,
     onClickDate: (LocalDate) -> Unit,
     activateDayList: List<LocalDate> = emptyList(),
@@ -271,7 +271,7 @@ fun DayOfWeekLabel(
     }
 }
 
-data class HorizontalCalendarConfig(
+data class BetterCalendarConfig(
     val yearRange: IntRange = IntRange(1990, 2100),
     val locale: Locale = Locale.KOREAN,
 )
