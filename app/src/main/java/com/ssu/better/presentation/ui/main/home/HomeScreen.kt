@@ -13,7 +13,7 @@ fun HomeScreen(navHostController: NavHostController) {
         Text(text = "home")
         Button(
             onClick = {
-                navHostController.navigate(Screen.CreateStudy.route)
+                navHostController.navigate(Screen.SelectCategory.route)
             },
         ) {
             Text(text = "스터디 추가")

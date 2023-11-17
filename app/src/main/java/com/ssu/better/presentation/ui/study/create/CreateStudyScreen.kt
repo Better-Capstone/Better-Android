@@ -26,10 +26,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,6 +54,7 @@ import com.ssu.better.ui.theme.BetterColors
 fun CreateStudyScreen(
     navHostController: NavHostController,
     viewModel: CreateStudyViewModel = hiltViewModel(),
+    categoryId: Int,
 ) {
     val kickCondition = viewModel.kickCondition.collectAsState()
     val title = viewModel.title.collectAsState()
@@ -88,7 +87,7 @@ fun CreateStudyScreen(
 @Preview
 @Composable
 fun PreviewCreateStudy() {
-    var kickCondition = remember { mutableStateOf("3") }
+    val kickCondition = remember { mutableStateOf("3") }
     val title = remember { mutableStateOf("제목") }
     val description = remember { mutableStateOf("설명") }
     CreateStudy(
