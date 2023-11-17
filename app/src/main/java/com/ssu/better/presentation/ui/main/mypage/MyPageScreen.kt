@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,7 +42,7 @@ import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRankHistory
-import com.ssu.better.presentation.component.LoadingAnimation
+import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.component.StudyCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
@@ -56,114 +55,119 @@ fun MyPageScreen(
     val isNotifyEnabled = viewModel.isNotifyEnabled.collectAsState()
     val uiState = viewModel.uiState.collectAsState()
 
-    MyPage(
-        isNotifyEnabled = isNotifyEnabled.value,
-        onClickNotifyEnabledChange = viewModel::changeNotify,
-        onClickLogout = {
-        },
-        onClickWithDraw = {
-        },
+    MyPageContent(
         uiState = uiState.value,
+        isNotifyEnabled = isNotifyEnabled.value,
+        onClickNotifyChange = viewModel::changeNotify,
     )
 }
 
 @Composable
+fun MyPageContent(
+    uiState: MyPageViewModel.UIState,
+    isNotifyEnabled: Boolean,
+    onClickNotifyChange: (Boolean) -> Unit,
+) {
+    when (uiState) {
+        is MyPageViewModel.UIState.Success -> {
+            MyPage(
+                userRank = uiState.userRank,
+                studyList = uiState.studyList,
+                isNotifyEnabled = isNotifyEnabled,
+                onClickNotifyEnabledChange = onClickNotifyChange,
+                onClickLogout = {},
+                onClickWithDraw = {},
+            )
+        }
+
+        else -> {
+            ShowLoadingAnimation()
+        }
+    }
+}
+
+@Composable
 fun MyPage(
+    userRank: UserRank,
+    studyList: List<Study>,
     isNotifyEnabled: Boolean,
     onClickNotifyEnabledChange: (Boolean) -> Unit,
     onClickLogout: () -> Unit,
     onClickWithDraw: () -> Unit,
-    uiState: MyPageViewModel.UIState,
 ) {
-    when (uiState) {
-        is MyPageViewModel.UIState.Success -> {
-            Surface(color = BetterColors.Gray00) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                ) {
-                    UserRankCard(userName = "배현빈", userRank = uiState.userRank)
+    Surface(color = BetterColors.Gray00) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+        ) {
+            UserRankCard(userName = "배현빈", userRank = userRank)
 
-                    Text(
-                        modifier = Modifier.padding(top = 23.dp, start = 20.dp, bottom = 10.dp),
-                        text = "진행중인 스터디",
-                        style = BetterAndroidTheme.typography.headline3,
-                        color = BetterColors.Black,
-                    )
+            Text(
+                modifier = Modifier.padding(top = 23.dp, start = 20.dp, bottom = 10.dp),
+                text = "진행중인 스터디",
+                style = BetterAndroidTheme.typography.headline3,
+                color = BetterColors.Black,
+            )
 
-                    LazyRow(
-                        modifier = Modifier.padding(10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        items(uiState.studyList.size) { index ->
-                            val item = uiState.studyList[index]
-                            StudyCard(
-                                modifier = Modifier
-                                    .width(141.dp)
-                                    .height(165.dp),
-                                study = item,
-                            )
-                        }
-                    }
-
-                    Row(
+            LazyRow(
+                modifier = Modifier.padding(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                items(studyList.size) { index ->
+                    val item = studyList[index]
+                    StudyCard(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
-                    ) {
-                        Text(
-                            text = "알림 설정",
-                            style = BetterAndroidTheme.typography.headline3,
-                            color = BetterColors.Black,
-                        )
-
-                        Spacer(Modifier.weight(1f))
-
-                        Text(
-                            modifier = Modifier
-                                .clickable { onClickNotifyEnabledChange(true) },
-                            text = "ON",
-                            color = if (isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
-                        )
-                        Text(
-                            modifier = Modifier
-                                .padding(start = 10.dp)
-                                .clickable { onClickNotifyEnabledChange(false) },
-                            text = "OFF",
-                            color = if (!isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
-                        )
-                    }
-
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
-                            .clickable { onClickLogout() },
-                        text = "로그아웃",
-                        style = BetterAndroidTheme.typography.headline3,
-                        color = BetterColors.Black,
-                    )
-
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
-                            .clickable { onClickWithDraw() },
-                        text = "회원탈퇴",
-                        style = BetterAndroidTheme.typography.headline3,
-                        color = BetterColors.Primary50,
+                            .width(141.dp)
+                            .height(165.dp),
+                        study = item,
                     )
                 }
             }
-        }
 
-        else -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
             ) {
-                LoadingAnimation()
+                Text(
+                    text = "알림 설정",
+                    style = BetterAndroidTheme.typography.headline3,
+                    color = BetterColors.Black,
+                )
+
+                Spacer(Modifier.weight(1f))
+
+                Text(
+                    modifier = Modifier.clickable { onClickNotifyEnabledChange(true) },
+                    text = "ON",
+                    color = if (isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
+                )
+                Text(
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .clickable { onClickNotifyEnabledChange(false) },
+                    text = "OFF",
+                    color = if (!isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
+                )
             }
+
+            Text(
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
+                    .clickable { onClickLogout() },
+                text = "로그아웃",
+                style = BetterAndroidTheme.typography.headline3,
+                color = BetterColors.Black,
+            )
+
+            Text(
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
+                    .clickable { onClickWithDraw() },
+                text = "회원탈퇴",
+                style = BetterAndroidTheme.typography.headline3,
+                color = BetterColors.Primary50,
+            )
         }
     }
 }
@@ -198,12 +202,14 @@ fun PreviewMyPage() {
     )
 
     val testStudyList = arrayListOf(testStudy, testStudy, testStudy)
+
     MyPage(
+        userRank = testUserRank,
+        studyList = testStudyList,
         isNotifyEnabled = true,
         onClickNotifyEnabledChange = { },
         onClickLogout = { },
         onClickWithDraw = { },
-        MyPageViewModel.UIState.Success(testUserRank, testStudyList),
     )
 }
 
