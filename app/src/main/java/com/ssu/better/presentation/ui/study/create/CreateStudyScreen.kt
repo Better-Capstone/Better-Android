@@ -25,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.study.StudyCheckDay
@@ -51,28 +53,33 @@ import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
 @Composable
-fun CreateStudyScreen(navHostController: NavHostController) {
-    var kickCondition by remember { mutableStateOf("0") }
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var checkDay by remember { mutableStateOf(StudyCheckDay.MON) }
-    var period by remember { mutableStateOf(StudyPeriod.EVERYDAY) }
-    var minRank by remember { mutableStateOf(UserRankName.CANDLE) }
+fun CreateStudyScreen(
+    navHostController: NavHostController,
+    viewModel: CreateStudyViewModel = hiltViewModel(),
+) {
+    val kickCondition = viewModel.kickCondition.collectAsState()
+    val title = viewModel.title.collectAsState()
+    val description = viewModel.description.collectAsState()
+    val checkDay = viewModel.checkDay.collectAsState()
+    val period = viewModel.period.collectAsState()
+    val minRank = viewModel.minRank.collectAsState()
 
     CreateStudy(
-        onClickFinish = { },
-        title = title,
-        onTitleChanged = { value -> title = value },
-        description = description,
-        onDescriptionChanged = { value -> description = value },
-        period = period,
-        onClickPeriod = { period = it },
-        checkDay = checkDay,
-        onCheckDayChanged = { checkDay = it },
-        minRank = minRank,
-        onMinRankChanged = { minRank = it },
-        kickCondition = kickCondition,
-        onKickConditionChanged = { value -> kickCondition },
+        onClickFinish = {
+            navHostController.popBackStack()
+        },
+        title = title.value,
+        onTitleChanged = viewModel::updateTitle,
+        description = description.value,
+        onDescriptionChanged = viewModel::updateDescription,
+        period = period.value,
+        onClickPeriod = viewModel::updatePeriod,
+        checkDay = checkDay.value,
+        onCheckDayChanged = viewModel::updateCheckDay,
+        minRank = minRank.value,
+        onMinRankChanged = viewModel::updateMinRank,
+        kickCondition = kickCondition.value,
+        onKickConditionChanged = viewModel::updateKickCondition,
         onClickComplete = { },
     )
 }
@@ -123,7 +130,9 @@ fun CreateStudy(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                modifier = Modifier.background(color = BetterColors.Bg).shadow(elevation = 3.dp),
+                modifier = Modifier
+                    .background(color = BetterColors.Bg)
+                    .shadow(elevation = 3.dp),
                 title = {
                     Text(
                         text = "스터디 개설",
