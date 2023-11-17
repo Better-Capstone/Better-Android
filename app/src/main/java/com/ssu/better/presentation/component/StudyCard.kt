@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.ssu.better.R
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.Study
-import com.ssu.better.presentation.utils.getCategoryIcon
+import com.ssu.better.util.getCategoryIcon
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 

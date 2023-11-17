@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ssu.better.entity.study.Category
-import com.ssu.better.presentation.utils.getCategoryIcon
+import com.ssu.better.util.getCategoryIcon
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
