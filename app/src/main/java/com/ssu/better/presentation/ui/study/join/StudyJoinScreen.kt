@@ -1,4 +1,4 @@
-package com.ssu.better.presentation.ui.study_join
+package com.ssu.better.presentation.ui.study.join
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ssu.better.R
 import com.ssu.better.entity.member.Member
@@ -42,11 +44,32 @@ import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
 import com.ssu.better.presentation.component.BetterTextField
+import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
 @Composable
-fun StudyJoinScreen(navController: NavController) {
+fun StudyJoinScreen(
+    navController: NavController,
+    viewModel: StudyJoinViewModel = hiltViewModel(),
+) {
+    val uiState = viewModel.uiState.collectAsState()
+    val hour = viewModel.hour.collectAsState()
+    val minute = viewModel.minute.collectAsState()
+    val isAm = viewModel.isAm.collectAsState()
+    StudyJoinContent(
+        uiState = uiState.value,
+        hour = hour.value,
+        minute = minute.value,
+        isAm = isAm.value,
+        onHourChanged = viewModel::updateHour,
+        onMinuteChanged = viewModel::updateMinute,
+        onClickTime = viewModel::updateIsAm,
+        onClickJoinButton = viewModel::join,
+        onClickFinish = {
+            navController.popBackStack()
+        },
+    )
 }
 
 @Preview(showSystemUi = true)
@@ -77,6 +100,39 @@ fun PreviewStudyJoin() {
         testGroupRank,
     )
     StudyJoin(study = testStudy, onClickFinish = {}, "12", "30", { }, { }, { }, { }, true)
+}
+
+@Composable
+fun StudyJoinContent(
+    uiState: StudyJoinViewModel.UIState,
+    hour: String,
+    minute: String,
+    isAm: Boolean,
+    onHourChanged: (String) -> Unit,
+    onMinuteChanged: (String) -> Unit,
+    onClickTime: (Boolean) -> Unit,
+    onClickJoinButton: () -> Unit,
+    onClickFinish: () -> Unit,
+) {
+    when (uiState) {
+        is StudyJoinViewModel.UIState.Success -> {
+            StudyJoin(
+                study = uiState.study,
+                onClickFinish = onClickFinish,
+                hour = hour,
+                minute = minute,
+                onHourChanged = onHourChanged,
+                onMinuteChanged = onMinuteChanged,
+                onClickTime = onClickTime,
+                onClickJoinButton = onClickJoinButton,
+                isAm = isAm,
+            )
+        }
+
+        else -> {
+            ShowLoadingAnimation()
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

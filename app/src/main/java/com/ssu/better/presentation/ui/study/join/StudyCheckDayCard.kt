@@ -1,4 +1,4 @@
-package com.ssu.better.presentation.ui.study_join
+package com.ssu.better.presentation.ui.study.join
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

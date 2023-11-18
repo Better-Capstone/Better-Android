@@ -25,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.study.StudyCheckDay
@@ -44,19 +46,48 @@ import com.ssu.better.entity.user.UserRankName
 import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
 import com.ssu.better.presentation.component.BetterTextField
-import com.ssu.better.presentation.ui.study_join.StudyCheckDayCard
+import com.ssu.better.presentation.ui.study.join.StudyCheckDayCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
 @Composable
-fun CreateStudyScreen(navHostController: NavHostController) {
+fun CreateStudyScreen(
+    navHostController: NavHostController,
+    viewModel: CreateStudyViewModel = hiltViewModel(),
+    categoryId: Int,
+) {
+    val kickCondition = viewModel.kickCondition.collectAsState()
+    val title = viewModel.title.collectAsState()
+    val description = viewModel.description.collectAsState()
+    val checkDay = viewModel.checkDay.collectAsState()
+    val period = viewModel.period.collectAsState()
+    val minRank = viewModel.minRank.collectAsState()
+
+    CreateStudy(
+        onClickFinish = {
+            navHostController.popBackStack()
+        },
+        title = title.value,
+        onTitleChanged = viewModel::updateTitle,
+        description = description.value,
+        onDescriptionChanged = viewModel::updateDescription,
+        period = period.value,
+        onClickPeriod = viewModel::updatePeriod,
+        checkDay = checkDay.value,
+        onCheckDayChanged = viewModel::updateCheckDay,
+        minRank = minRank.value,
+        onMinRankChanged = viewModel::updateMinRank,
+        kickCondition = kickCondition.value,
+        onKickConditionChanged = viewModel::updateKickCondition,
+        onClickComplete = { },
+    )
 }
 
 @SuppressLint("UnrememberedMutableState")
 @Preview
 @Composable
 fun PreviewCreateStudy() {
-    var kickCondition = remember { mutableStateOf("3") }
+    val kickCondition = remember { mutableStateOf("3") }
     val title = remember { mutableStateOf("제목") }
     val description = remember { mutableStateOf("설명") }
     CreateStudy(
@@ -98,7 +129,9 @@ fun CreateStudy(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                modifier = Modifier.shadow(elevation = 3.dp),
+                modifier = Modifier
+                    .background(color = BetterColors.Bg)
+                    .shadow(elevation = 3.dp),
                 title = {
                     Text(
                         text = "스터디 개설",
@@ -121,17 +154,20 @@ fun CreateStudy(
         Column(
             modifier = Modifier
                 .padding(paddingValues = paddingValues)
+                .background(color = BetterColors.Bg)
                 .verticalScroll(scrollState),
         ) {
             BetterTextField(
                 modifier = Modifier.padding(top = 30.dp, start = 20.dp, end = 20.dp),
                 value = title,
+                hint = "스터디 명",
                 onValueChange = onTitleChanged,
             )
 
             BetterTextField(
                 modifier = Modifier.padding(top = 30.dp, start = 20.dp, end = 20.dp),
                 value = description,
+                hint = "설명",
                 onValueChange = onDescriptionChanged,
             )
 
@@ -322,7 +358,8 @@ fun CreateStudy(
             Spacer(modifier = Modifier.height(50.dp))
 
             BetterButton(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp),
                 text = "완료",
                 type = BetterButtonType.DEFAULT,

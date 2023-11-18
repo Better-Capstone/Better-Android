@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +26,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.member.Member
@@ -39,26 +42,64 @@ import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRankHistory
+import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.component.StudyCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
 @Composable
-fun MyPageScreen(navHostController: NavHostController) {
-    PreviewMyPage()
+fun MyPageScreen(
+    navHostController: NavHostController,
+    viewModel: MyPageViewModel = hiltViewModel(),
+) {
+    val isNotifyEnabled = viewModel.isNotifyEnabled.collectAsState()
+    val uiState = viewModel.uiState.collectAsState()
+
+    MyPageContent(
+        uiState = uiState.value,
+        isNotifyEnabled = isNotifyEnabled.value,
+        onClickNotifyChange = viewModel::changeNotify,
+    )
+}
+
+@Composable
+fun MyPageContent(
+    uiState: MyPageViewModel.UIState,
+    isNotifyEnabled: Boolean,
+    onClickNotifyChange: (Boolean) -> Unit,
+) {
+    when (uiState) {
+        is MyPageViewModel.UIState.Success -> {
+            MyPage(
+                userRank = uiState.userRank,
+                studyList = uiState.studyList,
+                isNotifyEnabled = isNotifyEnabled,
+                onClickNotifyEnabledChange = onClickNotifyChange,
+                onClickLogout = {},
+                onClickWithDraw = {},
+            )
+        }
+
+        else -> {
+            ShowLoadingAnimation()
+        }
+    }
 }
 
 @Composable
 fun MyPage(
     userRank: UserRank,
+    studyList: List<Study>,
     isNotifyEnabled: Boolean,
-    studyList: ArrayList<Study>,
     onClickNotifyEnabledChange: (Boolean) -> Unit,
     onClickLogout: () -> Unit,
     onClickWithDraw: () -> Unit,
 ) {
     Surface(color = BetterColors.Gray00) {
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+        ) {
             UserRankCard(userName = "배현빈", userRank = userRank)
 
             Text(
@@ -97,8 +138,7 @@ fun MyPage(
                 Spacer(Modifier.weight(1f))
 
                 Text(
-                    modifier = Modifier
-                        .clickable { onClickNotifyEnabledChange(true) },
+                    modifier = Modifier.clickable { onClickNotifyEnabledChange(true) },
                     text = "ON",
                     color = if (isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
                 )
@@ -162,10 +202,11 @@ fun PreviewMyPage() {
     )
 
     val testStudyList = arrayListOf(testStudy, testStudy, testStudy)
+
     MyPage(
         userRank = testUserRank,
-        isNotifyEnabled = true,
         studyList = testStudyList,
+        isNotifyEnabled = true,
         onClickNotifyEnabledChange = { },
         onClickLogout = { },
         onClickWithDraw = { },

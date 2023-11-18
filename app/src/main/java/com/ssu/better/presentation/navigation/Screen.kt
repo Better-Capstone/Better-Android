@@ -12,4 +12,8 @@ sealed class Screen(val route: String) {
     object MyPage : Screen("mypage")
 
     object Sample : Screen("sample")
+
+    object CreateStudy : Screen("create-study")
+
+    object SelectCategory : Screen("select-category")
 }

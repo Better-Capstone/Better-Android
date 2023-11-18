@@ -13,6 +13,8 @@ import com.ssu.better.presentation.ui.main.home.SampleScreen
 import com.ssu.better.presentation.ui.main.mypage.MyPageScreen
 import com.ssu.better.presentation.ui.main.search.SearchDetailScreen
 import com.ssu.better.presentation.ui.main.search.SearchScreen
+import com.ssu.better.presentation.ui.study.create.CreateStudyScreen
+import com.ssu.better.presentation.ui.study.select_category.SelectCategoryScreen
 
 @Composable
 fun MainNavGraph(navController: NavHostController) {
@@ -41,8 +43,7 @@ fun MainNavGraph(navController: NavHostController) {
                         defaultValue = Category.ALL.name
                     },
                 ),
-            ) {
-                    navBackStackEntry ->
+            ) { navBackStackEntry ->
                 SearchDetailScreen(
                     navHostController = navController,
                     query = navBackStackEntry.arguments?.getString("query"),
@@ -54,8 +55,28 @@ fun MainNavGraph(navController: NavHostController) {
         composable(route = Screen.MyPage.route) {
             MyPageScreen(navController)
         }
+
         composable(route = Screen.Sample.route) {
             SampleScreen(navController)
+        }
+
+        composable(
+            route = Screen.CreateStudy.route + "?categoryId={categoryId}",
+            arguments = listOf(
+                navArgument("categoryId") {
+                    type = NavType.IntType
+                    defaultValue = 0
+                },
+            ),
+        ) { navBackStackEntry ->
+            CreateStudyScreen(
+                navHostController = navController,
+                categoryId = navBackStackEntry.arguments?.getInt("categoryId") ?: 0,
+            )
+        }
+
+        composable(route = Screen.SelectCategory.route) {
+            SelectCategoryScreen(navController = navController)
         }
     }
 }
