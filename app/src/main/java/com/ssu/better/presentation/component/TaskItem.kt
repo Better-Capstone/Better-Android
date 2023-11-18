@@ -23,12 +23,13 @@ fun TaskItem(
     modifier: Modifier = Modifier,
     baseDate: LocalDate = LocalDate.now(),
     task: Task,
+    onClick: () -> Unit,
 
-    ) {
+) {
     val taskEnabled = Period.between(task.deadline.toLocalDate(), baseDate).isNegative
 
     Row(
-        modifier = modifier.padding(vertical = 10.dp, horizontal = 8.dp),
+        modifier = modifier.padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -44,7 +45,7 @@ fun TaskItem(
             style = BetterAndroidTheme.typography.headline3,
         )
 
-        BetterRoundChip(enabled = taskEnabled, text = "인증하기", {})
+        BetterRoundChip(enabled = taskEnabled, text = "인증하기", onClick = onClick)
     }
 }
 
@@ -68,5 +69,6 @@ fun PreviewTask() {
             createdAt = time,
             updatedAt = time,
         ),
+        onClick = {},
     )
 }
