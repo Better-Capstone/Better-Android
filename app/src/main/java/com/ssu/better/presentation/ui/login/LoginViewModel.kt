@@ -9,7 +9,6 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.ssu.better.data.util.TokenManager
 import com.ssu.better.domain.usecase.user.PostUserLoginRequestUseCase
-import com.ssu.better.domain.usecase.user.PostUserRegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,7 +22,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val registerUseCase: PostUserRegisterUseCase,
     private val loginRequestUseCase: PostUserLoginRequestUseCase,
     private val tokenManager: TokenManager,
 

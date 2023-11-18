@@ -56,6 +56,7 @@ fun OnBoardScreen(
     LaunchedEffect(Unit) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.inputNickname(nickname)
+            viewModel.token = token
 
             viewModel.events.collectLatest {
                 delay(1000)
