@@ -23,9 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssu.better.entity.study.Category
 import com.ssu.better.presentation.component.GradientIcon
-import com.ssu.better.presentation.utils.getCategoryIcon
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
+import com.ssu.better.util.getCategoryIcon
 
 @Composable
 fun CategoryItem(
