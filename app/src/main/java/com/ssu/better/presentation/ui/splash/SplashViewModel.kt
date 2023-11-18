@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +27,7 @@ class SplashViewModel @Inject constructor(
             run {
                 tokenManager.getAccessToken().collect { token ->
                     _authToken.update { token }
+                    Timber.d("token : $token")
                 }
             }
         }
