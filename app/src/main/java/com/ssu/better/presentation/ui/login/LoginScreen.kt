@@ -1,5 +1,6 @@
 package com.ssu.better.presentation.ui.login
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 
 import androidx.compose.animation.AnimatedVisibility
@@ -53,14 +54,19 @@ fun LoginScreen(
                 when (it) {
                     is LoginViewModel.LoginEvent.NavToOnBoard -> {
                         delay(500)
-                        navController.navigate(Screen.OnBoard.route)
+                        navController.navigate(
+                            Screen.OnBoard.route + "?token=${it.token}&nickname=${it.nickname}",
+                        )
                     }
-                    else -> {
+                    is LoginViewModel.LoginEvent.NavToMain -> {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Login.route) {
                                 inclusive = true
                             }
                         }
+                    }
+                    else -> {
+                        Toast.makeText(context, "로그인에 실패하였습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

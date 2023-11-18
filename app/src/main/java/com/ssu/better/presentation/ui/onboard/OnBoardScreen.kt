@@ -42,6 +42,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun OnBoardScreen(
     navController: NavHostController,
+    nickname: String,
+    token: String,
     viewModel: OnBoardViewModel = hiltViewModel(),
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -53,7 +55,7 @@ fun OnBoardScreen(
 
     LaunchedEffect(Unit) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.inputNickname(loginViewModel.userInfo?.nickname ?: "")
+            viewModel.inputNickname(nickname)
 
             viewModel.events.collectLatest {
                 delay(1000)
