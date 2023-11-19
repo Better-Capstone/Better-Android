@@ -3,7 +3,7 @@ package com.ssu.better.di.modules
 import com.ssu.better.BuildConfig
 import com.ssu.better.di.qualifiers.ForAccessToken
 import com.ssu.better.di.qualifiers.ForLogging
-import com.ssu.better.data.util.TokenManager
+import com.ssu.better.data.datasources.TokenManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

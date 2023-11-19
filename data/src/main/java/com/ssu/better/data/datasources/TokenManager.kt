@@ -1,4 +1,4 @@
-package com.ssu.better.data.util
+package com.ssu.better.data.datasources
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
