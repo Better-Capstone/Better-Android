@@ -7,7 +7,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.ssu.better.entity.study.Category
 import com.ssu.better.presentation.ui.login.LoginScreen
 import com.ssu.better.presentation.ui.main.MainScreen
 import com.ssu.better.presentation.ui.onboard.OnBoardScreen
@@ -28,23 +27,22 @@ fun RootNavGraph(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.OnBoard.route + "?token={token}&nickname={nickname}",
+            route = Screen.OnBoard.route + OnBoardNavArgument.QUERY,
             arguments = listOf(
-                navArgument("token") {
+                navArgument(OnBoardNavArgument.TOKEN) {
                     type = NavType.StringType
                     defaultValue = ""
                 },
-                navArgument("nickname") {
+                navArgument(OnBoardNavArgument.NICKNAME) {
                     type = NavType.StringType
-                    defaultValue = Category.ALL.name
+                    defaultValue = ""
                 },
             ),
-        ) {
-                navBackStackEntry ->
+        ) { navBackStackEntry ->
             OnBoardScreen(
                 navController,
-                nickname = navBackStackEntry.arguments?.getString("nickname", "") ?: "",
-                token = navBackStackEntry.arguments?.getString("token", "") ?: "",
+                nickname = navBackStackEntry.arguments?.getString(OnBoardNavArgument.NICKNAME, "") ?: "",
+                token = navBackStackEntry.arguments?.getString(OnBoardNavArgument.TOKEN, "") ?: "",
             )
         }
         composable(route = Screen.Home.route) {
