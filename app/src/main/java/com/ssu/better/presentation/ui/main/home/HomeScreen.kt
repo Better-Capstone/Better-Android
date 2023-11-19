@@ -96,8 +96,7 @@ fun HomeScreen(
         testGroupRank,
     )
 
-    LaunchedEffect(uiState){
-
+    LaunchedEffect(uiState) {
     }
 
     Scaffold() {
