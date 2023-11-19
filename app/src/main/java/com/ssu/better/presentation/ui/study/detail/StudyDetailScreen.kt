@@ -43,6 +43,9 @@ import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
+import com.ssu.better.util.toLocalDate
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun StudyDetailScreen(
@@ -60,16 +63,19 @@ fun StudyDetailScreen(
 @Preview
 fun StudyDetailPreview() {
     val testUser = User(1, "배현빈", "개발하는 북극곰")
+    val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    val time = "2023-11-28T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
     val testMember = Member(1, 1, MemberType.MEMBER, "")
-    val testTask = Task(1, 1, "", 1, 1, "", "", "제목")
+    val testTask = Task(1, 1, time, 1, 1, time, time, "제목")
     val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
+    val tasks = ArrayList(List(2) { testTask }.toMutableList())
     val testStudy = Study(
         1,
         testUser,
         testCategory,
-        "제목",
+        "알고리즘 스터디",
         "설명",
         StudyStatus.INPROGRESS,
         StudyPeriod.EVERYDAY,
@@ -79,7 +85,7 @@ fun StudyDetailPreview() {
         10,
         1500,
         arrayListOf(testMember),
-        arrayListOf(testTask),
+        tasks,
         arrayListOf(testUserRankHistory),
         testGroupRank,
     )

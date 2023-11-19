@@ -44,6 +44,7 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun StudyTaskCard(
+    modifier: Modifier = Modifier,
     study: Study,
     baseDate: LocalDate,
     onClickMore: (Study) -> Unit,
@@ -52,7 +53,7 @@ fun StudyTaskCard(
     val taskMax = if (study.taskList.size > 5) 4 else study.taskList.size - 1
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(4.dp)
             .shadow(elevation = 4.dp, RoundedCornerShape(10.dp)),

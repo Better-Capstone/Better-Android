@@ -15,12 +15,13 @@ import com.ssu.better.util.noRippleClickable
 
 @Composable
 fun BetterRoundChip(
+    modifier: Modifier = Modifier,
     enabled: Boolean,
     text: String,
     onClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier.clip(RoundedCornerShape(20.dp)).noRippleClickable {
+        modifier = modifier.clip(RoundedCornerShape(20.dp)).noRippleClickable {
             if (enabled) onClick()
         }.background(if (enabled) BetterColors.Primary00 else BetterColors.Gray10),
     ) {

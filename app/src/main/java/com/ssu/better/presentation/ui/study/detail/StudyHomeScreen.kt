@@ -1,12 +1,20 @@
 package com.ssu.better.presentation.ui.study.detail
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -14,24 +22,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ssu.better.R
 import com.ssu.better.entity.study.Study
+import com.ssu.better.entity.task.Task
+import com.ssu.better.presentation.component.BetterRoundChip
 import com.ssu.better.presentation.component.GradientProgressIndicator
+import com.ssu.better.presentation.component.StudyTaskCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
+import java.time.LocalDate
+import java.time.ZoneOffset
 
 @Composable
-fun StudyHomeScreen(study: Study) {
+fun StudyHomeScreen(
+    study: Study,
+    onClickMember: () -> Unit = { },
+    onClickReport: () -> Unit = { },
+    onClickMyStudy: () -> Unit = { },
+    onClickMore: (Study) -> Unit = { },
+    onClickTask: (Task) -> Unit = { },
+) {
     Column {
         LazyColumn {
             item {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp)
-                        .height(307.78.dp),
+                        .padding(20.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.White,
                     ),
@@ -43,7 +65,7 @@ fun StudyHomeScreen(study: Study) {
                             modifier = Modifier.padding(start = 16.dp, top = 20.dp),
                         ) {
                             Text(
-                                text = "${study.title} 스터디",
+                                text = study.title,
                                 style = BetterAndroidTheme.typography.headline3,
                                 color = BetterColors.Primary50,
                             )
@@ -67,9 +89,145 @@ fun StudyHomeScreen(study: Study) {
                                 progress = 0.78f,
                                 strokeWidth = 16.dp,
                             )
+
+                            BetterRoundChip(
+                                modifier = Modifier.padding(top = 18.dp, bottom = 25.dp),
+                                enabled = true,
+                                text = "89회차",
+                                onClick = {},
+                            )
                         }
                     }
                 }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
+                        .height(122.dp)
+                        .background(
+                            brush = BetterColors.gradation,
+                            shape = RoundedCornerShape(10.dp),
+                        ),
+                ) {
+                    Column {
+                        Row(
+                            modifier = Modifier
+                                .padding(start = 30.dp, end = 30.dp)
+                                .fillMaxWidth()
+                                .fillMaxHeight(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .width(79.dp)
+                                    .height(100.dp)
+                                    .padding(top = 20.dp)
+                                    .clickable {
+                                        onClickMember()
+                                    },
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
+                                ) {
+                                    Text(
+                                        modifier = Modifier
+                                            .width(51.dp)
+                                            .height(46.dp),
+                                        text = "8",
+                                        textAlign = TextAlign.Center,
+                                        style = BetterAndroidTheme.typography.headline0,
+                                        color = BetterColors.White,
+                                    )
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(top = 10.dp)
+                                            .width(79.dp)
+                                            .height(24.dp),
+                                        text = "멤버",
+                                        color = BetterColors.White,
+                                        style = BetterAndroidTheme.typography.headline3,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .width(79.dp)
+                                    .height(100.dp)
+                                    .padding(top = 20.dp)
+                                    .clickable {
+                                        onClickReport()
+                                    },
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
+                                ) {
+                                    Image(
+                                        modifier = Modifier.size(48.dp),
+                                        painter = painterResource(id = R.drawable.ic_report),
+                                        contentDescription = null,
+                                        colorFilter = ColorFilter.tint(BetterColors.White),
+                                    )
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(top = 10.dp)
+                                            .width(79.dp)
+                                            .height(24.dp),
+                                        text = "회차 별 리포트",
+                                        color = BetterColors.White,
+                                        style = BetterAndroidTheme.typography.headline3,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .width(79.dp)
+                                    .height(100.dp)
+                                    .padding(top = 20.dp)
+                                    .clickable {
+                                        onClickMyStudy()
+                                    },
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
+                                ) {
+                                    Image(
+                                        modifier = Modifier.size(48.dp),
+                                        painter = painterResource(id = R.drawable.ic_person),
+                                        contentDescription = null,
+                                        colorFilter = ColorFilter.tint(BetterColors.White),
+                                    )
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(top = 10.dp)
+                                            .width(79.dp)
+                                            .height(24.dp),
+                                        text = "내 스터디",
+                                        color = BetterColors.White,
+                                        style = BetterAndroidTheme.typography.headline3,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                val testTime = LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate()
+                StudyTaskCard(
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 10.dp),
+                    study = study,
+                    baseDate = testTime,
+                    onClickMore = onClickMore,
+                    onClickTask = onClickTask,
+                )
             }
         }
     }
