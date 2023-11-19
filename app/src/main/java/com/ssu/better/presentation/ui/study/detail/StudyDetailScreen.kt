@@ -98,7 +98,6 @@ fun StudyDetailContent(
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("홈", "인증", "스터디")
 
-
     when (studyEvent) {
         is StudyDetailViewModel.StudyEvent.Load -> {
             ShowLoadingAnimation()
@@ -113,7 +112,7 @@ fun StudyDetailContent(
                             .shadow(elevation = 3.dp),
                         title = {
                             Text(
-                                text = "스터디 개설",
+                                text = studyEvent.study.title,
                                 style = BetterAndroidTheme.typography.subtitle,
                                 color = BetterColors.Black,
                             )
