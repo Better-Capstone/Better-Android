@@ -5,6 +5,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.Period
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -12,14 +13,11 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-fun YearMonth.dateFormat(pattern: String, locale: Locale = Locale.KOREA): String =
-    format(DateTimeFormatter.ofPattern(pattern, locale))
+fun YearMonth.dateFormat(pattern: String, locale: Locale = Locale.getDefault()): String = format(DateTimeFormatter.ofPattern(pattern, locale))
 
-fun LocalDate.dateFormat(pattern: String, locale: Locale = Locale.KOREA): String =
-    format(DateTimeFormatter.ofPattern(pattern, locale))
+fun LocalDate.dateFormat(pattern: String, locale: Locale = Locale.getDefault()): String = format(DateTimeFormatter.ofPattern(pattern, locale))
 
-fun LocalTime.timeFormat(pattern: String, locale: Locale = Locale.KOREA): String =
-    format(DateTimeFormatter.ofPattern(pattern, locale))
+fun LocalTime.timeFormat(pattern: String, locale: Locale = Locale.getDefault()): String = format(DateTimeFormatter.ofPattern(pattern, locale))
 
 fun getDaysOfWeek(localDate: LocalDate): ArrayList<LocalDate> {
     val days = arrayListOf<LocalDate>()
@@ -42,16 +40,12 @@ fun getDaysOfWeek(localDate: LocalDate): ArrayList<LocalDate> {
 }
 
 fun convertToLocalDateViaInstant(dateToConvert: Date): LocalDate? {
-    return dateToConvert.toInstant()
-        .atZone(ZoneId.systemDefault())
-        .toLocalDate()
+    return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
 }
 
 fun convertToDateViaInstant(dateToConvert: LocalDate): Date? {
     return Date.from(
-        dateToConvert.atStartOfDay()
-            .atZone(ZoneId.systemDefault())
-            .toInstant(),
+        dateToConvert.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant(),
     )
 }
 
@@ -66,5 +60,26 @@ fun String.toCalendar(): Calendar? {
     } catch (e: ParseException) {
         e.printStackTrace()
         null
+    }
+}
+
+fun String.toLocalDate(): LocalDate? {
+    val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    val dateFormat = DateTimeFormatter.ofPattern(pattern)
+    return try {
+        val localDate = LocalDate.parse(this, dateFormat)
+        localDate
+    } catch (e: ParseException) {
+        e.printStackTrace()
+        null
+    }
+}
+
+fun getDDay(now: LocalDate, target: LocalDate): String {
+    val period = Period.between(now, target)
+    return if (period.isNegative) {
+        "D${period.days}"
+    } else {
+        "D+${period.days}"
     }
 }
