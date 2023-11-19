@@ -34,6 +34,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
+import com.ssu.better.presentation.navigation.OnBoardNavArgument
 import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import kotlinx.coroutines.delay
@@ -54,7 +55,7 @@ fun LoginScreen(
                     is LoginViewModel.LoginEvent.NavToOnBoard -> {
                         delay(500)
                         navController.navigate(
-                            Screen.OnBoard.route + "?token=${it.token} &nickname=${it.nickname}",
+                            Screen.OnBoard.route + "?${OnBoardNavArgument.TOKEN}=${it.token} &${OnBoardNavArgument.NICKNAME}=${it.nickname}",
                         )
                     }
 

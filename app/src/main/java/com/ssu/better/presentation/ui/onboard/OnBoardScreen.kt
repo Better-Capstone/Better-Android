@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
+import com.ssu.better.R
 import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
 import com.ssu.better.presentation.component.BetterTextField
@@ -47,6 +49,8 @@ fun OnBoardScreen(
     viewModel: OnBoardViewModel = hiltViewModel(),
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
+
+    val context = LocalContext.current
 
     val uistate by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -87,7 +91,10 @@ fun OnBoardScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                "${loginViewModel.userInfo?.nickname}님, 환영합니다!",
+                String.format(
+                    context.getString(R.string.onboard_welcome),
+                    loginViewModel.userInfo?.nickname,
+                ),
                 style = BetterAndroidTheme.typography.title,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -95,7 +102,7 @@ fun OnBoardScreen(
             )
 
             Column(Modifier.fillMaxWidth()) {
-                Text("사용하실 닉네임을 설정해주세요", style = BetterAndroidTheme.typography.subtitle, color = BetterColors.Gray30)
+                Text(context.getString(R.string.onboard_guide), style = BetterAndroidTheme.typography.subtitle, color = BetterColors.Gray30)
                 Spacer(
                     modifier = Modifier
                         .height(14.dp)
@@ -111,7 +118,7 @@ fun OnBoardScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 BetterButton(
-                    text = "완료",
+                    text = context.getString(R.string.onboard_complete),
                     type = BetterButtonType.PRIMARY,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !loadingState && uistate.nickname.isNotEmpty(),
