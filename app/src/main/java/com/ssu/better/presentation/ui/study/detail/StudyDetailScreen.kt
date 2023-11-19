@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -102,7 +103,11 @@ fun StudyDetailContent(
     studyEvent: StudyDetailViewModel.StudyEvent,
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
-    val tabs = listOf("홈", "인증", "스터디")
+    val tabs = listOf(
+        stringResource(id = R.string.tab_home),
+        stringResource(id = R.string.challenge),
+        stringResource(id = R.string.study),
+    )
 
     when (studyEvent) {
         is StudyDetailViewModel.StudyEvent.Load -> {

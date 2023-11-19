@@ -145,7 +145,7 @@ fun StudyHomeScreen(
                                             .padding(top = 10.dp)
                                             .width(79.dp)
                                             .height(24.dp),
-                                        text = "멤버",
+                                        text = stringResource(id = R.string.member),
                                         color = BetterColors.White,
                                         style = BetterAndroidTheme.typography.headline3,
                                         textAlign = TextAlign.Center,
@@ -177,7 +177,7 @@ fun StudyHomeScreen(
                                             .padding(top = 10.dp)
                                             .width(79.dp)
                                             .height(24.dp),
-                                        text = "회차 별 리포트",
+                                        text = stringResource(id = R.string.periodic_reports),
                                         color = BetterColors.White,
                                         style = BetterAndroidTheme.typography.headline3,
                                         textAlign = TextAlign.Center,
@@ -209,7 +209,7 @@ fun StudyHomeScreen(
                                             .padding(top = 10.dp)
                                             .width(79.dp)
                                             .height(24.dp),
-                                        text = "내 스터디",
+                                        text = stringResource(id = R.string.my_study),
                                         color = BetterColors.White,
                                         style = BetterAndroidTheme.typography.headline3,
                                         textAlign = TextAlign.Center,
