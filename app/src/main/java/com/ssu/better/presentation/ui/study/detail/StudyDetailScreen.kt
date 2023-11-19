@@ -1,7 +1,9 @@
 package com.ssu.better.presentation.ui.study.detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -10,6 +12,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,9 +51,7 @@ fun StudyDetailScreen(
 ) {
     val studyEvent = viewModel.studyEventStateFlow.collectAsState()
     StudyDetailContent(
-        onClickFinish = {
-
-        },
+        onClickFinish = {},
         studyEvent = studyEvent.value,
     )
 }
@@ -97,40 +98,52 @@ fun StudyDetailContent(
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("홈", "인증", "스터디")
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                modifier = Modifier
-                    .background(color = BetterColors.Bg)
-                    .shadow(elevation = 3.dp),
-                title = {
-                    Text(
-                        text = "스터디 개설",
-                        style = BetterAndroidTheme.typography.subtitle,
-                        color = BetterColors.Black,
+
+    when (studyEvent) {
+        is StudyDetailViewModel.StudyEvent.Load -> {
+            ShowLoadingAnimation()
+        }
+
+        is StudyDetailViewModel.StudyEvent.Success -> {
+            Scaffold(
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        modifier = Modifier
+                            .background(color = BetterColors.Bg)
+                            .shadow(elevation = 3.dp),
+                        title = {
+                            Text(
+                                text = "스터디 개설",
+                                style = BetterAndroidTheme.typography.subtitle,
+                                color = BetterColors.Black,
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = onClickFinish) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_arrow_left),
+                                    contentDescription = "Back",
+                                )
+                            }
+                        },
                     )
                 },
-                navigationIcon = {
-                    IconButton(onClick = onClickFinish) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_left),
-                            contentDescription = "Back",
-                        )
-                    }
-                },
-            )
-        },
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues = paddingValues)
-                .background(color = BetterColors.Bg),
-        ) {
-            when (studyEvent) {
-                is StudyDetailViewModel.StudyEvent.Success -> {
+            ) { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .padding(paddingValues = paddingValues)
+                        .background(color = BetterColors.Bg),
+                ) {
                     TabRow(
                         selectedTabIndex = tabIndex,
-                        divider = { },
+                        indicator = { tabPositions ->
+                            Box(
+                                modifier = Modifier
+                                    .tabIndicatorOffset(tabPositions[tabIndex])
+                                    .height(4.dp)
+                                    .background(color = BetterColors.Primary50),
+                            )
+                        },
                     ) {
                         tabs.forEachIndexed { index, title ->
                             Tab(
@@ -147,10 +160,6 @@ fun StudyDetailContent(
                         1 -> StudyChallengeScreen(study = studyEvent.study)
                         2 -> StudyInfoScreen(study = studyEvent.study)
                     }
-                }
-
-                else -> {
-                    ShowLoadingAnimation()
                 }
             }
         }
