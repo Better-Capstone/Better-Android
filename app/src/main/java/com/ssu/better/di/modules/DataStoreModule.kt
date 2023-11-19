@@ -9,7 +9,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.datastore.preferences.preferencesDataStoreFile
-import com.ssu.better.data.util.TokenManager
+import com.ssu.better.data.datasources.TokenManager
+import com.ssu.better.data.datasources.UserPrefManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,6 +46,14 @@ object DataStoreModule {
         @ApplicationContext context: Context,
     ): TokenManager {
         return TokenManager(context.dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun providesSharedPrefManager(
+        @ApplicationContext context: Context,
+    ): UserPrefManager {
+        return UserPrefManager(context.dataStore)
     }
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = USER_PREFERENCES)

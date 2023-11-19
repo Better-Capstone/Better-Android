@@ -6,6 +6,6 @@ data class UserLoginResponse(
     @SerializedName("accessToken")
     val accessToken: String,
 
-    @SerializedName("com/ssu/better/entity/user")
+    // @SerializedName("com/ssu/better/entity/user")
     val user: User,
 )
