@@ -7,7 +7,8 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.ssu.better.data.util.TokenManager
+import com.ssu.better.data.datasources.TokenManager
+import com.ssu.better.data.datasources.UserPrefManager
 import com.ssu.better.domain.usecase.user.PostUserLoginRequestUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -24,8 +25,9 @@ class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val loginRequestUseCase: PostUserLoginRequestUseCase,
     private val tokenManager: TokenManager,
+    private val userPrefManager: UserPrefManager,
 
-) : ViewModel() {
+    ) : ViewModel() {
 
     private val _loginEvents = MutableSharedFlow<LoginEvent>()
     val loginEvents get() = _loginEvents.asSharedFlow()
@@ -94,8 +96,8 @@ class LoginViewModel @Inject constructor(
                 UserApiClient.instance.me { user, _ ->
                     val nickname = user?.kakaoAccount?.profile?.nickname ?: ""
                     val id = user?.id ?: -1
-                    Timber.d("kakao_nick", nickname)
-                    Timber.d("kakao_id", id.toString())
+                    Timber.d("kakao_nick $nickname")
+                    Timber.d("kakao_id $id")
 
                     userInfo = KaKaoUserInfo(id, nickname)
                     if (checkIsNewUser(id)) {
@@ -122,6 +124,8 @@ class LoginViewModel @Inject constructor(
             try {
                 loginRequestUseCase.login(token.accessToken).collectLatest {
                     tokenManager.saveAccessToken(it.accessToken)
+                    userPrefManager.updateUserId(it.user.id)
+                    userPrefManager.updateNickName(it.user.nickname)
                     _loginEvents.emit(LoginEvent.NavToMain)
                 }
             } catch (e: Exception) {

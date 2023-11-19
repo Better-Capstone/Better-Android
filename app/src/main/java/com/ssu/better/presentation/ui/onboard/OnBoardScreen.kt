@@ -49,6 +49,9 @@ fun OnBoardScreen(
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
     val uistate by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val loadingState by viewModel.isLoading.collectAsStateWithLifecycle()
+
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val loginViewModel: LoginViewModel = hiltViewModel(navController.getBackStackEntry(Screen.Login.route))
@@ -56,10 +59,10 @@ fun OnBoardScreen(
     LaunchedEffect(Unit) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.inputNickname(nickname)
-            viewModel.token = token
+            viewModel.saveToken(token)
 
             viewModel.events.collectLatest {
-                delay(1000)
+                delay(500)
                 navController.navigate(Screen.Home.route) {
                     popUpTo(Screen.OnBoard.route) {
                         inclusive = true
@@ -75,20 +78,29 @@ fun OnBoardScreen(
         exit = fadeOut(),
     ) {
         Column(
-            modifier = Modifier.fillMaxHeight().imePadding()
-                .fillMaxWidth().padding(horizontal = 20.dp),
+            modifier = Modifier
+                .fillMaxHeight()
+                .imePadding()
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 "${loginViewModel.userInfo?.nickname}님, 환영합니다!",
                 style = BetterAndroidTheme.typography.title,
-                modifier = Modifier.fillMaxWidth().padding(top = 70.dp, bottom = 28.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 70.dp, bottom = 28.dp),
             )
 
             Column(Modifier.fillMaxWidth()) {
                 Text("사용하실 닉네임을 설정해주세요", style = BetterAndroidTheme.typography.subtitle, color = BetterColors.Gray30)
-                Spacer(modifier = Modifier.height(14.dp).fillMaxWidth())
+                Spacer(
+                    modifier = Modifier
+                        .height(14.dp)
+                        .fillMaxWidth(),
+                )
                 BetterTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = uistate.nickname ?: "",
@@ -102,7 +114,7 @@ fun OnBoardScreen(
                     text = "완료",
                     type = BetterButtonType.PRIMARY,
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = uistate.nickname.isNotEmpty(),
+                    enabled = !loadingState && uistate.nickname.isNotEmpty(),
                     onClick = {
                         keyboardController?.hide()
                         viewModel.postRegisterUser()

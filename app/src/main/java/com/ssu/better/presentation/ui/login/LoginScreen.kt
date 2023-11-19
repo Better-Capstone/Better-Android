@@ -1,8 +1,6 @@
 package com.ssu.better.presentation.ui.login
 
 import android.widget.Toast
-import androidx.compose.runtime.Composable
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -20,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,9 +54,10 @@ fun LoginScreen(
                     is LoginViewModel.LoginEvent.NavToOnBoard -> {
                         delay(500)
                         navController.navigate(
-                            Screen.OnBoard.route + "?token=${it.token}&nickname=${it.nickname}",
+                            Screen.OnBoard.route + "?token=${it.token} &nickname=${it.nickname}",
                         )
                     }
+
                     is LoginViewModel.LoginEvent.NavToMain -> {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Login.route) {
@@ -65,6 +65,7 @@ fun LoginScreen(
                             }
                         }
                     }
+
                     else -> {
                         Toast.makeText(context, "로그인에 실패하였습니다.", Toast.LENGTH_SHORT).show()
                     }
@@ -80,12 +81,15 @@ fun LoginScreen(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxHeight().fillMaxWidth()
+                .fillMaxHeight()
+                .fillMaxWidth()
                 .background(Color.White),
 
         ) {
             Column(
-                modifier = Modifier.fillMaxHeight().fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -97,11 +101,17 @@ fun LoginScreen(
                 Text(text = context.getString(R.string.splash_guide), style = BetterAndroidTheme.typography.headline2, color = Color.Black)
             }
 
-            Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+            ) {
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = { viewModel.kakaoLogin() },
-                    modifier = Modifier.fillMaxWidth().padding(20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
                     contentPadding = PaddingValues(all = 0.dp),
                     shape = RectangleShape,
                     colors = ButtonDefaults.filledTonalButtonColors(containerColor = Color.White),
