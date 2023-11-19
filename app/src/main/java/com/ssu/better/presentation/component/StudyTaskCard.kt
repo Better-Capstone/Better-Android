@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,13 +54,13 @@ fun StudyTaskCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp),
+            .padding(4.dp)
+            .shadow(elevation = 4.dp, RoundedCornerShape(10.dp)),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
             containerColor = BetterColors.White,
             contentColor = BetterColors.Gray90,
         ),
-        elevation = CardDefaults.elevatedCardElevation(4.dp),
     ) {
         Row(
             modifier = Modifier
@@ -89,7 +90,7 @@ fun StudyTaskCard(
                 },
             )
         }
-        LazyColumn(modifier = Modifier.heightIn(200.dp, 250.dp)) {
+        LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
             item {
                 study.taskList.forEach {
                     TaskItem(
