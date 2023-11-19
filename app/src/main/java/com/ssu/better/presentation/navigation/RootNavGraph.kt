@@ -28,7 +28,7 @@ fun RootNavGraph(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.OnBoard.route,
+            route = Screen.OnBoard.route + "?token={token}&nickname={nickname}",
             arguments = listOf(
                 navArgument("token") {
                     type = NavType.StringType
