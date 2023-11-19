@@ -28,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -68,7 +69,7 @@ fun LoginScreen(
                     }
 
                     else -> {
-                        Toast.makeText(context, "로그인에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.login_fail), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -99,7 +100,7 @@ fun LoginScreen(
                     contentDescription = null,
                     Modifier.width(224.dp),
                 )
-                Text(text = context.getString(R.string.splash_guide), style = BetterAndroidTheme.typography.headline2, color = Color.Black)
+                Text(text = stringResource(R.string.splash_guide), style = BetterAndroidTheme.typography.headline2, color = Color.Black)
             }
 
             Column(

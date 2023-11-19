@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -92,7 +93,7 @@ fun OnBoardScreen(
         ) {
             Text(
                 String.format(
-                    context.getString(R.string.onboard_welcome),
+                    stringResource(R.string.onboard_welcome),
                     loginViewModel.userInfo?.nickname,
                 ),
                 style = BetterAndroidTheme.typography.title,
@@ -102,7 +103,7 @@ fun OnBoardScreen(
             )
 
             Column(Modifier.fillMaxWidth()) {
-                Text(context.getString(R.string.onboard_guide), style = BetterAndroidTheme.typography.subtitle, color = BetterColors.Gray30)
+                Text(stringResource(R.string.onboard_guide), style = BetterAndroidTheme.typography.subtitle, color = BetterColors.Gray30)
                 Spacer(
                     modifier = Modifier
                         .height(14.dp)
@@ -118,7 +119,7 @@ fun OnBoardScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 BetterButton(
-                    text = context.getString(R.string.onboard_complete),
+                    text = stringResource(R.string.onboard_complete),
                     type = BetterButtonType.PRIMARY,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !loadingState && uistate.nickname.isNotEmpty(),
