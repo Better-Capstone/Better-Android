@@ -1,3 +1,3 @@
 package com.ssu.better.entity.user
 
-data class UserCheck(val result : Boolean)
+data class UserCheck(val result: Boolean)

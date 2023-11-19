@@ -27,7 +27,7 @@ class LoginViewModel @Inject constructor(
     private val tokenManager: TokenManager,
     private val userPrefManager: UserPrefManager,
 
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val _loginEvents = MutableSharedFlow<LoginEvent>()
     val loginEvents get() = _loginEvents.asSharedFlow()

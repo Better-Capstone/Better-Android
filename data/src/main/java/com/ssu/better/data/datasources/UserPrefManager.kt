@@ -50,12 +50,10 @@ class UserPrefManager @Inject constructor(
         )
     }
 
-
     private object PreferencesKeys {
         val KEY_USER_ID = longPreferencesKey("KEY_USER_ID")
         val KEY_NICKNAME = stringPreferencesKey("KEY_NICKNAME")
         val KEY_USER_RANK = intPreferencesKey("KEY_USER_RNAK")
         val KEY_USER_SCORE = intPreferencesKey("KEY_USER_SCORE")
     }
-
 }
