@@ -25,5 +25,5 @@ data class StudyRequest(
     val minRank: Int,
 
     @SerializedName("period")
-    val period: StudyPeriod
+    val period: StudyPeriod,
 )
