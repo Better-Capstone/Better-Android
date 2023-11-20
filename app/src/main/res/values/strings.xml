@@ -4,6 +4,15 @@
     <string name="tab_home">홈</string>
     <string name="tab_search">둘러보기</string>
     <string name="tab_mypage">마이페이지</string>
+    <string name="current_progress">현재 진행률</string>
+    <string name="challenge">인증</string>
+    <string name="study">스터디</string>
+    <string name="member">멤버</string>
+    <string name="periodic_reports">회차 별 리포트</string>
+    <string name="my_study">내 스터디</string>
+    <string name="study_description">스터디 설명</string>
+    <string name="study_period">스터디 주기</string>
+    <string name="auto_kick_condition">자동 퇴출 조건</string>
 
     <string name="login_fail">로그인에 실패했습니다</string>
 

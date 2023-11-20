@@ -14,6 +14,7 @@ import com.ssu.better.presentation.ui.main.mypage.MyPageScreen
 import com.ssu.better.presentation.ui.main.search.SearchDetailScreen
 import com.ssu.better.presentation.ui.main.search.SearchScreen
 import com.ssu.better.presentation.ui.study.create.CreateStudyScreen
+import com.ssu.better.presentation.ui.study.detail.StudyDetailScreen
 import com.ssu.better.presentation.ui.study.select_category.SelectCategoryScreen
 
 @Composable
@@ -77,6 +78,10 @@ fun MainNavGraph(navController: NavHostController) {
 
         composable(route = Screen.SelectCategory.route) {
             SelectCategoryScreen(navController = navController)
+        }
+
+        composable(route = Screen.StudyDetail.route) {
+            StudyDetailScreen(navHostController = navController)
         }
     }
 }
