@@ -3,30 +3,32 @@ package com.ssu.better.presentation.ui.study.join
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssu.better.entity.member.Member
-import com.ssu.better.entity.member.MemberType
-import com.ssu.better.entity.study.Category
-import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.data.util.HttpException
+import com.ssu.better.domain.usecase.study.GetStudyUseCase
+import com.ssu.better.domain.usecase.study.PostJoinStudyUseCase
 import com.ssu.better.entity.study.Study
-import com.ssu.better.entity.study.StudyCategory
-import com.ssu.better.entity.study.StudyCheckDay
-import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.StudyStatus
-import com.ssu.better.entity.task.Task
-import com.ssu.better.entity.user.User
-import com.ssu.better.entity.user.UserRankHistory
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class StudyJoinViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
+class StudyJoinViewModel @Inject constructor(
+    application: Application,
+    private val getStudyUseCase: GetStudyUseCase,
+    private val postJoinStudyUseCase: PostJoinStudyUseCase,
+) : AndroidViewModel(application) {
+    private var studyId: Int = 0
+
     sealed class UIState {
         object Loading : UIState()
         data class Success(val study: Study) : UIState()
+
+        object Finish : UIState()
     }
 
     private val _uiState: MutableStateFlow<UIState> = MutableStateFlow(UIState.Loading)
@@ -45,39 +47,26 @@ class StudyJoinViewModel @Inject constructor(application: Application) : Android
     val isAm: StateFlow<Boolean>
         get() = _isAm
 
-    init {
+    fun setStudyId(studyId: Int) {
+        this.studyId = studyId
         load()
     }
 
-    fun load() {
-        val testUser = User(1, "배현빈", "개발하는 북극곰")
-        val testMember = Member(1, 1, MemberType.MEMBER, "")
-        val testTask = Task(1, 1, "", 1, 1, "", "", "제목")
-        val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
-        val testCategory = StudyCategory(1, Category.IT.name)
-        val testGroupRank = GroupRank(1, 18000)
-        val testStudy = Study(
-            1,
-            testUser,
-            testCategory,
-            "알고리즘 스터디",
-            "스터디 설명",
-            StudyStatus.INPROGRESS,
-            StudyPeriod.EVERYDAY,
-            StudyCheckDay.EVERYDAY,
-            5,
-            1,
-            10,
-            1500,
-            arrayListOf(testMember),
-            arrayListOf(testTask),
-            arrayListOf(testUserRankHistory),
-            testGroupRank,
-        )
-
+    private fun load() {
         viewModelScope.launch {
-            delay(2000L)
-            _uiState.emit(UIState.Success(testStudy))
+            getStudyUseCase.getStudy(studyId.toLong())
+                .catch { t ->
+                    if (t is HttpException) {
+                        Timber.e(t.message)
+                        when (t.code) {
+                            403 -> Timber.e("403 Forbidden")
+                            401 -> Timber.e("401")
+                        }
+                    }
+                }
+                .collectLatest {
+                    _uiState.emit(UIState.Success(it))
+                }
         }
     }
 
@@ -100,5 +89,21 @@ class StudyJoinViewModel @Inject constructor(application: Application) : Android
     }
 
     fun join() {
+        viewModelScope.launch {
+            postJoinStudyUseCase.joinStudy(studyId.toLong())
+                .catch { t ->
+                    if (t is HttpException) {
+                        Timber.e(t.message)
+                        when (t.code) {
+                            403 -> Timber.e("403 Forbidden")
+                            401 -> Timber.e("401")
+                        }
+                    }
+                }
+                .collectLatest {
+                    Timber.d("스터디 가입 성공")
+                    _uiState.emit(UIState.Finish)
+                }
+        }
     }
 }
