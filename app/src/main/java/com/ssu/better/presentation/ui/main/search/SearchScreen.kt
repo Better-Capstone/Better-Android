@@ -74,18 +74,26 @@ fun SearchScreen(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             AddStudyButton(
-                modifier = Modifier.size(50.dp).offset(y = -60.dp),
-                onClick = {},
+                modifier = Modifier
+                    .size(50.dp)
+                    .offset(y = -60.dp),
+                onClick = {
+                    navHostController.navigate(Screen.SelectCategory.route)
+                },
             )
         },
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 30.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 30.dp),
         ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
             ) {
                 Column() {
                     Text(text = "사용자" + ",님", style = BetterAndroidTheme.typography.headline2, color = BetterColors.Gray30)
@@ -112,22 +120,29 @@ fun SearchScreen(
                 selectedCategory = Category.ALL,
             )
             Box(
-                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
                 contentAlignment = Alignment.CenterEnd,
             ) {
-                StudySortingToggle(option = option.value, onClick = {
-                    if (option.value == SortOption.LATEST) {
-                        option.value = SortOption.RANK
-                    } else {
-                        option.value = SortOption.LATEST
-                    }
-                    viewModel.sort(option.value)
-                },)
+                StudySortingToggle(
+                    option = option.value,
+                    onClick = {
+                        if (option.value == SortOption.LATEST) {
+                            option.value = SortOption.RANK
+                        } else {
+                            option.value = SortOption.LATEST
+                        }
+                        viewModel.sort(option.value)
+                    },
+                )
             }
 
             StudyListView(
                 list = studyList,
-                modifier = Modifier.fillMaxSize().padding(bottom = 30.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 30.dp),
                 listState = listState,
             )
         }
@@ -248,7 +263,9 @@ fun UserRankProfile(
             else -> R.drawable.ic_study_fire
         }
         Box(
-            modifier = Modifier.width(50.dp).height(50.dp),
+            modifier = Modifier
+                .width(50.dp)
+                .height(50.dp),
             contentAlignment = Alignment.Center,
         ) {
             Image(

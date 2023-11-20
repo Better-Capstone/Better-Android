@@ -49,7 +49,7 @@ object HttpClientModule {
                 val request = chain.request()
                 chain.proceed(
                     request.newBuilder().apply {
-                        addHeader(AUTHORIZATION, "Bearer ${accessToken ?: ""}")
+                        addHeader(AUTHORIZATION, "Bearer $accessToken")
                     }.build(),
                 )
             },

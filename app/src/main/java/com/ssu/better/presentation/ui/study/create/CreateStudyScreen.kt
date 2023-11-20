@@ -25,7 +25,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,6 +51,7 @@ import com.ssu.better.presentation.component.BetterTextField
 import com.ssu.better.presentation.ui.study.join.StudyCheckDayCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun CreateStudyScreen(
@@ -56,13 +59,21 @@ fun CreateStudyScreen(
     viewModel: CreateStudyViewModel = hiltViewModel(),
     categoryId: Int,
 ) {
+    viewModel.setCategoryId(categoryId)
     val kickCondition = viewModel.kickCondition.collectAsState()
     val title = viewModel.title.collectAsState()
     val description = viewModel.description.collectAsState()
     val checkDay = viewModel.checkDay.collectAsState()
     val period = viewModel.period.collectAsState()
     val minRank = viewModel.minRank.collectAsState()
-
+    val completeButtonEnabled by viewModel.buttonEnabled.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.event.collectLatest { event ->
+            if (event is CreateStudyViewModel.Event.Finish) {
+                navHostController.popBackStack()
+            }
+        }
+    }
     CreateStudy(
         onClickFinish = {
             navHostController.popBackStack()
@@ -79,7 +90,8 @@ fun CreateStudyScreen(
         onMinRankChanged = viewModel::updateMinRank,
         kickCondition = kickCondition.value,
         onKickConditionChanged = viewModel::updateKickCondition,
-        onClickComplete = { },
+        onClickComplete = viewModel::createStudy,
+        completeButtonEnabled = completeButtonEnabled,
     )
 }
 
@@ -105,6 +117,7 @@ fun PreviewCreateStudy() {
         kickCondition = kickCondition.value,
         onKickConditionChanged = { value -> kickCondition.value = value },
         onClickComplete = { },
+        completeButtonEnabled = true,
     )
 }
 
@@ -125,6 +138,7 @@ fun CreateStudy(
     kickCondition: String,
     onKickConditionChanged: (String) -> Unit,
     onClickComplete: () -> Unit,
+    completeButtonEnabled: Boolean,
 ) {
     Scaffold(
         topBar = {
@@ -361,6 +375,7 @@ fun CreateStudy(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp),
+                enabled = completeButtonEnabled,
                 text = "완료",
                 type = BetterButtonType.DEFAULT,
                 onClick = onClickComplete,
