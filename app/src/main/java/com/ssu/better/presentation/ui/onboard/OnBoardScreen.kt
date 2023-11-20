@@ -19,14 +19,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
+import com.ssu.better.R
 import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
 import com.ssu.better.presentation.component.BetterTextField
@@ -42,21 +45,29 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun OnBoardScreen(
     navController: NavHostController,
+    nickname: String,
+    token: String,
     viewModel: OnBoardViewModel = hiltViewModel(),
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
+    val context = LocalContext.current
+
     val uistate by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val loadingState by viewModel.isLoading.collectAsStateWithLifecycle()
+
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val loginViewModel: LoginViewModel = hiltViewModel(navController.getBackStackEntry(Screen.Login.route))
 
     LaunchedEffect(Unit) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.inputNickname(loginViewModel.userInfo?.nickname ?: "")
+            viewModel.inputNickname(nickname)
+            viewModel.saveToken(token)
 
             viewModel.events.collectLatest {
-                delay(1000)
+                delay(500)
                 navController.navigate(Screen.Home.route) {
                     popUpTo(Screen.OnBoard.route) {
                         inclusive = true
@@ -72,20 +83,32 @@ fun OnBoardScreen(
         exit = fadeOut(),
     ) {
         Column(
-            modifier = Modifier.fillMaxHeight().imePadding()
-                .fillMaxWidth().padding(horizontal = 20.dp),
+            modifier = Modifier
+                .fillMaxHeight()
+                .imePadding()
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                "${loginViewModel.userInfo?.nickname}님, 환영합니다!",
+                String.format(
+                    stringResource(R.string.onboard_welcome),
+                    loginViewModel.userInfo?.nickname,
+                ),
                 style = BetterAndroidTheme.typography.title,
-                modifier = Modifier.fillMaxWidth().padding(top = 70.dp, bottom = 28.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 70.dp, bottom = 28.dp),
             )
 
             Column(Modifier.fillMaxWidth()) {
-                Text("사용하실 닉네임을 설정해주세요", style = BetterAndroidTheme.typography.subtitle, color = BetterColors.Gray30)
-                Spacer(modifier = Modifier.height(14.dp).fillMaxWidth())
+                Text(stringResource(R.string.onboard_guide), style = BetterAndroidTheme.typography.subtitle, color = BetterColors.Gray30)
+                Spacer(
+                    modifier = Modifier
+                        .height(14.dp)
+                        .fillMaxWidth(),
+                )
                 BetterTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = uistate.nickname ?: "",
@@ -96,10 +119,10 @@ fun OnBoardScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 BetterButton(
-                    text = "완료",
+                    text = stringResource(R.string.onboard_complete),
                     type = BetterButtonType.PRIMARY,
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = uistate.nickname.isNotEmpty(),
+                    enabled = !loadingState && uistate.nickname.isNotEmpty(),
                     onClick = {
                         keyboardController?.hide()
                         viewModel.postRegisterUser()

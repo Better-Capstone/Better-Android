@@ -6,7 +6,7 @@ import com.ssu.better.domain.repository.UserRepository
 import com.ssu.better.entity.challenge.Challenge
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.user.User
-import com.ssu.better.entity.user.UserLoginRequest
+import com.ssu.better.entity.user.UserCheck
 import com.ssu.better.entity.user.UserLoginResponse
 import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRegisterRequest
@@ -20,8 +20,8 @@ class UserRepositoryImpl @Inject constructor(
         return CommonAPILogic.checkError(userRemoteDataSource.registerUser(userRegisterRequest))
     }
 
-    override suspend fun login(userLoginRequest: UserLoginRequest): Flow<UserLoginResponse> {
-        return CommonAPILogic.checkError(userRemoteDataSource.login(userLoginRequest))
+    override suspend fun login(kakaoToken: String): Flow<UserLoginResponse> {
+        return CommonAPILogic.checkError(userRemoteDataSource.login(kakaoToken))
     }
 
     override suspend fun getUser(userId: Long): Flow<User> {
@@ -38,5 +38,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getUserChallenges(userId: Long): Flow<List<Challenge>> {
         return CommonAPILogic.checkError(userRemoteDataSource.getUserChallenges(userId))
+    }
+
+    override suspend fun getUserCheck(userId: Long): Flow<UserCheck> {
+        return CommonAPILogic.checkError(userRemoteDataSource.getUserCheck(userId))
     }
 }

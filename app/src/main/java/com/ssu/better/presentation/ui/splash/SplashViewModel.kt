@@ -2,12 +2,13 @@ package com.ssu.better.presentation.ui.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssu.better.data.util.TokenManager
+import com.ssu.better.data.datasources.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +27,7 @@ class SplashViewModel @Inject constructor(
             run {
                 tokenManager.getAccessToken().collect { token ->
                     _authToken.update { token }
+                    Timber.d("token : $token")
                 }
             }
         }

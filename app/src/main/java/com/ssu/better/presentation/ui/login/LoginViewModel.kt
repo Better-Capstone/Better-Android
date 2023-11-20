@@ -7,23 +7,26 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.ssu.better.data.util.TokenManager
+import com.ssu.better.data.datasources.TokenManager
+import com.ssu.better.data.datasources.UserPrefManager
 import com.ssu.better.domain.usecase.user.PostUserLoginRequestUseCase
-import com.ssu.better.domain.usecase.user.PostUserRegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val registerUseCase: PostUserRegisterUseCase,
     private val loginRequestUseCase: PostUserLoginRequestUseCase,
     private val tokenManager: TokenManager,
+    private val userPrefManager: UserPrefManager,
+
 ) : ViewModel() {
 
     private val _loginEvents = MutableSharedFlow<LoginEvent>()
@@ -67,42 +70,68 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    private fun checkIsNewUser(userId: Long): Boolean {
+        var isNewUser = true
+
+        viewModelScope.launch {
+            runBlocking {
+                try {
+                    loginRequestUseCase.userCheck(userId).collectLatest {
+                        isNewUser = !it.result
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e, e.message)
+                    _loginEvents.emit(LoginEvent.LoginFail)
+                    return@runBlocking
+                }
+            }
+        }
+
+        return isNewUser
+    }
+
     private fun requestUserInfo(token: OAuthToken) {
         viewModelScope.launch {
             UserApiClient.instance.accessTokenInfo { _, _ ->
                 UserApiClient.instance.me { user, _ ->
                     val nickname = user?.kakaoAccount?.profile?.nickname ?: ""
                     val id = user?.id ?: -1
-                    Timber.d("kakao_nick", nickname)
-                    Timber.d("kakao_id", id.toString())
+                    Timber.d("kakao_nick $nickname")
+                    Timber.d("kakao_id $id")
 
                     userInfo = KaKaoUserInfo(id, nickname)
-                    postUserInfo(token, nickname)
+                    if (checkIsNewUser(id)) {
+                        /*신규 회원*/
+                        Timber.d("new user")
+                        registerUser(token, nickname)
+                    } else {
+                        /*기존 회원*/
+                        getUserInfo(token)
+                    }
                 }
             }
         }
     }
 
-    private fun postUserInfo(token: OAuthToken, nickname: String = "") {
+    private fun registerUser(token: OAuthToken, nickname: String) {
         viewModelScope.launch {
-            _loginEvents.emit(LoginEvent.NavToOnBoard)
-            tokenManager.saveAccessToken("token") // test
-            /*
+            _loginEvents.emit(LoginEvent.NavToOnBoard(token.accessToken, nickname))
+        }
+    }
+
+    private fun getUserInfo(token: OAuthToken) {
+        viewModelScope.launch {
             try {
-                loginRequestUseCase.login(UserLoginRequest(token.accessToken)).collectLatest {
+                loginRequestUseCase.login(token.accessToken).collectLatest {
                     tokenManager.saveAccessToken(it.accessToken)
+                    userPrefManager.updateUserId(it.user.id)
+                    userPrefManager.updateNickName(it.user.nickname)
                     _loginEvents.emit(LoginEvent.NavToMain)
-                }.also {
-                    /*신규 회원*/
-                    registerUseCase.registerUser(UserRegisterRequest(token.accessToken, nickname)).collectLatest {
-                        _loginEvents.emit(LoginEvent.NavToOnBoard)
-                        // TODO 신규 or 기존 회원 분기 처리
-                    }
                 }
             } catch (e: Exception) {
                 Timber.e(e)
+                _loginEvents.emit(LoginEvent.LoginFail)
             }
-            */
         }
     }
 
@@ -113,6 +142,7 @@ class LoginViewModel @Inject constructor(
 
     sealed class LoginEvent {
         object NavToMain : LoginEvent()
-        object NavToOnBoard : LoginEvent()
+        data class NavToOnBoard(val token: String, val nickname: String) : LoginEvent()
+        object LoginFail : LoginEvent()
     }
 }

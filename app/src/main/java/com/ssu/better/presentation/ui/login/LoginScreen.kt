@@ -1,7 +1,6 @@
 package com.ssu.better.presentation.ui.login
 
-import androidx.compose.runtime.Composable
-
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -19,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,12 +28,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
+import com.ssu.better.presentation.navigation.OnBoardNavArgument
 import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import kotlinx.coroutines.delay
@@ -53,14 +55,21 @@ fun LoginScreen(
                 when (it) {
                     is LoginViewModel.LoginEvent.NavToOnBoard -> {
                         delay(500)
-                        navController.navigate(Screen.OnBoard.route)
+                        navController.navigate(
+                            Screen.OnBoard.route + "?${OnBoardNavArgument.TOKEN}=${it.token} &${OnBoardNavArgument.NICKNAME}=${it.nickname}",
+                        )
                     }
-                    else -> {
+
+                    is LoginViewModel.LoginEvent.NavToMain -> {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Login.route) {
                                 inclusive = true
                             }
                         }
+                    }
+
+                    else -> {
+                        Toast.makeText(context, context.getString(R.string.login_fail), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -74,12 +83,15 @@ fun LoginScreen(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxHeight().fillMaxWidth()
+                .fillMaxHeight()
+                .fillMaxWidth()
                 .background(Color.White),
 
         ) {
             Column(
-                modifier = Modifier.fillMaxHeight().fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -88,14 +100,20 @@ fun LoginScreen(
                     contentDescription = null,
                     Modifier.width(224.dp),
                 )
-                Text(text = context.getString(R.string.splash_guide), style = BetterAndroidTheme.typography.headline2, color = Color.Black)
+                Text(text = stringResource(R.string.splash_guide), style = BetterAndroidTheme.typography.headline2, color = Color.Black)
             }
 
-            Column(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+            ) {
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = { viewModel.kakaoLogin() },
-                    modifier = Modifier.fillMaxWidth().padding(20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
                     contentPadding = PaddingValues(all = 0.dp),
                     shape = RectangleShape,
                     colors = ButtonDefaults.filledTonalButtonColors(containerColor = Color.White),
