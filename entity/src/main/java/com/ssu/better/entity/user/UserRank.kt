@@ -19,5 +19,5 @@ data class UserRank(
     val updatedAt: String,
 
     @SerializedName("userRankHistoryList")
-    val userRankHistoryList: ArrayList<UserRankHistory>
+    val userRankHistoryList: ArrayList<UserRankHistory>,
 )
