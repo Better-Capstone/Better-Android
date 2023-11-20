@@ -130,6 +130,7 @@ fun HomeScreen(
                 },
             )
         }
+
         Column(
             modifier = Modifier
                 .background(BetterColors.Bg)

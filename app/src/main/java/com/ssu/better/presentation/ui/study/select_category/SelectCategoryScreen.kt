@@ -42,8 +42,8 @@ fun SelectCategoryScreen(
                     navController.popBackStack()
                 }
 
-                else -> {
-                    navController.navigate(Screen.CreateStudy.route)
+                is SelectCategoryViewModel.Event.CategoryClick -> {
+                    navController.navigate(Screen.CreateStudy.route + "?categoryId=${it.category.id}")
                 }
             }
         }
