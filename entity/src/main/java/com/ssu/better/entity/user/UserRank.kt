@@ -6,8 +6,8 @@ data class UserRank(
     @SerializedName("score")
     val score: Int,
 
-    @SerializedName("user_id")
-    val userId: Long,
+    @SerializedName("user")
+    val user: User,
 
     @SerializedName("id")
     val id: Long,
@@ -17,4 +17,7 @@ data class UserRank(
 
     @SerializedName("updated_at")
     val updatedAt: String,
+
+    @SerializedName("userRankHistoryList")
+    val userRankHistoryList: ArrayList<UserRankHistory>
 )
