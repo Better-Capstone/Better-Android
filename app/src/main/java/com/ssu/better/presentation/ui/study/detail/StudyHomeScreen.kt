@@ -32,7 +32,7 @@ import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.task.Task
 import com.ssu.better.presentation.component.BetterRoundChip
 import com.ssu.better.presentation.component.GradientProgressIndicator
-import com.ssu.better.presentation.component.StudyTaskCard
+import com.ssu.better.presentation.component.StudyHomeTaskCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import java.time.LocalDate
@@ -44,7 +44,7 @@ fun StudyHomeScreen(
     onClickMember: () -> Unit = { },
     onClickReport: () -> Unit = { },
     onClickMyStudy: () -> Unit = { },
-    onClickMore: (Study) -> Unit = { },
+    onClickAdd: (Study) -> Unit = { },
     onClickTask: (Task) -> Unit = { },
 ) {
     Column {
@@ -221,11 +221,11 @@ fun StudyHomeScreen(
                 }
 
                 val testTime = LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate()
-                StudyTaskCard(
+                StudyHomeTaskCard(
                     modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 10.dp),
                     study = study,
                     baseDate = testTime,
-                    onClickMore = onClickMore,
+                    onClickAdd = onClickAdd,
                     onClickTask = onClickTask,
                 )
             }

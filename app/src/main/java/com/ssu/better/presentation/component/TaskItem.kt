@@ -43,6 +43,7 @@ fun TaskItem(
                 .weight(1f)
                 .padding(horizontal = 10.dp),
             style = BetterAndroidTheme.typography.headline3,
+            color = BetterColors.Gray90,
         )
 
         BetterRoundChip(enabled = taskEnabled, text = "인증하기", onClick = onClick)
