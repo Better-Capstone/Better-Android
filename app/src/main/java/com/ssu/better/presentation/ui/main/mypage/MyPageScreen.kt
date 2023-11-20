@@ -62,7 +62,7 @@ fun MyPageScreen(
         isNotifyEnabled = isNotifyEnabled.value,
         onClickNotifyChange = viewModel::changeNotify,
         onClickStudy = { study ->
-            navHostController.navigate(Screen.StudyJoin.route + "?studyId=${study.studyId}")
+            navHostController.navigate(Screen.StudyDetail.route + "?studyId=${study.studyId}")
         },
     )
 }

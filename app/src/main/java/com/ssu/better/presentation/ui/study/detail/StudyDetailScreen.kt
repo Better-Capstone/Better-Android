@@ -51,9 +51,11 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun StudyDetailScreen(
     navHostController: NavHostController,
+    studyId: Int,
     viewModel: StudyDetailViewModel = hiltViewModel(),
 ) {
     val studyEvent = viewModel.studyEventStateFlow.collectAsState()
+    viewModel.setStudyId(studyId)
     StudyDetailContent(
         onClickFinish = {},
         studyEvent = studyEvent.value,
@@ -116,6 +118,7 @@ fun StudyDetailContent(
 
         is StudyDetailViewModel.StudyEvent.Success -> {
             Scaffold(
+                modifier = Modifier.background(color = BetterColors.Bg),
                 topBar = {
                     CenterAlignedTopAppBar(
                         modifier = Modifier
