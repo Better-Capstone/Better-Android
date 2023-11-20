@@ -42,6 +42,7 @@ import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRankHistory
+import com.ssu.better.entity.user.UserRankName
 import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.component.StudyCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
@@ -175,11 +176,19 @@ fun MyPage(
 @Composable
 @Preview(showSystemUi = true)
 fun PreviewMyPage() {
-    val testUserRank = UserRank(id = 3, userId = 1, score = 7530, createdAt = "", updatedAt = "")
+    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
     val testUser = User(1, "배현빈", "개발하는 북극곰")
+    val testUserRank = UserRank(
+        id = 3,
+        user = testUser,
+        score = 7530,
+        createdAt = "",
+        updatedAt = "",
+        userRankHistoryList = arrayListOf(testUserRankHistory),
+    )
+
     val testMember = Member(1, 1, MemberType.MEMBER, "")
     val testTask = Task(1, 1, "", 1, 1, "", "", "제목")
-    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
     val testStudy = Study(
@@ -237,7 +246,12 @@ fun UserRankCard(userName: String, userRank: UserRank) {
             }
 
             Text(
-                text = "Lv 모닥불",
+                text = "Lv " + when (userRank.score) {
+                    in 0..3999 -> UserRankName.OFF_CANDLE
+                    in 4000..5999 -> UserRankName.CANDLE
+                    in 6000..7999 -> UserRankName.FIRE
+                    else -> UserRankName.BONFIRE
+                }.ko,
                 style = BetterAndroidTheme.typography.subtitle,
                 modifier = Modifier
                     .padding(top = 15.dp)
@@ -246,12 +260,28 @@ fun UserRankCard(userName: String, userRank: UserRank) {
             )
 
             Image(
-                painterResource(id = R.drawable.ic_fire_base),
+                painterResource(
+                    id = when (userRank.score) {
+                        in 0..3999 -> R.drawable.ic_candle_empty
+                        in 4000..5999 -> R.drawable.ic_candle
+                        in 6000..7999 -> R.drawable.ic_fire_base
+                        else -> R.drawable.ic_bonfire
+                    },
+                ),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(top = 15.dp)
                     .align(alignment = Alignment.CenterHorizontally),
             )
+
+            val nextScore = when (userRank.score) {
+                in 0..3999 -> UserRankName.CANDLE.limit
+                in 4000..5999 -> UserRankName.FIRE.limit
+                in 6000..7999 -> UserRankName.BONFIRE.limit
+                else -> userRank.score
+            }
+
+            val leftScore = nextScore - userRank.score
 
             // TODO 그라디언트 구현
             LinearProgressIndicator(
@@ -261,7 +291,7 @@ fun UserRankCard(userName: String, userRank: UserRank) {
                     .padding(top = 10.dp)
                     .align(alignment = Alignment.CenterHorizontally),
                 color = BetterColors.Primary50,
-                progress = 0.7f,
+                progress = if (leftScore - 2000 == 0) 0f else (leftScore.toFloat() / 2000),
                 strokeCap = StrokeCap.Round,
             )
 
@@ -278,7 +308,7 @@ fun UserRankCard(userName: String, userRank: UserRank) {
                 modifier = Modifier
                     .padding(top = 10.dp, bottom = 10.dp)
                     .align(alignment = Alignment.CenterHorizontally),
-                text = "다음 단계 까지 500점 남았어요",
+                text = "다음 단계 까지 ${leftScore}점 남았어요",
                 style = BetterAndroidTheme.typography.option,
                 color = BetterColors.TextGray,
             )

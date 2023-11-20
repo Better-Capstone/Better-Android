@@ -46,10 +46,10 @@ object HttpClientModule {
 
         builder.addInterceptor(
             Interceptor { chain ->
-                var request = chain.request()
+                val request = chain.request()
                 chain.proceed(
                     request.newBuilder().apply {
-                        addHeader("token", accessToken ?: "")
+                        addHeader(AUTHORIZATION, "Bearer ${accessToken ?: ""}")
                     }.build(),
                 )
             },

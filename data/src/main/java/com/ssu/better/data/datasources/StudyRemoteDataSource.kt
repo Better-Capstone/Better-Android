@@ -14,23 +14,23 @@ class StudyRemoteDataSource(
         tokenStudyService.createStudy(studyRequest)
 
     suspend fun getStudyList() =
-        publicStudyService.getStudyList()
+        tokenStudyService.getStudyList()
 
     suspend fun getStudyListByUser(userId: Long) =
-        publicStudyService.getStudyListByUser(userId)
+        tokenStudyService.getStudyListByUser(userId)
 
     suspend fun getStudyListByCategory(categoryId: Long) =
-        publicStudyService.getStudyListByCategory(categoryId)
+        tokenStudyService.getStudyListByCategory(categoryId)
 
     suspend fun getStudy(studyId: Long) =
-        publicStudyService.getStudy(studyId)
+        tokenStudyService.getStudy(studyId)
 
     suspend fun joinStudy(studyId: Long) =
         tokenStudyService.joinStudy(studyId)
 
     suspend fun getStudyRank(studyId: Long) =
-        publicStudyService.getStudyRank(studyId)
+        tokenStudyService.getStudyRank(studyId)
 
     suspend fun getGroupRankHistory(studyId: Long) =
-        publicStudyService.getGroupRankHistory(studyId)
+        tokenStudyService.getGroupRankHistory(studyId)
 }
