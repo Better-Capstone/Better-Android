@@ -5,13 +5,16 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssu.better.data.util.HttpException
 import com.ssu.better.domain.usecase.study.GetStudyUseCase
+import com.ssu.better.domain.usecase.study.GetStudyUserListUseCase
 import com.ssu.better.domain.usecase.study.PostJoinStudyUseCase
 import com.ssu.better.entity.study.Study
+import com.ssu.better.entity.study.StudyUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -20,13 +23,14 @@ import javax.inject.Inject
 class StudyJoinViewModel @Inject constructor(
     application: Application,
     private val getStudyUseCase: GetStudyUseCase,
+    private val getStudyUserListUseCase: GetStudyUserListUseCase,
     private val postJoinStudyUseCase: PostJoinStudyUseCase,
 ) : AndroidViewModel(application) {
     private var studyId: Int = 0
 
     sealed class UIState {
         object Loading : UIState()
-        data class Success(val study: Study) : UIState()
+        data class Success(val study: Study, val userList: ArrayList<StudyUser>) : UIState()
 
         object Finish : UIState()
     }
@@ -55,6 +59,9 @@ class StudyJoinViewModel @Inject constructor(
     private fun load() {
         viewModelScope.launch {
             getStudyUseCase.getStudy(studyId.toLong())
+                .combine(getStudyUserListUseCase.getStudyUserList(studyId.toLong())) { study: Study, userList: ArrayList<StudyUser> ->
+                    UIState.Success(study, userList)
+                }
                 .catch { t ->
                     if (t is HttpException) {
                         Timber.e(t.message)
@@ -65,7 +72,7 @@ class StudyJoinViewModel @Inject constructor(
                     }
                 }
                 .collectLatest {
-                    _uiState.emit(UIState.Success(it))
+                    _uiState.emit(it)
                 }
         }
     }

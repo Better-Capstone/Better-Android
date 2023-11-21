@@ -38,8 +38,10 @@ import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
 import com.ssu.better.entity.study.StudyStatus
+import com.ssu.better.entity.study.StudyUser
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.user.User
+import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
@@ -83,6 +85,14 @@ fun PreviewStudyJoin() {
     val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
+    val testUserRank = UserRank(
+        id = 3,
+        user = testUser,
+        score = 7530,
+        createdAt = "",
+        updatedAt = "",
+        userRankHistoryList = arrayListOf(testUserRankHistory),
+    )
     val testStudy = Study(
         1,
         testUser,
@@ -101,7 +111,9 @@ fun PreviewStudyJoin() {
         arrayListOf(testUserRankHistory),
         testGroupRank,
     )
-    StudyJoin(study = testStudy, onClickFinish = {}, "12", "30", { }, { }, { }, { }, true)
+    val testStudyUser = StudyUser(1, "배현빈", "개발하는 북극곰", testUserRank, arrayListOf(testMember), arrayListOf(testStudy), "", "")
+
+    StudyJoin(study = testStudy, userList = arrayListOf(testStudyUser), onClickFinish = {}, "12", "30", { }, { }, { }, { }, true)
 }
 
 @Composable
@@ -120,6 +132,7 @@ fun StudyJoinContent(
         is StudyJoinViewModel.UIState.Success -> {
             StudyJoin(
                 study = uiState.study,
+                userList = uiState.userList,
                 onClickFinish = onClickFinish,
                 hour = hour,
                 minute = minute,
@@ -144,6 +157,7 @@ fun StudyJoinContent(
 @Composable
 fun StudyJoin(
     study: Study,
+    userList: ArrayList<StudyUser>,
     onClickFinish: () -> Unit,
     hour: String,
     minute: String,
@@ -270,8 +284,9 @@ fun StudyJoin(
                 }
             }
 
-            items(study.memberList.size) { index ->
-                StudyUser()
+            items(userList.size) { index ->
+                val item = userList[index]
+                StudyUserBox(item)
             }
 
             item(span = { GridItemSpan(4) }) {

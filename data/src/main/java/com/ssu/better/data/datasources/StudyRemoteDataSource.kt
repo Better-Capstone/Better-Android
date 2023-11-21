@@ -33,4 +33,7 @@ class StudyRemoteDataSource(
 
     suspend fun getGroupRankHistory(studyId: Long) =
         tokenStudyService.getGroupRankHistory(studyId)
+
+    suspend fun getStudyUserList(studyId: Long) =
+        tokenStudyService.getStudyUserList(studyId)
 }

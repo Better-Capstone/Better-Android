@@ -7,6 +7,7 @@ import com.ssu.better.domain.usecase.study.GetStudyListByCategoryUseCase
 import com.ssu.better.domain.usecase.study.GetStudyListByUserUseCase
 import com.ssu.better.domain.usecase.study.GetStudyListUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUseCase
+import com.ssu.better.domain.usecase.study.GetStudyUserListUseCase
 import com.ssu.better.domain.usecase.study.PostCreateStudyUseCase
 import com.ssu.better.domain.usecase.study.PostJoinStudyUseCase
 import com.ssu.better.domain.usecase.user.GetUserChallengeUseCase
@@ -100,5 +101,11 @@ object UseCaseModule {
     @Singleton
     fun providesPostJoinStudyUseCase(repository: StudyRepository): PostJoinStudyUseCase {
         return PostJoinStudyUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetStudyUserListUseCase(repository: StudyRepository): GetStudyUserListUseCase {
+        return GetStudyUserListUseCase(repository)
     }
 }
