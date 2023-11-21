@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -101,7 +101,7 @@ fun BetterCalendar(
         )
 
         HorizontalPager(
-            modifier = calendarModifier.fillMaxHeight().padding(bottom = 10.dp),
+            modifier = calendarModifier.defaultMinSize(minHeight = 350.dp).padding(bottom = 10.dp),
             verticalAlignment = Alignment.Top,
             state = pagerState,
             pageSpacing = 0.dp,
