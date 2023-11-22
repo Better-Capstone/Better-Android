@@ -17,6 +17,7 @@ import com.ssu.better.presentation.ui.study.create.CreateStudyScreen
 import com.ssu.better.presentation.ui.study.detail.StudyDetailScreen
 import com.ssu.better.presentation.ui.study.join.StudyJoinScreen
 import com.ssu.better.presentation.ui.study.select_category.SelectCategoryScreen
+import com.ssu.better.presentation.ui.task.crate.CreateTaskScreen
 
 @Composable
 fun MainNavGraph(navController: NavHostController) {
@@ -81,8 +82,38 @@ fun MainNavGraph(navController: NavHostController) {
             SelectCategoryScreen(navController = navController)
         }
 
-        composable(route = Screen.StudyDetail.route) {
-            StudyDetailScreen(navHostController = navController)
+        composable(
+            route = Screen.StudyJoin.route + "?studyId={studyId}",
+            arguments = listOf(
+                navArgument("studyId") {
+                    type = NavType.IntType
+                    defaultValue = 0
+                },
+            ),
+        ) { navBackStackEntry ->
+            StudyJoinScreen(
+                navController = navController,
+                studyId = navBackStackEntry.arguments?.getInt("studyId") ?: 0,
+            )
+        }
+
+        composable(
+            route = Screen.StudyDetail.route + "?studyId={studyId}",
+            arguments = listOf(
+                navArgument("studyId") {
+                    type = NavType.IntType
+                    defaultValue = 0
+                },
+            ),
+        ) { navBackStackEntry ->
+            StudyDetailScreen(
+                navHostController = navController,
+                studyId = navBackStackEntry.arguments?.getInt("studyId") ?: 0,
+            )
+        }
+
+        composable(route = Screen.CreateTask.route) {
+            CreateTaskScreen(navHostController = navController)
         }
 
         composable(
