@@ -36,4 +36,7 @@ class StudyRemoteDataSource(
 
     suspend fun getStudyUserList(studyId: Long) =
         tokenStudyService.getStudyUserList(studyId)
+
+    suspend fun getStudyTaskList(studyId: Long) =
+        tokenStudyService.getStudyTaskList(studyId)
 }

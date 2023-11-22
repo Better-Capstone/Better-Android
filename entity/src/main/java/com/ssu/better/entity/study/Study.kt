@@ -23,7 +23,7 @@ data class Study(
     val description: String,
 
     @SerializedName("status")
-    val status: StudyStatus,
+    val status: Status,
 
     @SerializedName("period")
     val period: StudyPeriod,

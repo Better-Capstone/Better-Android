@@ -6,6 +6,7 @@ import com.ssu.better.domain.usecase.study.GetGroupRankHistoryUseCase
 import com.ssu.better.domain.usecase.study.GetStudyListByCategoryUseCase
 import com.ssu.better.domain.usecase.study.GetStudyListByUserUseCase
 import com.ssu.better.domain.usecase.study.GetStudyListUseCase
+import com.ssu.better.domain.usecase.study.GetStudyTaskListUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUserListUseCase
 import com.ssu.better.domain.usecase.study.PostCreateStudyUseCase
@@ -107,5 +108,11 @@ object UseCaseModule {
     @Singleton
     fun providesGetStudyUserListUseCase(repository: StudyRepository): GetStudyUserListUseCase {
         return GetStudyUserListUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetStudyTaskListUseCase(repository: StudyRepository): GetStudyTaskListUseCase {
+        return GetStudyTaskListUseCase(repository)
     }
 }

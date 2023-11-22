@@ -7,7 +7,7 @@ import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.StudyStatus
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.user.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
     val list = List<Study>(20) {
         Study(
             studyId = 1,
-            status = StudyStatus.END,
+            status = Status.END,
             title = "알고리즘 스터디",
             owner = User(id = 333, name = "ejfie", nickname = "user"),
             category = StudyCategory(1, "HEALTH"),

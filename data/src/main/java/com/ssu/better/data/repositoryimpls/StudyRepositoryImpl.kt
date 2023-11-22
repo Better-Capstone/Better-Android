@@ -8,6 +8,7 @@ import com.ssu.better.entity.study.GroupRankHistory
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyRequest
 import com.ssu.better.entity.study.StudyUser
+import com.ssu.better.entity.task.Task
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -28,6 +29,9 @@ class StudyRepositoryImpl @Inject constructor(
 
     override suspend fun getStudyUserList(studyId: Long): Flow<ArrayList<StudyUser>> =
         CommonAPILogic.checkError(studyRemoteDataSource.getStudyUserList(studyId))
+
+    override suspend fun getStudyTaskList(studyId: Long): Flow<ArrayList<Task>> =
+        CommonAPILogic.checkError(studyRemoteDataSource.getStudyTaskList(studyId))
 
     override suspend fun getStudy(studyId: Long): Flow<Study> =
         CommonAPILogic.checkError(studyRemoteDataSource.getStudy(studyId))
