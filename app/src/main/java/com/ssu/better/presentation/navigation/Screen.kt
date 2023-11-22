@@ -17,6 +17,8 @@ sealed class Screen(val route: String) {
 
     object SelectCategory : Screen("select-category")
 
+    object StudyJoin : Screen("study-join")
+
     object StudyDetail : Screen("study-detail")
 
     object CreateTask : Screen("create-task")

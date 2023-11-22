@@ -45,6 +45,7 @@ import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.entity.user.UserRankName
 import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.component.StudyCard
+import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
@@ -60,6 +61,9 @@ fun MyPageScreen(
         uiState = uiState.value,
         isNotifyEnabled = isNotifyEnabled.value,
         onClickNotifyChange = viewModel::changeNotify,
+        onClickStudy = { study ->
+            navHostController.navigate(Screen.StudyDetail.route + "?studyId=${study.studyId}")
+        },
     )
 }
 
@@ -68,6 +72,7 @@ fun MyPageContent(
     uiState: MyPageViewModel.UIState,
     isNotifyEnabled: Boolean,
     onClickNotifyChange: (Boolean) -> Unit,
+    onClickStudy: (Study) -> Unit,
 ) {
     when (uiState) {
         is MyPageViewModel.UIState.Success -> {
@@ -78,6 +83,7 @@ fun MyPageContent(
                 onClickNotifyEnabledChange = onClickNotifyChange,
                 onClickLogout = {},
                 onClickWithDraw = {},
+                onClickStudy = onClickStudy,
             )
         }
 
@@ -95,6 +101,7 @@ fun MyPage(
     onClickNotifyEnabledChange: (Boolean) -> Unit,
     onClickLogout: () -> Unit,
     onClickWithDraw: () -> Unit,
+    onClickStudy: (Study) -> Unit,
 ) {
     Surface(color = BetterColors.Gray00) {
         Column(
@@ -121,6 +128,9 @@ fun MyPage(
                             .width(141.dp)
                             .height(165.dp),
                         study = item,
+                        onClick = {
+                            onClickStudy(item)
+                        },
                     )
                 }
             }
@@ -219,6 +229,7 @@ fun PreviewMyPage() {
         onClickNotifyEnabledChange = { },
         onClickLogout = { },
         onClickWithDraw = { },
+        onClickStudy = { },
     )
 }
 

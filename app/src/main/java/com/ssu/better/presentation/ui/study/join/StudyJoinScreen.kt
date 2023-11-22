@@ -51,8 +51,10 @@ import com.ssu.better.ui.theme.BetterColors
 @Composable
 fun StudyJoinScreen(
     navController: NavController,
+    studyId: Int,
     viewModel: StudyJoinViewModel = hiltViewModel(),
 ) {
+    viewModel.setStudyId(studyId)
     val uiState = viewModel.uiState.collectAsState()
     val hour = viewModel.hour.collectAsState()
     val minute = viewModel.minute.collectAsState()
@@ -128,9 +130,12 @@ fun StudyJoinContent(
                 isAm = isAm,
             )
         }
+        is StudyJoinViewModel.UIState.Loading -> {
+            ShowLoadingAnimation()
+        }
 
         else -> {
-            ShowLoadingAnimation()
+            onClickFinish()
         }
     }
 }
@@ -265,7 +270,7 @@ fun StudyJoin(
                 }
             }
 
-            items(8) { index ->
+            items(study.memberList.size) { index ->
                 StudyUser()
             }
 

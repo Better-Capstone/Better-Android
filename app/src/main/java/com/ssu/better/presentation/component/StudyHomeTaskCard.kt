@@ -49,8 +49,6 @@ fun StudyHomeTaskCard(
     onClickAdd: (Study) -> Unit,
     onClickTask: (Task) -> Unit,
 ) {
-    val taskMax = if (study.taskList.size > 5) 4 else study.taskList.size - 1
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -92,25 +90,27 @@ fun StudyHomeTaskCard(
                 )
             }
         }
-        LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
-            item {
-                study.taskList.forEach {
-                    TaskItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        task = it,
-                        baseDate = baseDate,
-                        onClick = {
-                            onClickTask(it)
-                        },
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .height(1.dp)
-                            .background(BetterColors.Gray00)
-                            .fillMaxWidth()
-                            .padding(horizontal = 2.dp),
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
+        if (!study.taskList.isNullOrEmpty()) {
+            LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
+                item {
+                    study.taskList.forEach {
+                        TaskItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            task = it,
+                            baseDate = baseDate,
+                            onClick = {
+                                onClickTask(it)
+                            },
+                        )
+                        Spacer(
+                            modifier = Modifier
+                                .height(1.dp)
+                                .background(BetterColors.Gray00)
+                                .fillMaxWidth()
+                                .padding(horizontal = 2.dp),
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
                 }
             }
         }
