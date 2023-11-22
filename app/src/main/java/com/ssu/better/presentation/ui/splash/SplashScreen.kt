@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
@@ -39,12 +40,12 @@ fun SplashScreen(
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
-    val token = viewModel.authToken.collectAsState()
+    val token by viewModel.authToken.collectAsStateWithLifecycle()
 
-    LaunchedEffect(token) {
+    LaunchedEffect(Unit) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             delay(2000)
-            if (token.value.isNullOrEmpty()) {
+            if (token.isNullOrBlank()) {
                 navController.navigate(Screen.Login.route) {
                     popUpTo(Screen.Splash.route) {
                         inclusive = true
