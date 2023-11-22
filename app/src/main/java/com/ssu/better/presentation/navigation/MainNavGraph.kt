@@ -115,5 +115,20 @@ fun MainNavGraph(navController: NavHostController) {
         composable(route = Screen.CreateTask.route) {
             CreateTaskScreen(navHostController = navController)
         }
+
+        composable(
+            route = Screen.StudyJoin.route + "?studyId={studyId}",
+            arguments = listOf(
+                navArgument("studyId") {
+                    type = NavType.IntType
+                    defaultValue = 0
+                },
+            ),
+        ) { navBackStackEntry ->
+            StudyJoinScreen(
+                navController = navController,
+                studyId = navBackStackEntry.arguments?.getInt("studyId") ?: 0,
+            )
+        }
     }
 }
