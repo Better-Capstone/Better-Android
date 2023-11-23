@@ -24,6 +24,6 @@ data class Task(
     val createdAt: String,
 
     @SerializedName("updatedAt")
-    val updatedAt: String
+    val updatedAt: String,
 
 )
