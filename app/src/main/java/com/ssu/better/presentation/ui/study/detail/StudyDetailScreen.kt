@@ -91,6 +91,7 @@ fun StudyDetailPreview() {
         userRankHistoryList = arrayListOf(testUserRankHistory),
         groupRank = testGroupRank,
         createdAt = "",
+        taskGroupList = arrayListOf(),
 
     )
     StudyDetailContent(

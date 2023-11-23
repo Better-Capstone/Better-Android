@@ -218,6 +218,7 @@ fun PreviewMyPage() {
         userRankHistoryList = arrayListOf(testUserRankHistory),
         groupRank = testGroupRank,
         createdAt = "",
+        taskGroupList = arrayListOf(),
     )
 
     val testStudyList = arrayListOf(testStudy, testStudy, testStudy)
