@@ -144,6 +144,7 @@ fun PreviewStudyHomeTaskCard() {
         userRankHistoryList = arrayListOf(testUserRankHistory),
         groupRank = testGroupRank,
         createdAt = "",
+        taskGroupList = arrayListOf(),
     )
     StudyHomeTaskCard(study = testStudy, baseDate = testTime, onClickAdd = {}, onClickTask = {})
 }

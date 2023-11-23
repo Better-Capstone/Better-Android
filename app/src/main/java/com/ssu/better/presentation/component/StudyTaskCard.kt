@@ -144,5 +144,6 @@ fun PreviewStudyCard() {
         userRankHistoryList = arrayListOf(testUserRankHistory),
         groupRank = testGroupRank,
         createdAt = "",
+        taskGroupList = arrayListOf(),
     )
 }
