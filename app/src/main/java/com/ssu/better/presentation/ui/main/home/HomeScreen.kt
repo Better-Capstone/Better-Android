@@ -41,7 +41,6 @@ import com.ssu.better.entity.study.StudyStatus
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
-import com.ssu.better.presentation.component.StudyTaskCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.AnimatedTransitionDialog
@@ -91,9 +90,9 @@ fun HomeScreen(
         10,
         1500,
         arrayListOf(testMember),
-        ArrayList(tasks),
-        arrayListOf(testUserRankHistory),
-        testGroupRank,
+        userRankHistoryList = arrayListOf(testUserRankHistory),
+        groupRank = testGroupRank,
+        createdAt = "",
     )
 
     LaunchedEffect(uiState) {
@@ -165,12 +164,12 @@ fun HomeScreen(
                 val studyList = List<Study>(3) { testStudy }
                 item {
                     studyList.forEach {
-                        StudyTaskCard(
-                            study = it,
-                            baseDate = testTime,
-                            onClickMore = {},
-                            onClickTask = {},
-                        )
+//                        StudyTaskCard(
+//                            study = it,
+//                            baseDate = testTime,
+//                            onClickMore = {},
+//                            onClickTask = {},
+//                        )
                     }
                 }
             }

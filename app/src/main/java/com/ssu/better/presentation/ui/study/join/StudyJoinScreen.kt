@@ -107,9 +107,9 @@ fun PreviewStudyJoin() {
         10,
         1500,
         arrayListOf(testMember),
-        arrayListOf(testTask),
-        arrayListOf(testUserRankHistory),
-        testGroupRank,
+        userRankHistoryList = arrayListOf(testUserRankHistory),
+        groupRank = testGroupRank,
+        createdAt = "",
     )
     val testStudyUser = StudyUser(1, "배현빈", "개발하는 북극곰", testUserRank, arrayListOf(testMember), arrayListOf(testStudy), "", "")
 

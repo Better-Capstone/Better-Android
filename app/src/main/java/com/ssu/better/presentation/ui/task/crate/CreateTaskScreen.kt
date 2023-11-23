@@ -94,7 +94,8 @@ fun CreateTaskScreen(
                         type = BetterButtonType.DEFAULT,
                         modifier = Modifier.fillMaxWidth(),
                         enabled = content.isNotBlank() && content.length <= CONTENT_MAX,
-                    ) {}
+                        onClick = {},
+                    )
                 }
             }
         },
