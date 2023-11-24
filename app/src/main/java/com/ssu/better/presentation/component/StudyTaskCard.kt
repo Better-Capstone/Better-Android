@@ -32,7 +32,6 @@ import com.ssu.better.entity.study.StudyStatus
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
-import com.ssu.better.entity.user.UserTask
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.toLocalDate
@@ -43,10 +42,9 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun StudyTaskCard(
     modifier: Modifier = Modifier,
-    userTask: UserTask,
-    studyTitle: String = "",
+    study: Study,
     baseDate: LocalDate,
-    onClickMore: (Long) -> Unit,
+    onClickMore: (Study) -> Unit,
     onClickTask: (Task) -> Unit,
 ) {
     Card(
@@ -76,7 +74,7 @@ fun StudyTaskCard(
                     .padding(end = 8.dp),
             )
             Text(
-                text = studyTitle,
+                text = study.title,
                 style = BetterAndroidTheme.typography.headline3,
                 modifier = Modifier
                     .weight(1f)
@@ -84,7 +82,7 @@ fun StudyTaskCard(
             )
             MoreButton(
                 onClick = {
-                    onClickMore(userTask.id)
+//                    onClickMore(userTask.id)
                 },
             )
         }
