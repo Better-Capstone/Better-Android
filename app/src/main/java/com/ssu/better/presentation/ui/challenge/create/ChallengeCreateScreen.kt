@@ -1,10 +1,20 @@
 package com.ssu.better.presentation.ui.challenge.create
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -12,14 +22,24 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.ssu.better.R
 import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
@@ -33,7 +53,10 @@ import com.ssu.better.entity.study.StudyStatus
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
+import com.ssu.better.presentation.component.BetterButton
+import com.ssu.better.presentation.component.BetterButtonType
 import com.ssu.better.presentation.component.BetterRoundChip
+import com.ssu.better.presentation.component.BetterTextField
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.getIcon
@@ -77,10 +100,22 @@ fun PreviewChallengeCreate() {
         arrayListOf(testUserRankHistory),
         testGroupRank,
     )
+
+    var description by remember { mutableStateOf("") }
+    var imageUri: Uri? by remember { mutableStateOf(null) }
     ChallengeCreateContent(
         task = testTask,
         study = testStudy,
         onClickFinish = { },
+        description = description,
+        onDescriptionChanged = { value ->
+            description = value
+        },
+        imageUri = imageUri,
+        onUriChanged = { value ->
+            imageUri = value
+        },
+        onClickVerifyButton = { },
     )
 }
 
@@ -90,8 +125,17 @@ fun ChallengeCreateContent(
     task: Task,
     study: Study,
     onClickFinish: () -> Unit,
+    description: String,
+    onDescriptionChanged: (String) -> Unit,
+    imageUri: Uri?,
+    onUriChanged: (Uri?) -> Unit,
+    onClickVerifyButton: () -> Unit,
 ) {
     val pattern = "yyyy-MM-dd"
+
+    val launhcer = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        onUriChanged(uri)
+    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -154,6 +198,74 @@ fun ChallengeCreateContent(
                     color = BetterColors.Black,
                 )
             }
+
+            BetterTextField(
+                modifier = Modifier
+                    .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                    .height(110.dp)
+                    .shadow(elevation = 10.dp),
+                value = description,
+                onValueChange = onDescriptionChanged,
+                hint = stringResource(id = R.string.description),
+                textStyle = BetterAndroidTheme.typography.body.copy(textAlign = TextAlign.Start),
+                isSingleLine = false,
+                hintAlignment = Alignment.TopStart,
+                backgroundColor = BetterColors.White,
+            )
+
+            if (imageUri == null) {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(284.dp)
+                        .padding(top = 20.dp, start = 20.dp, end = 20.dp),
+                    onClick = {
+                        launhcer.launch(
+                            PickVisualMediaRequest(
+                                mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly,
+                            ),
+                        )
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BetterColors.Gray00,
+                        contentColor = BetterColors.Primary50,
+                    ),
+                ) {
+                    Icon(
+                        modifier = Modifier.size(35.dp),
+                        painter = painterResource(id = R.drawable.ic_camera),
+                        contentDescription = null,
+                    )
+                }
+            } else {
+                val painter = rememberAsyncImagePainter(
+                    ImageRequest
+                        .Builder(LocalContext.current)
+                        .data(data = imageUri)
+                        .build(),
+                )
+
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(284.dp)
+                        .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    painter = painter,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                )
+            }
+
+            BetterButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp),
+                text = stringResource(id = R.string.verify),
+                type = BetterButtonType.DEFAULT,
+                onClick = onClickVerifyButton,
+            )
         }
     }
 }

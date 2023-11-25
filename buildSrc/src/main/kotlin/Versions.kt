@@ -31,4 +31,5 @@ object Versions {
     const val compose_lifecycle = "2.6.2"
     const val datastore = "1.0.0"
     const val kakao ="2.17.0"
+    const val coil = "2.5.0"
 }

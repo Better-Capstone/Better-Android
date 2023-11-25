@@ -118,6 +118,9 @@ dependencies {
 
     // kakao
     implementation("com.kakao.sdk:v2-user:${Versions.kakao}")
+
+    // coil
+    implementation("io.coil-kt:coil-compose:${Versions.coil}")
 }
 
 fun getApiKey(propertyKey: String): String {
