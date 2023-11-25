@@ -20,7 +20,11 @@ class HomeViewModel @Inject constructor(
     private val getStudyListByUserUseCase: GetStudyListByUserUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState(LocalDate.now()))
+    private val _uiState = MutableStateFlow<HomeUiState>(
+        HomeUiState(
+            LocalDate.now(),
+        ),
+    )
     val uiState get() = _uiState
 
     fun changeSelectedDate(date: LocalDate) {
