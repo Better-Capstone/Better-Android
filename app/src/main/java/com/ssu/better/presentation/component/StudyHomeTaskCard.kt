@@ -3,14 +3,10 @@ package com.ssu.better.presentation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -90,30 +86,30 @@ fun StudyHomeTaskCard(
                 )
             }
         }
-        if (!study.taskList.isNullOrEmpty()) {
-            LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
-                item {
-                    study.taskList.forEach {
-                        TaskItem(
-                            modifier = Modifier.fillMaxWidth(),
-                            task = it,
-                            baseDate = baseDate,
-                            onClick = {
-                                onClickTask(it)
-                            },
-                        )
-                        Spacer(
-                            modifier = Modifier
-                                .height(1.dp)
-                                .background(BetterColors.Gray00)
-                                .fillMaxWidth()
-                                .padding(horizontal = 2.dp),
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                    }
-                }
-            }
-        }
+//        if (!study.taskList.isNullOrEmpty()) {
+//            LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
+//                item {
+//                    study.taskList.forEach {
+//                        TaskItem(
+//                            modifier = Modifier.fillMaxWidth(),
+//                            task = it,
+//                            baseDate = baseDate,
+//                            onClick = {
+//                                onClickTask(it)
+//                            },
+//                        )
+//                        Spacer(
+//                            modifier = Modifier
+//                                .height(1.dp)
+//                                .background(BetterColors.Gray00)
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 2.dp),
+//                        )
+//                        Spacer(modifier = Modifier.height(10.dp))
+//                    }
+//                }
+//            }
+//        }
     }
 }
 
@@ -145,9 +141,10 @@ fun PreviewStudyHomeTaskCard() {
         10,
         1500,
         arrayListOf(testMember),
-        ArrayList(tasks),
-        arrayListOf(testUserRankHistory),
-        testGroupRank,
+        userRankHistoryList = arrayListOf(testUserRankHistory),
+        groupRank = testGroupRank,
+        createdAt = "",
+        taskGroupList = arrayListOf(),
     )
     StudyHomeTaskCard(study = testStudy, baseDate = testTime, onClickAdd = {}, onClickTask = {})
 }

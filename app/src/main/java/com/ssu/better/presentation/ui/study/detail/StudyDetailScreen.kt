@@ -88,9 +88,11 @@ fun StudyDetailPreview() {
         10,
         1500,
         arrayListOf(testMember),
-        tasks,
-        arrayListOf(testUserRankHistory),
-        testGroupRank,
+        userRankHistoryList = arrayListOf(testUserRankHistory),
+        groupRank = testGroupRank,
+        createdAt = "",
+        taskGroupList = arrayListOf(),
+
     )
     StudyDetailContent(
         onClickFinish = { },

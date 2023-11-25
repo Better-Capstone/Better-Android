@@ -2,7 +2,7 @@ package com.ssu.better.entity.study
 
 import com.google.gson.annotations.SerializedName
 import com.ssu.better.entity.member.Member
-import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 
@@ -46,12 +46,15 @@ data class Study(
     @SerializedName("memberList")
     val memberList: ArrayList<Member>,
 
-    @SerializedName("taskList")
-    val taskList: ArrayList<Task>,
+    @SerializedName("taskGroupList")
+    val taskGroupList: ArrayList<TaskGroup>,
 
     @SerializedName("userRankHistoryList")
     val userRankHistoryList: ArrayList<UserRankHistory>,
 
     @SerializedName("groupRank")
     val groupRank: GroupRank,
+
+    @SerializedName("createdAt")
+    val createdAt: String,
 )
