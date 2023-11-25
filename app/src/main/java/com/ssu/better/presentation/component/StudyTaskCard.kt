@@ -50,7 +50,7 @@ fun StudyTaskCard(
     onClickMore: (Study) -> Unit,
     onClickTask: (Task) -> Unit,
 ) {
-    val taskMax = if (study.taskList.size > 5) 4 else study.taskList.size - 1
+    val taskMax = if (study.taskList?.size ?: 0 > 5) 4 else study.taskList?.size?.minus(1)
 
     Card(
         modifier = modifier
@@ -93,7 +93,7 @@ fun StudyTaskCard(
         }
         LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
             item {
-                study.taskList.forEach {
+                study.taskList?.forEach {
                     TaskItem(
                         modifier = Modifier.fillMaxWidth(),
                         task = it,

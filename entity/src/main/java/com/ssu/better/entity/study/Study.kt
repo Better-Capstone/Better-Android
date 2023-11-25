@@ -47,7 +47,7 @@ data class Study(
     val memberList: ArrayList<Member>,
 
     @SerializedName("taskList")
-    val taskList: ArrayList<Task>,
+    val taskList: ArrayList<Task>?,
 
     @SerializedName("userRankHistoryList")
     val userRankHistoryList: ArrayList<UserRankHistory>,

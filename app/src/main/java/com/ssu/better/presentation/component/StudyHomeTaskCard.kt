@@ -93,7 +93,7 @@ fun StudyHomeTaskCard(
         if (!study.taskList.isNullOrEmpty()) {
             LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
                 item {
-                    study.taskList.forEach {
+                    study.taskList?.forEach {
                         TaskItem(
                             modifier = Modifier.fillMaxWidth(),
                             task = it,
