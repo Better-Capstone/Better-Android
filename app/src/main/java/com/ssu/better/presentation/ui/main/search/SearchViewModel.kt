@@ -10,12 +10,12 @@ import com.ssu.better.domain.usecase.study.GetStudyListUseCase
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.SortOption
 import com.ssu.better.entity.study.Study
+import com.ssu.better.util.getHttpErrorMsg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,16 +49,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.emit(SearchUiState.Loading)
             getStudyListUseCase.getStudyList().catch {
-                Timber.e(it)
-                when ((it as HttpException).code) {
-                    404 -> {
-                        _uiState.emit(SearchUiState.Fail("해당 카테고리는 존재하지 않습니다."))
-                    }
-
-                    else -> {
-                        _uiState.emit(SearchUiState.Fail("오류가 발생했습니다."))
-                    }
-                }
+                _uiState.emit(SearchUiState.Fail((it as HttpException).getHttpErrorMsg()))
             }.collectLatest { res ->
                 if (res.isEmpty()) {
                     _uiState.emit(SearchUiState.Empty)
@@ -73,16 +64,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.emit(SearchUiState.Loading)
             getStudyListByCategoryUseCase.getStudyListByCategory(category.id).catch {
-                Timber.e(it)
-                when ((it as HttpException).code) {
-                    404 -> {
-                        _uiState.emit(SearchUiState.Fail("해당 카테고리는 존재하지 않습니다."))
-                    }
-
-                    else -> {
-                        _uiState.emit(SearchUiState.Fail("오류가 발생했습니다."))
-                    }
-                }
+                _uiState.emit(SearchUiState.Fail((it as HttpException).getHttpErrorMsg()))
             }.collectLatest { res ->
                 if (res.isEmpty()) {
                     _uiState.emit(SearchUiState.Empty)
@@ -98,16 +80,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.emit(SearchUiState.Loading)
             getStudyListByQueryUseCase.getStudyListByQuery(keyword, categoryId).catch {
-                Timber.e(it)
-                when ((it as HttpException).code) {
-                    404 -> {
-                        _uiState.emit(SearchUiState.Fail("해당 카테고리는 존재하지 않습니다."))
-                    }
-
-                    else -> {
-                        _uiState.emit(SearchUiState.Fail("오류가 발생했습니다."))
-                    }
-                }
+                _uiState.emit(SearchUiState.Fail((it as HttpException).getHttpErrorMsg()))
             }.collectLatest { res ->
                 if (res.isEmpty()) {
                     _uiState.emit(SearchUiState.Empty)
