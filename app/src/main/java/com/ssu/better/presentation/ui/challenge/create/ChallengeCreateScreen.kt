@@ -22,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -57,6 +59,7 @@ import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
 import com.ssu.better.presentation.component.BetterRoundChip
 import com.ssu.better.presentation.component.BetterTextField
+import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.getIcon
@@ -67,6 +70,21 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun ChallengeCreateScreen(navController: NavHostController) {
+    val viewModel: ChallengeCreateViewModel = hiltViewModel()
+
+    val event by viewModel.event.collectAsState()
+    val description by viewModel.description.collectAsState()
+    val imageUri by viewModel.imageUri.collectAsState()
+
+    ChallengeCreate(
+        challengeCreateEvent = event,
+        onClickFinish = viewModel::onClickFinish,
+        description = description,
+        onDescriptionChanged = viewModel::updateDescription,
+        imageUri = imageUri,
+        onUriChanged = viewModel::updateImageUri,
+        onClickVerifyButton = viewModel::postChallenge,
+    )
 }
 
 @Composable
@@ -103,9 +121,8 @@ fun PreviewChallengeCreate() {
 
     var description by remember { mutableStateOf("") }
     var imageUri: Uri? by remember { mutableStateOf(null) }
-    ChallengeCreateContent(
-        task = testTask,
-        study = testStudy,
+    ChallengeCreate(
+        challengeCreateEvent = ChallengeCreateViewModel.ChallengeCreateEvent.Success(study = testStudy, task = testTask),
         onClickFinish = { },
         description = description,
         onDescriptionChanged = { value ->
@@ -121,9 +138,8 @@ fun PreviewChallengeCreate() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChallengeCreateContent(
-    task: Task,
-    study: Study,
+fun ChallengeCreate(
+    challengeCreateEvent: ChallengeCreateViewModel.ChallengeCreateEvent,
     onClickFinish: () -> Unit,
     description: String,
     onDescriptionChanged: (String) -> Unit,
@@ -131,11 +147,6 @@ fun ChallengeCreateContent(
     onUriChanged: (Uri?) -> Unit,
     onClickVerifyButton: () -> Unit,
 ) {
-    val pattern = "yyyy-MM-dd"
-
-    val launhcer = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        onUriChanged(uri)
-    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -160,112 +171,128 @@ fun ChallengeCreateContent(
             )
         },
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            Text(
-                modifier = Modifier.padding(start = 20.dp, top = 30.dp),
-                text = LocalDate.now().format(DateTimeFormatter.ofPattern(pattern)) ?: "",
-                style = BetterAndroidTheme.typography.headline4,
-                color = BetterColors.Gray30,
-            )
-
-            Row(
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    modifier = Modifier.size(18.4.dp),
-                    painter = painterResource(id = study.category.getIcon()),
-                    contentDescription = null,
-                )
-
-                Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = study.category.name,
-                    style = BetterAndroidTheme.typography.headline2,
-                    color = BetterColors.Black,
-                )
+        when (challengeCreateEvent) {
+            is ChallengeCreateViewModel.ChallengeCreateEvent.Load -> {
+                ShowLoadingAnimation()
             }
 
-            Row(
-                modifier = Modifier.padding(start = 20.dp, top = 20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                BetterRoundChip(enabled = true, text = "89회차", onClick = {})
-                Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = task.title,
-                    style = BetterAndroidTheme.typography.subtitle,
-                    color = BetterColors.Black,
-                )
+            is ChallengeCreateViewModel.ChallengeCreateEvent.Finish -> {
+                onClickFinish()
             }
 
-            BetterTextField(
-                modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp, top = 20.dp)
-                    .height(110.dp)
-                    .shadow(elevation = 10.dp),
-                value = description,
-                onValueChange = onDescriptionChanged,
-                hint = stringResource(id = R.string.description),
-                textStyle = BetterAndroidTheme.typography.body.copy(textAlign = TextAlign.Start),
-                isSingleLine = false,
-                hintAlignment = Alignment.TopStart,
-                backgroundColor = BetterColors.White,
-            )
+            is ChallengeCreateViewModel.ChallengeCreateEvent.Success -> {
+                val pattern = "yyyy-MM-dd"
+                val launhcer = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                    onUriChanged(uri)
+                }
+                Column(modifier = Modifier.padding(paddingValues)) {
+                    Text(
+                        modifier = Modifier.padding(start = 20.dp, top = 30.dp),
+                        text = LocalDate.now().format(DateTimeFormatter.ofPattern(pattern)) ?: "",
+                        style = BetterAndroidTheme.typography.headline4,
+                        color = BetterColors.Gray30,
+                    )
 
-            if (imageUri == null) {
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(284.dp)
-                        .padding(top = 20.dp, start = 20.dp, end = 20.dp),
-                    onClick = {
-                        launhcer.launch(
-                            PickVisualMediaRequest(
-                                mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly,
-                            ),
+                    Row(
+                        modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(18.4.dp),
+                            painter = painterResource(id = challengeCreateEvent.study.category.getIcon()),
+                            contentDescription = null,
                         )
-                    },
-                    shape = RoundedCornerShape(10.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = BetterColors.Gray00,
-                        contentColor = BetterColors.Primary50,
-                    ),
-                ) {
-                    Icon(
-                        modifier = Modifier.size(35.dp),
-                        painter = painterResource(id = R.drawable.ic_camera),
-                        contentDescription = null,
+
+                        Text(
+                            modifier = Modifier.padding(start = 8.dp),
+                            text = challengeCreateEvent.study.category.name,
+                            style = BetterAndroidTheme.typography.headline2,
+                            color = BetterColors.Black,
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.padding(start = 20.dp, top = 20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        BetterRoundChip(enabled = true, text = "89회차", onClick = {})
+                        Text(
+                            modifier = Modifier.padding(start = 8.dp),
+                            text = challengeCreateEvent.task.title,
+                            style = BetterAndroidTheme.typography.subtitle,
+                            color = BetterColors.Black,
+                        )
+                    }
+
+                    BetterTextField(
+                        modifier = Modifier
+                            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                            .height(110.dp)
+                            .shadow(elevation = 10.dp),
+                        value = description,
+                        onValueChange = onDescriptionChanged,
+                        hint = stringResource(id = R.string.description),
+                        textStyle = BetterAndroidTheme.typography.body.copy(textAlign = TextAlign.Start),
+                        isSingleLine = false,
+                        hintAlignment = Alignment.TopStart,
+                        backgroundColor = BetterColors.White,
+                    )
+
+                    if (imageUri == null) {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(284.dp)
+                                .padding(top = 20.dp, start = 20.dp, end = 20.dp),
+                            onClick = {
+                                launhcer.launch(
+                                    PickVisualMediaRequest(
+                                        mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly,
+                                    ),
+                                )
+                            },
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = BetterColors.Gray00,
+                                contentColor = BetterColors.Primary50,
+                            ),
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(35.dp),
+                                painter = painterResource(id = R.drawable.ic_camera),
+                                contentDescription = null,
+                            )
+                        }
+                    } else {
+                        val painter = rememberAsyncImagePainter(
+                            ImageRequest
+                                .Builder(LocalContext.current)
+                                .data(data = imageUri)
+                                .build(),
+                        )
+
+                        Image(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(284.dp)
+                                .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                                .clip(RoundedCornerShape(10.dp)),
+                            painter = painter,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+
+                    BetterButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 20.dp, start = 20.dp, end = 20.dp),
+                        text = stringResource(id = R.string.verify),
+                        type = BetterButtonType.DEFAULT,
+                        onClick = onClickVerifyButton,
                     )
                 }
-            } else {
-                val painter = rememberAsyncImagePainter(
-                    ImageRequest
-                        .Builder(LocalContext.current)
-                        .data(data = imageUri)
-                        .build(),
-                )
-
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(284.dp)
-                        .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-                    painter = painter,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                )
             }
-
-            BetterButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, start = 20.dp, end = 20.dp),
-                text = stringResource(id = R.string.verify),
-                type = BetterButtonType.DEFAULT,
-                onClick = onClickVerifyButton,
-            )
         }
     }
 }
