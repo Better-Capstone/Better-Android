@@ -41,15 +41,18 @@ import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
-import com.ssu.better.presentation.component.StudyTaskCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.AnimatedTransitionDialog
 import com.ssu.better.util.CustomDialogPosition
 import com.ssu.better.util.customDialogModifier
 import com.ssu.better.util.noRippleClickable
+import com.ssu.better.util.toLocalDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -103,9 +106,10 @@ fun HomeScreen(
         10,
         1500,
         arrayListOf(testMember),
-        ArrayList(tasks),
+        arrayListOf(testTaskGroup),
         arrayListOf(testUserRankHistory),
         testGroupRank,
+        "",
     )
 
     LaunchedEffect(uiState) {
