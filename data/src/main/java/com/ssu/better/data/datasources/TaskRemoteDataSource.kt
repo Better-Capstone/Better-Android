@@ -5,8 +5,8 @@ import com.ssu.better.entity.challenge.ChallengeRequest
 import retrofit2.Retrofit
 
 class TaskRemoteDataSource(
-    private val retrofitPair: Pair<Retrofit, Retrofit>,
-    ) {
+    retrofitPair: Pair<Retrofit, Retrofit>,
+) {
     private val tokenTaskService = retrofitPair.second.create(TaskService::class.java)
 
     suspend fun getTask(id: Long) = tokenTaskService.getTask(taskId = id)

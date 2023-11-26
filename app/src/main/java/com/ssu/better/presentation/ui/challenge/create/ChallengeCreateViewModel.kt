@@ -103,7 +103,6 @@ class ChallengeCreateViewModel @Inject constructor(
                         _event.emit(ChallengeCreateEvent.Finish)
                     }
             }
-
         }
     }
 }
