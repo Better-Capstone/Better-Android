@@ -6,14 +6,17 @@ data class Challenge(
     @SerializedName("id")
     val id: Long,
 
-    @SerializedName("task_id")
-    val taskId: Long,
-
     @SerializedName("description")
     val description: String,
 
     @SerializedName("image")
     val image: String,
+
+    @SerializedName("approveMember")
+    val approveMember: ArrayList<Int>,
+
+    @SerializedName("rejectMember")
+    val rejectMember: ArrayList<Int>,
 
     @SerializedName("createdAt")
     val createdAt: String,

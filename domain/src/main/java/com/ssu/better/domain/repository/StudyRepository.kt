@@ -5,6 +5,7 @@ import com.ssu.better.entity.study.GroupRankHistory
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyRequest
 import com.ssu.better.entity.study.StudyUser
+import com.ssu.better.entity.task.Task
 import kotlinx.coroutines.flow.Flow
 
 interface StudyRepository {
@@ -17,6 +18,8 @@ interface StudyRepository {
     suspend fun getStudyListByCategory(categoryId: Long): Flow<ArrayList<Study>>
 
     suspend fun getStudyUserList(studyId: Long): Flow<ArrayList<StudyUser>>
+
+    suspend fun getStudyTaskList(studyId: Long): Flow<ArrayList<Task>>
 
     suspend fun getStudy(studyId: Long): Flow<Study>
 

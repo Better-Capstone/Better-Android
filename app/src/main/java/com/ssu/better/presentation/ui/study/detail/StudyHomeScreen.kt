@@ -41,6 +41,7 @@ import java.time.ZoneOffset
 @Composable
 fun StudyHomeScreen(
     study: Study,
+    taskList: ArrayList<Task>,
     onClickMember: () -> Unit = { },
     onClickReport: () -> Unit = { },
     onClickMyStudy: () -> Unit = { },
@@ -86,7 +87,7 @@ fun StudyHomeScreen(
                         ) {
                             GradientProgressIndicator(
                                 modifier = Modifier.size(156.dp),
-                                progress = 0.78f,
+                                progress = if (taskList.size > 0) taskList.size.toFloat() / study.memberCount else 0f,
                                 strokeWidth = 16.dp,
                             )
 
