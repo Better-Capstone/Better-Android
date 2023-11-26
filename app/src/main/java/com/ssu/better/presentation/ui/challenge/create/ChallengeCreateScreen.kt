@@ -47,12 +47,13 @@ import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.StudyStatus
 import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.BetterButton
@@ -69,12 +70,18 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun ChallengeCreateScreen(navController: NavHostController) {
+fun ChallengeCreateScreen(
+    navController: NavHostController,
+    studyId: Long,
+    taskId: Long,
+) {
     val viewModel: ChallengeCreateViewModel = hiltViewModel()
 
     val event by viewModel.event.collectAsState()
     val description by viewModel.description.collectAsState()
     val imageUri by viewModel.imageUri.collectAsState()
+
+    viewModel.load(studyId, taskId)
 
     ChallengeCreate(
         challengeCreateEvent = event,
@@ -84,6 +91,7 @@ fun ChallengeCreateScreen(navController: NavHostController) {
         imageUri = imageUri,
         onUriChanged = viewModel::updateImageUri,
         onClickVerifyButton = viewModel::postChallenge,
+        finishAction = { navController.popBackStack() },
     )
 }
 
@@ -95,7 +103,23 @@ fun PreviewChallengeCreate() {
     val time = "2023-11-28T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
     val testUser = User(1, "배현빈", "개발하는 북극곰")
     val testMember = Member(1, 1, MemberType.MEMBER, time)
-    val testTask = Task(1, 1, time, 1, 1, time, time, "제목")
+    val testTaskGroup = TaskGroup(
+        taskGroupId = 1,
+        status = Status.INPROGRESS,
+        startDate = "",
+        endDate = time,
+        createdAt = "",
+        updatedAt = "",
+    )
+    val testTask = Task(
+        taskId = 1,
+        taskGroup = testTaskGroup,
+        member = testMember,
+        challenge = null,
+        createdAt = time,
+        updatedAt = time,
+        title = "",
+    )
     val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
@@ -106,7 +130,7 @@ fun PreviewChallengeCreate() {
         testCategory,
         "알고리즘 스터디",
         "스터디 설명",
-        StudyStatus.INPROGRESS,
+        Status.INPROGRESS,
         StudyPeriod.EVERYDAY,
         StudyCheckDay.EVERYDAY,
         5,
@@ -114,9 +138,10 @@ fun PreviewChallengeCreate() {
         10,
         1500,
         arrayListOf(testMember),
-        ArrayList(tasks),
+        arrayListOf(testTaskGroup),
         arrayListOf(testUserRankHistory),
         testGroupRank,
+        "",
     )
 
     var description by remember { mutableStateOf("") }
@@ -146,6 +171,7 @@ fun ChallengeCreate(
     imageUri: Uri?,
     onUriChanged: (Uri?) -> Unit,
     onClickVerifyButton: () -> Unit,
+    finishAction: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -177,7 +203,7 @@ fun ChallengeCreate(
             }
 
             is ChallengeCreateViewModel.ChallengeCreateEvent.Finish -> {
-                onClickFinish()
+                finishAction()
             }
 
             is ChallengeCreateViewModel.ChallengeCreateEvent.Success -> {
