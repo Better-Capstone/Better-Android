@@ -22,6 +22,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
@@ -46,10 +47,13 @@ fun BetterTextField(
     counterMaxLength: Int = 0,
     enabled: Boolean = true,
     isError: Boolean = false,
+    isSingleLine: Boolean = true,
+    backgroundColor: Color = BetterColors.Gray00,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
     keyboardActions: KeyboardActions = KeyboardActions(),
     minHeight: Dp = TextFieldMinHeight,
     maxHeight: Dp = minHeight,
+    hintAlignment: Alignment = Alignment.CenterStart,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
@@ -82,20 +86,20 @@ fun BetterTextField(
                 textStyle = textStyle,
                 keyboardOptions = keyboardOptions,
                 keyboardActions = keyboardActions,
-                singleLine = true,
+                singleLine = isSingleLine,
                 interactionSource = interactionSource,
                 visualTransformation = visualTransformation,
                 decorationBox = @Composable { innerTextField ->
                     Surface(
                         modifier = if (isError) borderModifier else baseModifier,
-                        color = BetterColors.Gray00,
+                        color = backgroundColor,
                         shape = RoundedCornerShape(TextFieldRound),
                     ) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 14.dp, horizontal = 10.dp),
-                            contentAlignment = Alignment.CenterStart,
+                            contentAlignment = hintAlignment,
                         ) {
                             if (value.isEmpty()) {
                                 Text(
