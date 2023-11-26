@@ -8,4 +8,25 @@ enum class Category(val kor: String, val id: Long) {
     CERTIFICATE("자격증", 5),
     HEALTH("건강", 6),
     ALL("전체", 7),
+    ;
+
+    companion object {
+        fun safeValueOf(name: String, default: Category = Category.ALL): Category {
+            return try {
+                Category.valueOf(
+                    name,
+                )
+            } catch (e: IllegalArgumentException) {
+                default
+            }
+        }
+
+        fun safeValueOf(id: Long, default: Category = Category.ALL): Category {
+            return try {
+                Category.values().first { it.id == id }
+            } catch (e: IllegalArgumentException) {
+                default
+            }
+        }
+    }
 }

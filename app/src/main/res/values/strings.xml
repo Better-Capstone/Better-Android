@@ -23,4 +23,6 @@
     <string name="button_complete">완료</string>
 
     <string name="task_create_hint">할 일</string>
+    <string name="search_guide">어떤 스터디를 찾고 신가요?</string>
+    <string name="search_empty">검색 결과가 없습니다.</string>
 </resources>

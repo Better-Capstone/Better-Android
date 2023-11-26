@@ -6,7 +6,8 @@ import com.ssu.better.data.datasources.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,8 +26,10 @@ class SplashViewModel @Inject constructor(
     private fun getAuthToken() {
         viewModelScope.launch {
             run {
-                tokenManager.getAccessToken().collect { token ->
-                    _authToken.update { token }
+                tokenManager.getAccessToken().catch { cause ->
+                    Timber.e(cause)
+                }.collectLatest { token ->
+                    _authToken.emit(token)
                     Timber.d("token : $token")
                 }
             }

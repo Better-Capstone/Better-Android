@@ -44,4 +44,9 @@ class StudyRepositoryImpl @Inject constructor(
 
     override suspend fun getGroupRankHistory(studyId: Long): Flow<ArrayList<GroupRankHistory>> =
         CommonAPILogic.checkError(studyRemoteDataSource.getGroupRankHistory(studyId))
+
+    override suspend fun getStudyListByQuery(keyword: String, categoryId: Int?): Flow<ArrayList<Study>> = CommonAPILogic.checkError(
+        studyRemoteDataSource
+            .getStudyQueryList(keyword, categoryId),
+    )
 }

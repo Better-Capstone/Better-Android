@@ -1,10 +1,7 @@
 package com.ssu.better.presentation.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -22,6 +19,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ssu.better.R
 import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
@@ -37,7 +35,6 @@ import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
-import com.ssu.better.util.getIcon
 import com.ssu.better.util.toLocalDate
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -51,8 +48,6 @@ fun StudyTaskCard(
     onClickMore: (Study) -> Unit,
     onClickTask: (Task) -> Unit,
 ) {
-    val taskMax = if (study.taskList.size > 5) 4 else study.taskList.size - 1
-
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -72,7 +67,7 @@ fun StudyTaskCard(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                painterResource(id = study.category.getIcon()),
+                painterResource(id = R.drawable.ic_group),
                 null,
                 modifier = Modifier
                     .size(24.dp)
@@ -88,31 +83,31 @@ fun StudyTaskCard(
             )
             MoreButton(
                 onClick = {
-                    onClickMore(study)
+//                    onClickMore(userTask.id)
                 },
             )
         }
         LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
-            item {
-                study.taskList.forEach {
-                    TaskItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        task = it,
-                        baseDate = baseDate,
-                        onClick = {
-                            onClickTask(it)
-                        },
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .height(1.dp)
-                            .background(BetterColors.Gray00)
-                            .fillMaxWidth()
-                            .padding(horizontal = 2.dp),
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-            }
+//            item {
+//                userTask.taskGroup.forEach {
+//                    TaskItem(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        taskGroup = it.taskGroup,
+//                        baseDate = baseDate,
+//                        onClick = {
+//                            onClickTask(it)
+//                        },
+//                    )
+//                    Spacer(
+//                        modifier = Modifier
+//                            .height(1.dp)
+//                            .background(BetterColors.Gray00)
+//                            .fillMaxWidth()
+//                            .padding(horizontal = 2.dp),
+//                    )
+//                    Spacer(modifier = Modifier.height(10.dp))
+//                }
+//            }
         }
     }
 }
@@ -161,9 +156,9 @@ fun PreviewStudyCard() {
         10,
         1500,
         arrayListOf(testMember),
-        ArrayList(tasks),
-        arrayListOf(testUserRankHistory),
-        testGroupRank,
+        userRankHistoryList = arrayListOf(testUserRankHistory),
+        groupRank = testGroupRank,
+        createdAt = "",
+        taskGroupList = arrayListOf(),
     )
-    StudyTaskCard(study = testStudy, baseDate = testTime, onClickMore = {}, onClickTask = {})
 }

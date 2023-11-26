@@ -11,6 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface StudyService {
     @POST("/study/create")
@@ -24,6 +25,12 @@ interface StudyService {
 
     @GET("/study/category/{categoryId}")
     suspend fun getStudyListByCategory(@Path("categoryId") categoryId: Long): Response<ArrayList<Study>>
+
+    @GET("/study/search")
+    suspend fun getStudyListByQuery(
+        @Query("keyword") keyword: String,
+        @Query("categoryId") categoryId: Int?,
+    ): Response<ArrayList<Study>>
 
     @GET("/study/{studyId}")
     suspend fun getStudy(@Path("studyId") studyId: Long): Response<Study>

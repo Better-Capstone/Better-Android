@@ -21,4 +21,4 @@ data class TaskGroup(
 
     @SerializedName("updatedAt")
     val updatedAt: String,
-)
+}

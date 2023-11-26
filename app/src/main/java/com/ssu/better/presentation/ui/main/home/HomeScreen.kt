@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -49,12 +48,8 @@ import com.ssu.better.util.AnimatedTransitionDialog
 import com.ssu.better.util.CustomDialogPosition
 import com.ssu.better.util.customDialogModifier
 import com.ssu.better.util.noRippleClickable
-import com.ssu.better.util.toLocalDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -176,20 +171,6 @@ fun HomeScreen(
                         .noRippleClickable { isDialogOpen = !isDialogOpen },
                     tint = BetterColors.Primary50,
                 )
-            }
-
-            LazyColumn() {
-                val studyList = List<Study>(3) { testStudy }
-                item {
-                    studyList.forEach {
-                        StudyTaskCard(
-                            study = it,
-                            baseDate = testTime,
-                            onClickMore = {},
-                            onClickTask = {},
-                        )
-                    }
-                }
             }
         }
     }
