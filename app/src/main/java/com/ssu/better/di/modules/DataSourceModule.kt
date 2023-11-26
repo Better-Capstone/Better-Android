@@ -1,6 +1,7 @@
 package com.ssu.better.di.modules
 
 import com.ssu.better.data.datasources.StudyRemoteDataSource
+import com.ssu.better.data.datasources.TaskRemoteDataSource
 import com.ssu.better.data.datasources.UserRemoteDataSource
 import dagger.Module
 import dagger.Provides
@@ -22,5 +23,11 @@ object DataSourceModule {
     @Singleton
     fun providesStudyRemoteDataSource(retrofitPair: Pair<Retrofit, Retrofit>): StudyRemoteDataSource {
         return StudyRemoteDataSource(retrofitPair)
+    }
+
+    @Provides
+    @Singleton
+    fun providesTaskRemoteDataSource(retrofitPair: Pair<Retrofit, Retrofit>): TaskRemoteDataSource {
+        return TaskRemoteDataSource(retrofitPair)
     }
 }
