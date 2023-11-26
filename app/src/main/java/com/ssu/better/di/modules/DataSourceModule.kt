@@ -1,5 +1,6 @@
 package com.ssu.better.di.modules
 
+import com.ssu.better.data.datasources.ChallengeRemoteDataSource
 import com.ssu.better.data.datasources.StudyRemoteDataSource
 import com.ssu.better.data.datasources.TaskRemoteDataSource
 import com.ssu.better.data.datasources.UserRemoteDataSource
@@ -29,5 +30,11 @@ object DataSourceModule {
     @Singleton
     fun providesTaskRemoteDataSource(retrofitPair: Pair<Retrofit, Retrofit>): TaskRemoteDataSource {
         return TaskRemoteDataSource(retrofitPair)
+    }
+
+    @Provides
+    @Singleton
+    fun providesChallengeRemoteDataSource(retrofitPair: Pair<Retrofit, Retrofit>): ChallengeRemoteDataSource {
+        return ChallengeRemoteDataSource(retrofitPair)
     }
 }
