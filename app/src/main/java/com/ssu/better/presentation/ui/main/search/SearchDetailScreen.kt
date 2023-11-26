@@ -1,7 +1,7 @@
 package com.ssu.better.presentation.ui.main.search
 
 import android.annotation.SuppressLint
-import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,9 +25,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -35,8 +35,11 @@ import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.SortOption
+import com.ssu.better.presentation.component.ErrorScreen
 import com.ssu.better.presentation.component.SearchTextField
+import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.ui.theme.BetterAndroidTheme
+import com.ssu.better.ui.theme.BetterColors
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)
@@ -50,25 +53,44 @@ fun SearchDetailScreen(
 ) {
     val query = remember { mutableStateOf(query) }
     val category = remember { mutableStateOf(category) }
-    val option = remember { mutableStateOf(SortOption.LATEST) }
+    var option by remember { mutableStateOf(SortOption.LATEST) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val listState = rememberLazyGridState()
 
-    val studyList by viewModel.studyList.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.loadListWithCategory(category.value)
+    }
 
-    LaunchedEffect(studyList) {
+    LaunchedEffect(category.value) {
+        if (category.value != Category.ALL && query.value.isNullOrBlank()) {
+            viewModel.loadListWithCategory(category.value)
+        } else {
+            viewModel.loadListWithQuery(query.value ?: "", category.value)
+        }
+    }
+
+    LaunchedEffect(uiState) {
+        listState.animateScrollToItem(0)
+    }
+
+    LaunchedEffect(option.name) {
+        viewModel.sort(option)
         listState.animateScrollToItem(0)
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BetterColors.Bg),
         floatingActionButton = {
             AddStudyButton(
-                modifier = Modifier.size(50.dp).offset(y = -10.dp),
+                modifier = Modifier
+                    .size(50.dp)
+                    .offset(y = -10.dp),
                 onClick = {},
             )
         },
@@ -99,44 +121,67 @@ fun SearchDetailScreen(
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
                     onClickSearch = {
                         query.value = it
-                        Toast.makeText(context, "search" + it, Toast.LENGTH_SHORT).show()
                         keyboardController?.hide()
+                        viewModel.loadListWithQuery(it, category.value)
                     },
                 )
             }
 
             Column(modifier = Modifier.padding(start = 12.dp)) {
                 Text(text = "스터디 카테고리", style = BetterAndroidTheme.typography.headline3, modifier = Modifier.padding(vertical = 12.dp))
-                StudyCategoryTab(onClickCategory = {
-                        selected ->
-                    category.value = selected
-                }, selectedCategory = category.value,)
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                contentAlignment = Alignment.CenterEnd,
-            ) {
-                StudySortingToggle(
-                    option = option.value,
-                    onClick = {
-                        if (option.value == SortOption.LATEST) {
-                            option.value = SortOption.RANK
-                        } else {
-                            option.value = SortOption.LATEST
-                        }
-                        viewModel.sort(option.value)
+                StudyCategoryTab(
+                    onClickCategory = { selected ->
+                        category.value = selected
                     },
+                    selectedCategory = category.value,
                 )
             }
 
-            StudyListView(
-                list = studyList,
-                modifier = Modifier.fillMaxSize(),
-                listState = listState,
-            )
+            when (uiState) {
+                is SearchViewModel.SearchUiState.Success -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        contentAlignment = Alignment.CenterEnd,
+                    ) {
+                        StudySortingToggle(
+                            option = option,
+                            onClick = {
+                                option = if (option == SortOption.LATEST) {
+                                    SortOption.RANK
+                                } else {
+                                    SortOption.LATEST
+                                }
+                            },
+                        )
+                    }
+
+                    StudyListView(
+                        list = (uiState as SearchViewModel.SearchUiState.Success).list,
+                        modifier = Modifier.fillMaxSize(),
+                        listState = listState,
+                    )
+                }
+
+                is SearchViewModel.SearchUiState.Loading -> {
+                    ShowLoadingAnimation()
+                }
+
+                is SearchViewModel.SearchUiState.Empty -> {
+                    ErrorScreen(
+                        Modifier.fillMaxSize(),
+                        stringResource(id = R.string.search_empty),
+                    )
+                }
+
+                is SearchViewModel.SearchUiState.Fail -> {
+                    ErrorScreen(
+                        Modifier.fillMaxSize(),
+                        (uiState as SearchViewModel.SearchUiState.Fail).message,
+                    )
+                }
+            }
         }
     }
 }

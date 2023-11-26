@@ -2,6 +2,7 @@ package com.ssu.better.presentation.ui.main.search
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,21 +35,24 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.study.Category
-import com.ssu.better.entity.study.GroupRank
 import com.ssu.better.entity.study.SortOption
 import com.ssu.better.entity.study.Study
 import com.ssu.better.presentation.component.CircleCategoryButton
+import com.ssu.better.presentation.component.ErrorScreen
 import com.ssu.better.presentation.component.SearchTextField
+import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.component.StudyCard
 import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
@@ -60,23 +64,33 @@ fun SearchScreen(
     navHostController: NavHostController,
     viewModel: SearchViewModel = hiltViewModel(),
 ) {
-    val query = remember { mutableStateOf("") }
-    val option = remember { mutableStateOf(SortOption.LATEST) }
+    var query by remember { mutableStateOf("") }
+    var option by remember { mutableStateOf(SortOption.RANK) }
 
     val listState = rememberLazyGridState()
 
-    val studyList by viewModel.studyList.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(studyList) {
+    val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
+
+    LaunchedEffect(uiState) {
         listState.animateScrollToItem(0)
     }
+
+    LaunchedEffect(option.name) {
+        viewModel.sort(option)
+        listState.animateScrollToItem(0)
+    }
+
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BetterColors.Bg),
         floatingActionButton = {
             AddStudyButton(
                 modifier = Modifier
                     .size(50.dp)
-                    .offset(y = -60.dp),
+                    .offset(y = (-60).dp),
                 onClick = {
                     navHostController.navigate(Screen.SelectCategory.route)
                 },
@@ -96,16 +110,20 @@ fun SearchScreen(
                     .padding(10.dp),
             ) {
                 Column() {
-                    Text(text = "사용자" + ",님", style = BetterAndroidTheme.typography.headline2, color = BetterColors.Gray30)
+                    Text(text = "$userInfo,님", style = BetterAndroidTheme.typography.headline2, color = BetterColors.Gray30)
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text(text = "어떤 스터디를 찾고 신가요?", style = BetterAndroidTheme.typography.headline2, color = BetterColors.Gray70)
+                    Text(
+                        text = stringResource(id = R.string.search_guide),
+                        style = BetterAndroidTheme.typography.headline2,
+                        color = BetterColors.Gray70,
+                    )
                 }
 
                 UserRankProfile(rank = 1)
             }
             SearchTextField(
-                value = query.value,
-                onValueChange = { s -> query.value = s },
+                value = query,
+                onValueChange = { s -> query = s },
                 hint = "스터디 이름",
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
                 onClickSearch = { query ->
@@ -119,32 +137,53 @@ fun SearchScreen(
                 },
                 selectedCategory = Category.ALL,
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                contentAlignment = Alignment.CenterEnd,
-            ) {
-                StudySortingToggle(
-                    option = option.value,
-                    onClick = {
-                        if (option.value == SortOption.LATEST) {
-                            option.value = SortOption.RANK
-                        } else {
-                            option.value = SortOption.LATEST
-                        }
-                        viewModel.sort(option.value)
-                    },
-                )
-            }
+            when (uiState) {
+                is SearchViewModel.SearchUiState.Success -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        contentAlignment = Alignment.CenterEnd,
+                    ) {
+                        StudySortingToggle(
+                            option = option,
+                            onClick = {
+                                option = if (option == SortOption.LATEST) {
+                                    SortOption.RANK
+                                } else {
+                                    SortOption.LATEST
+                                }
+                            },
+                        )
+                    }
 
-            StudyListView(
-                list = studyList,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 30.dp),
-                listState = listState,
-            )
+                    StudyListView(
+                        list = (uiState as SearchViewModel.SearchUiState.Success).list,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 30.dp),
+                        listState = listState,
+                    )
+                }
+
+                is SearchViewModel.SearchUiState.Loading -> {
+                    ShowLoadingAnimation()
+                }
+
+                is SearchViewModel.SearchUiState.Empty -> {
+                    ErrorScreen(
+                        Modifier.fillMaxSize(),
+                        stringResource(id = R.string.search_empty),
+                    )
+                }
+
+                is SearchViewModel.SearchUiState.Fail -> {
+                    ErrorScreen(
+                        Modifier.fillMaxSize(),
+                        (uiState as SearchViewModel.SearchUiState.Fail).message,
+                    )
+                }
+            }
         }
     }
 }
@@ -187,7 +226,7 @@ fun StudyListView(
             itemsIndexed(list) { idx, study ->
                 StudyCard(
                     modifier = Modifier.padding(),
-                    study = study.copy(groupRank = GroupRank(study.groupRank.groupRankId, study.groupRank.score + idx)),
+                    study = study,
                 )
             }
         },

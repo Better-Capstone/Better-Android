@@ -25,4 +25,6 @@ interface StudyRepository {
     suspend fun getStudyRank(studyId: Long): Flow<GroupRank>
 
     suspend fun getGroupRankHistory(studyId: Long): Flow<ArrayList<GroupRankHistory>>
+
+    suspend fun getStudyListByQuery(keyword: String, categoryId: Int?): Flow<ArrayList<Study>>
 }
