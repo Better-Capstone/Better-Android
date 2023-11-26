@@ -28,14 +28,31 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
+import com.ssu.better.entity.member.Member
+import com.ssu.better.entity.member.MemberType
+import com.ssu.better.entity.study.Category
+import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.Study
+import com.ssu.better.entity.study.StudyCategory
+import com.ssu.better.entity.study.StudyCheckDay
+import com.ssu.better.entity.study.StudyPeriod
+import com.ssu.better.entity.study.Status
+import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.TaskGroup
+import com.ssu.better.entity.user.User
+import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.AnimatedTransitionDialog
 import com.ssu.better.util.CustomDialogPosition
 import com.ssu.better.util.customDialogModifier
 import com.ssu.better.util.noRippleClickable
+import com.ssu.better.util.toLocalDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -48,6 +65,52 @@ fun HomeScreen(
     val uiState = homeViewModel.uiState.collectAsStateWithLifecycle()
 
     var isDialogOpen by remember { mutableStateOf(false) }
+
+    val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    val testTime = LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate()
+    val time = "2023-11-28T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
+    val testUser = User(1, "배현빈", "개발하는 북극곰")
+    val testMember = Member(1, 1, MemberType.MEMBER, time)
+    val testTaskGroup = TaskGroup(
+        taskGroupId = 1,
+        status = Status.INPROGRESS,
+        startDate = "",
+        endDate = time,
+        createdAt = "",
+        updatedAt = "",
+    )
+    val testTask = Task(
+        taskId = 1,
+        taskGroup = testTaskGroup,
+        member = testMember,
+        challenge = null,
+        createdAt = time,
+        updatedAt = time,
+        title = "",
+    )
+    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
+    val testCategory = StudyCategory(1, Category.IT.name)
+    val testGroupRank = GroupRank(1, 18000)
+    val tasks = List(2) { testTask }.toMutableList()
+    val testStudy = Study(
+        1,
+        testUser,
+        testCategory,
+        "알고리즘 스터디",
+        "스터디 설명",
+        Status.INPROGRESS,
+        StudyPeriod.EVERYDAY,
+        StudyCheckDay.EVERYDAY,
+        5,
+        1,
+        10,
+        1500,
+        arrayListOf(testMember),
+        arrayListOf(testTaskGroup),
+        arrayListOf(testUserRankHistory),
+        testGroupRank,
+        "",
+    )
 
     LaunchedEffect(uiState) {
     }

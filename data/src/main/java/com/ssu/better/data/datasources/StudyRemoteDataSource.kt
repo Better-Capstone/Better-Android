@@ -26,6 +26,8 @@ class StudyRemoteDataSource(
 
     suspend fun getGroupRankHistory(studyId: Long) = tokenStudyService.getGroupRankHistory(studyId)
 
+    suspend fun getStudyTaskList(studyId: Long) = tokenStudyService.getStudyTaskList(studyId)
+
     suspend fun getStudyUserList(studyId: Long) = tokenStudyService.getStudyUserList(studyId)
 
     suspend fun getStudyQueryList(keyword: String, categoryId: Int?) = tokenStudyService.getStudyListByQuery(keyword, categoryId)
