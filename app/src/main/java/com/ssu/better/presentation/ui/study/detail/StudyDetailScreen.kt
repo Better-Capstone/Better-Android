@@ -1,5 +1,6 @@
 package com.ssu.better.presentation.ui.study.detail
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,16 +35,17 @@ import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.ShowLoadingAnimation
+import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.toLocalDate
@@ -56,9 +59,19 @@ fun StudyDetailScreen(
     viewModel: StudyDetailViewModel = hiltViewModel(),
 ) {
     val studyEvent = viewModel.studyEventStateFlow.collectAsState()
+
+    val context = LocalContext.current
+
     viewModel.setStudyId(studyId)
     StudyDetailContent(
         onClickFinish = {},
+        onClickAddTask = { study ->
+            if (viewModel.isValidToAddTask(study)) {
+                navHostController.navigate(Screen.CreateTask.route + "?studyId=${study.studyId}")
+            } else {
+                Toast.makeText(context, context.getString(R.string.task_add_fail), Toast.LENGTH_SHORT).show()
+            }
+        },
         studyEvent = studyEvent.value,
     )
 }
@@ -113,7 +126,11 @@ fun StudyDetailPreview() {
     )
     StudyDetailContent(
         onClickFinish = { },
-        StudyDetailViewModel.StudyEvent.Success(testStudy, tasks),
+        onClickAddTask = { study -> },
+        StudyDetailViewModel.StudyEvent.Success(
+            testStudy,
+            tasks,
+        ),
     )
 }
 
@@ -121,6 +138,7 @@ fun StudyDetailPreview() {
 @Composable
 fun StudyDetailContent(
     onClickFinish: () -> Unit,
+    onClickAddTask: (Study) -> Unit,
     studyEvent: StudyDetailViewModel.StudyEvent,
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -188,7 +206,7 @@ fun StudyDetailContent(
                         }
                     }
                     when (tabIndex) {
-                        0 -> StudyHomeScreen(study = studyEvent.study, taskList = studyEvent.taskList)
+                        0 -> StudyHomeScreen(study = studyEvent.study, taskList = studyEvent.taskList, onClickAdd = onClickAddTask)
                         1 -> StudyChallengeScreen(study = studyEvent.study)
                         2 -> StudyInfoScreen(study = studyEvent.study)
                     }

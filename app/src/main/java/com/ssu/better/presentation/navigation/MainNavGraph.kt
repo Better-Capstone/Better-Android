@@ -114,15 +114,18 @@ fun MainNavGraph(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.CreateTask.route + "?studyId={studyId}",
+            route = Screen.CreateTask.route + "?studyId={studyId}&title={title}",
             arguments = listOf(
                 navArgument("studyId") {
-                    type = NavType.IntType
-                    defaultValue = 0
+                    type = NavType.LongType
+                    defaultValue = 0L
                 },
             ),
         ) { navBackStackEntry ->
-            CreateTaskScreen(navHostController = navController, studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0)
+            CreateTaskScreen(
+                navHostController = navController,
+                studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0,
+            )
         }
 
         composable(

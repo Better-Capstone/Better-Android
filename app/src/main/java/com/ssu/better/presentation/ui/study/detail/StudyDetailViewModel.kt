@@ -8,6 +8,7 @@ import com.ssu.better.domain.usecase.study.GetStudyTaskListUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUseCase
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.task.Task
+import com.ssu.better.util.convertToLocalDateByFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +17,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.Period
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,5 +62,20 @@ class StudyDetailViewModel @Inject constructor(
                     _studyEventStateFlow.emit(it)
                 }
         }
+    }
+
+    fun isValidToAddTask(study: Study): Boolean {
+        val lastTask = study.taskGroupList.sortedByDescending { it.startDate }.firstOrNull()
+        Timber.e("lastTask $lastTask")
+        if (lastTask == null) {
+            return true
+        } else {
+            val end = convertToLocalDateByFormat(lastTask.endDate, "yyyy-MM-dd") ?: return false
+            // endDate 가 현 시점보다 이후일 경우
+            if (Period.between(end, LocalDate.now()).isNegative) {
+                return false
+            }
+        }
+        return true
     }
 }
