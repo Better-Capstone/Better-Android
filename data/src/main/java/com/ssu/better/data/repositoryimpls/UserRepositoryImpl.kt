@@ -4,7 +4,7 @@ import com.ssu.better.data.datasources.UserRemoteDataSource
 import com.ssu.better.data.util.CommonAPILogic
 import com.ssu.better.domain.repository.UserRepository
 import com.ssu.better.entity.challenge.Challenge
-import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.UserTask
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserCheck
 import com.ssu.better.entity.user.UserLoginResponse
@@ -32,7 +32,7 @@ class UserRepositoryImpl @Inject constructor(
         return CommonAPILogic.checkError(userRemoteDataSource.getUserRank(userId))
     }
 
-    override suspend fun getUserTasks(userId: Long): Flow<List<Task>> {
+    override suspend fun getUserTasks(userId: Long): Flow<List<UserTask>> {
         return CommonAPILogic.checkError(userRemoteDataSource.getUserTasks(userId))
     }
 

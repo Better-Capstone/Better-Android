@@ -1,7 +1,7 @@
 package com.ssu.better.data.services
 
 import com.ssu.better.entity.challenge.Challenge
-import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.UserTask
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserCheck
 import com.ssu.better.entity.user.UserLoginResponse
@@ -28,7 +28,7 @@ interface UserService {
     suspend fun getUserRank(@Path("id") userId: Long): Response<UserRank>
 
     @GET("/user/{id}/tasks")
-    suspend fun getUserTasks(@Path("id") userId: Long): Response<List<Task>>
+    suspend fun getUserTasks(@Path("id") userId: Long): Response<List<UserTask>>
 
     @GET("/user/{id}/challenges")
     suspend fun getUserChallenges(@Path("id") userId: Long): Response<List<Challenge>>
