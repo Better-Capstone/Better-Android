@@ -2,10 +2,16 @@ package com.ssu.better.presentation.ui.task.crate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ssu.better.data.util.HttpException
 import com.ssu.better.domain.usecase.study.GetStudyUseCase
 import com.ssu.better.domain.usecase.task.PostTaskUseCase
 import com.ssu.better.entity.study.Study
+import com.ssu.better.entity.study.StudyPeriod
+import com.ssu.better.entity.study.toDayOfWeek
 import com.ssu.better.entity.task.TaskCreateRequest
+import com.ssu.better.util.convertToLocalDateByFormat
+import com.ssu.better.util.getDaysOfWeek
+import com.ssu.better.util.getHttpErrorMsg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +19,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,7 +37,7 @@ class CreateTaskViewModel @Inject constructor(
     fun getStudy(studyId: Long) {
         viewModelScope.launch {
             getStudyUseCase.getStudy(studyId).catch {
-                _event.emit(CreateTaskEvent.Fail("스터디 조회 실패"))
+                _event.emit(CreateTaskEvent.Fail((it as HttpException).getHttpErrorMsg()))
             }.collectLatest { study ->
                 _event.emit(CreateTaskEvent.Success)
                 _uiState.emit(CreateTaskUiState(study, ""))
@@ -48,11 +55,39 @@ class CreateTaskViewModel @Inject constructor(
         viewModelScope.launch {
             _event.emit(CreateTaskEvent.Loading)
             createTaskUseCase.createTask(TaskCreateRequest(studyId, uiState.value.content)).catch {
-                _event.emit(CreateTaskEvent.Fail("태스크 등록 실패"))
+                _event.emit(CreateTaskEvent.Fail((it as HttpException).getHttpErrorMsg()))
             }.collectLatest {
                 _event.emit(CreateTaskEvent.Complete)
             }
         }
+    }
+
+    fun getNextCheckDay(study: Study): LocalDate {
+        val lastTaskDate = study.taskGroupList?.sortedBy { it.endDate }?.lastOrNull()
+
+        return when (study.period) {
+            StudyPeriod.EVERYDAY -> {
+                LocalDate.now().plusDays(1L)
+            }
+
+            StudyPeriod.WEEKLY -> {
+                if (lastTaskDate != null) {
+                    convertToLocalDateByFormat(lastTaskDate.endDate, "yyyy-MM-dd")?.plusWeeks(1)
+                } else {
+                    // 첫 테스크인 경우
+                    getDaysOfWeek(LocalDate.now()).first { it.dayOfWeek == study.checkDay.toDayOfWeek() }
+                }
+            }
+
+            StudyPeriod.BIWEEKLY -> {
+                if (lastTaskDate != null) {
+                    convertToLocalDateByFormat(lastTaskDate.endDate, "yyyy-MM-dd")?.plusWeeks(2)
+                } else {
+                    // 첫 테스크인 경우
+                    getDaysOfWeek(LocalDate.now()).first { it.dayOfWeek == study.checkDay.toDayOfWeek() }
+                }
+            }
+        } ?: LocalDate.now()
     }
 
     sealed class CreateTaskEvent {

@@ -36,10 +36,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
-import com.ssu.better.entity.study.StudyPeriod
 import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
 import com.ssu.better.presentation.component.BetterTextField
+import com.ssu.better.presentation.component.ErrorScreen
 import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.component.SuccessScreen
 import com.ssu.better.ui.theme.BetterAndroidTheme
@@ -128,20 +128,8 @@ fun CreateTaskScreen(
 
                     is CreateTaskViewModel.CreateTaskEvent.Success -> {
                         val study = uiState.study ?: return@Scaffold
-                        val checkDay: LocalDate = when (study.period) {
-                            StudyPeriod.EVERYDAY -> {
-                                LocalDate.now().plusDays(1L)
-                            }
+                        val checkDay: LocalDate = createViewModel.getNextCheckDay(study)
 
-                            StudyPeriod.WEEKLY -> {
-                                // TODO TaskGroup 기준으로 변경
-                                LocalDate.now().plusDays(1L)
-                            }
-
-                            StudyPeriod.BIWEEKLY -> {
-                                LocalDate.now().plusDays(1L)
-                            }
-                        }
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -175,8 +163,7 @@ fun CreateTaskScreen(
                     }
 
                     is CreateTaskViewModel.CreateTaskEvent.Fail -> {
-                        // ErrorScreen
-                        Text(text = (event as CreateTaskViewModel.CreateTaskEvent.Fail).message)
+                        ErrorScreen(modifier = Modifier.fillMaxSize(), message = (event as CreateTaskViewModel.CreateTaskEvent.Fail).message)
                     }
 
                     is CreateTaskViewModel.CreateTaskEvent.Complete -> {

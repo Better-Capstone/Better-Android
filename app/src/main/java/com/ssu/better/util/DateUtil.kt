@@ -83,3 +83,14 @@ fun getDDay(now: LocalDate, target: LocalDate): String {
         "D+${period.days}"
     }
 }
+
+fun convertToLocalDateByFormat(text: String, pattern: String): LocalDate? {
+    val dateFormat = DateTimeFormatter.ofPattern(pattern)
+    return try {
+        val localDate = LocalDate.parse(text, dateFormat)
+        localDate
+    } catch (e: ParseException) {
+        e.printStackTrace()
+        null
+    }
+}

@@ -2,6 +2,7 @@ package com.ssu.better.data.datasources
 
 import com.ssu.better.data.services.TaskService
 import com.ssu.better.entity.challenge.ChallengeRequest
+import com.ssu.better.entity.task.TaskCreateRequest
 import retrofit2.Retrofit
 
 class TaskRemoteDataSource(

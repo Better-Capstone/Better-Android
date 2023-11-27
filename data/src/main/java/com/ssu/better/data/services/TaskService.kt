@@ -3,6 +3,7 @@ package com.ssu.better.data.services
 import com.ssu.better.entity.challenge.Challenge
 import com.ssu.better.entity.challenge.ChallengeRequest
 import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.TaskCreateRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -16,6 +17,7 @@ interface TaskService {
     @POST("/task/{id}/challenge/register")
     suspend fun postCreateTask(@Path("id") taskId: Long, @Body challengeRequest: ChallengeRequest): Response<Challenge>
 
+    @POST("/task/register")
     suspend fun createTask(
         @Body request: TaskCreateRequest,
     ): Response<Task>
