@@ -37,8 +37,9 @@ import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.StudyStatus
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRankHistory
@@ -198,7 +199,23 @@ fun PreviewMyPage() {
     )
 
     val testMember = Member(1, 1, MemberType.MEMBER, "")
-    val testTask = Task(1, 1, "", 1, 1, "", "", "제목")
+    val testTaskGroup = TaskGroup(
+        taskGroupId = 1,
+        status = Status.INPROGRESS,
+        startDate = "",
+        endDate = "",
+        createdAt = "",
+        updatedAt = "",
+    )
+    val testTask = Task(
+        taskId = 1,
+        taskGroup = testTaskGroup,
+        member = testMember,
+        challenge = null,
+        createdAt = "",
+        updatedAt = "",
+        title = "",
+    )
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
     val testStudy = Study(
@@ -207,7 +224,7 @@ fun PreviewMyPage() {
         testCategory,
         "제목",
         "설명",
-        StudyStatus.INPROGRESS,
+        Status.INPROGRESS,
         StudyPeriod.EVERYDAY,
         StudyCheckDay.EVERYDAY,
         5,
@@ -215,9 +232,10 @@ fun PreviewMyPage() {
         10,
         1500,
         arrayListOf(testMember),
-        arrayListOf(testTask),
-        arrayListOf(testUserRankHistory),
-        testGroupRank,
+        userRankHistoryList = arrayListOf(testUserRankHistory),
+        groupRank = testGroupRank,
+        createdAt = "",
+        taskGroupList = arrayListOf(),
     )
 
     val testStudyList = arrayListOf(testStudy, testStudy, testStudy)

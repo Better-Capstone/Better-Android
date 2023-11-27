@@ -37,8 +37,9 @@ import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.StudyStatus
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.ShowLoadingAnimation
@@ -69,7 +70,23 @@ fun StudyDetailPreview() {
     val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     val time = "2023-11-28T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
     val testMember = Member(1, 1, MemberType.MEMBER, "")
-    val testTask = Task(1, 1, time, 1, 1, time, time, "제목")
+    val testTaskGroup = TaskGroup(
+        taskGroupId = 1,
+        status = Status.INPROGRESS,
+        startDate = "",
+        endDate = time,
+        createdAt = "",
+        updatedAt = "",
+    )
+    val testTask = Task(
+        taskId = 1,
+        taskGroup = testTaskGroup,
+        member = testMember,
+        challenge = null,
+        createdAt = "",
+        updatedAt = "",
+        title = "",
+    )
     val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
@@ -80,7 +97,7 @@ fun StudyDetailPreview() {
         testCategory,
         "알고리즘 스터디",
         "설명",
-        StudyStatus.INPROGRESS,
+        Status.INPROGRESS,
         StudyPeriod.EVERYDAY,
         StudyCheckDay.EVERYDAY,
         5,
@@ -88,13 +105,15 @@ fun StudyDetailPreview() {
         10,
         1500,
         arrayListOf(testMember),
-        tasks,
-        arrayListOf(testUserRankHistory),
-        testGroupRank,
+        userRankHistoryList = arrayListOf(testUserRankHistory),
+        groupRank = testGroupRank,
+        createdAt = "",
+        taskGroupList = arrayListOf(),
+
     )
     StudyDetailContent(
         onClickFinish = { },
-        StudyDetailViewModel.StudyEvent.Success(testStudy),
+        StudyDetailViewModel.StudyEvent.Success(testStudy, tasks),
     )
 }
 
@@ -169,7 +188,7 @@ fun StudyDetailContent(
                         }
                     }
                     when (tabIndex) {
-                        0 -> StudyHomeScreen(study = studyEvent.study)
+                        0 -> StudyHomeScreen(study = studyEvent.study, taskList = studyEvent.taskList)
                         1 -> StudyChallengeScreen(study = studyEvent.study)
                         2 -> StudyInfoScreen(study = studyEvent.study)
                     }

@@ -49,9 +49,9 @@ class OnBoardViewModel @Inject constructor(
                 _isLoading.value = true
                 with(uiState.value) {
                     registerUseCase.registerUser(UserRegisterRequest(token, nickname)).collectLatest {
-                        tokenManager.saveAccessToken("") // TODO Register response 수정 후 반영
-                        userPrefManager.updateUserId(it.id)
-                        userPrefManager.updateNickName(it.nickname)
+                        tokenManager.saveAccessToken(it.accessToken)
+                        userPrefManager.updateUserId(it.user.id)
+                        userPrefManager.updateNickName(it.user.nickname)
                     }
                 }
                 _isLoading.value = false

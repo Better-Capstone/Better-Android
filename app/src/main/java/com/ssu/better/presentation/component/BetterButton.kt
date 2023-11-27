@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
@@ -22,6 +23,7 @@ fun BetterButton(
     modifier: Modifier = Modifier,
     textColor: Color = BetterColors.White,
     onClick: () -> Unit,
+    typo: TextStyle = BetterAndroidTheme.typography.headline2,
 ) {
     Button(
         modifier = modifier.padding(vertical = 16.dp),
@@ -44,7 +46,7 @@ fun BetterButton(
         Text(
             text = text,
             color = if (enabled) textColor else BetterColors.White,
-            style = BetterAndroidTheme.typography.headline2,
+            style = typo,
         )
     }
 }

@@ -206,6 +206,7 @@ fun CreateStudy(
                     onClick = {
                         onClickPeriod(StudyPeriod.EVERYDAY)
                     },
+                    typo = BetterAndroidTheme.typography.subtitle,
                 )
 
                 BetterButton(
@@ -216,6 +217,7 @@ fun CreateStudy(
                     onClick = {
                         onClickPeriod(StudyPeriod.WEEKLY)
                     },
+                    typo = BetterAndroidTheme.typography.subtitle,
                 )
 
                 BetterButton(
@@ -226,6 +228,7 @@ fun CreateStudy(
                     onClick = {
                         onClickPeriod(StudyPeriod.BIWEEKLY)
                     },
+                    typo = BetterAndroidTheme.typography.subtitle,
                 )
             }
 

@@ -8,7 +8,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ssu.better.entity.member.Member
+import com.ssu.better.entity.member.MemberType
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.getDDay
@@ -26,14 +30,14 @@ fun TaskItem(
     onClick: () -> Unit,
 
 ) {
-    val taskEnabled = Period.between(task.deadline.toLocalDate(), baseDate).isNegative
+    val taskEnabled = Period.between(task.taskGroup.endDate.toLocalDate(), baseDate).isNegative
 
     Row(
         modifier = modifier.padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = getDDay(baseDate, task.deadline.toLocalDate() ?: baseDate),
+            text = getDDay(baseDate, task.taskGroup.endDate.toLocalDate() ?: baseDate),
             style = BetterAndroidTheme.typography.headline3,
             color = BetterColors.Primary50,
         )
@@ -57,19 +61,28 @@ fun PreviewTask() {
     val time = "2023-11-18T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
 
     val deadline = "2023-11-11T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
+    val testMember = Member(1, 1, MemberType.MEMBER, "")
+    val testTaskGroup = TaskGroup(
+        taskGroupId = 1,
+        status = Status.INPROGRESS,
+        startDate = "",
+        endDate = deadline,
+        createdAt = "",
+        updatedAt = "",
+    )
+    val testTask = Task(
+        taskId = 1,
+        taskGroup = testTaskGroup,
+        member = testMember,
+        challenge = null,
+        createdAt = "",
+        updatedAt = "",
+        title = "운영체제",
+    )
 
     println(time)
     TaskItem(
-        task = Task(
-            id = 111L,
-            111L,
-            deadline = deadline,
-            111L,
-            111L,
-            title = "운영체제",
-            createdAt = time,
-            updatedAt = time,
-        ),
+        task = testTask,
         onClick = {},
     )
 }

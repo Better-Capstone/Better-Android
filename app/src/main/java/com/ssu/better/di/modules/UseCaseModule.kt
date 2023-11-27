@@ -1,15 +1,20 @@
 package com.ssu.better.di.modules
 
 import com.ssu.better.domain.repository.StudyRepository
+import com.ssu.better.domain.repository.TaskRepository
 import com.ssu.better.domain.repository.UserRepository
 import com.ssu.better.domain.usecase.study.GetGroupRankHistoryUseCase
 import com.ssu.better.domain.usecase.study.GetStudyListByCategoryUseCase
+import com.ssu.better.domain.usecase.study.GetStudyListByQueryUseCase
 import com.ssu.better.domain.usecase.study.GetStudyListByUserUseCase
 import com.ssu.better.domain.usecase.study.GetStudyListUseCase
+import com.ssu.better.domain.usecase.study.GetStudyTaskListUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUserListUseCase
 import com.ssu.better.domain.usecase.study.PostCreateStudyUseCase
 import com.ssu.better.domain.usecase.study.PostJoinStudyUseCase
+import com.ssu.better.domain.usecase.task.GetTaskUseCase
+import com.ssu.better.domain.usecase.task.PostCreateChallengeUseCase
 import com.ssu.better.domain.usecase.user.GetUserChallengeUseCase
 import com.ssu.better.domain.usecase.user.GetUserRankUseCase
 import com.ssu.better.domain.usecase.user.GetUserTasksUseCase
@@ -107,5 +112,29 @@ object UseCaseModule {
     @Singleton
     fun providesGetStudyUserListUseCase(repository: StudyRepository): GetStudyUserListUseCase {
         return GetStudyUserListUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetStudyTaskListUseCase(repository: StudyRepository): GetStudyTaskListUseCase {
+        return GetStudyTaskListUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetStudyListByQueryUseCase(repository: StudyRepository): GetStudyListByQueryUseCase {
+        return GetStudyListByQueryUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetTaskUseCase(repository: TaskRepository): GetTaskUseCase {
+        return GetTaskUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesPostCreateChallengeUseCase(repository: TaskRepository): PostCreateChallengeUseCase {
+        return PostCreateChallengeUseCase(repository)
     }
 }

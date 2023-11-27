@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.ssu.better.entity.study.Category
+import com.ssu.better.presentation.ui.challenge.create.ChallengeCreateScreen
 import com.ssu.better.presentation.ui.main.home.HomeScreen
 import com.ssu.better.presentation.ui.main.home.SampleScreen
 import com.ssu.better.presentation.ui.main.mypage.MyPageScreen
@@ -136,6 +137,26 @@ fun MainNavGraph(navController: NavHostController) {
             StudyJoinScreen(
                 navController = navController,
                 studyId = navBackStackEntry.arguments?.getInt("studyId") ?: 0,
+            )
+        }
+
+        composable(
+            route = Screen.CreateChallenge.route + "?studyId={studyId}&taskId={taskId}",
+            arguments = listOf(
+                navArgument("studyId") {
+                    type = NavType.LongType
+                    defaultValue = 0L
+                },
+                navArgument("d") {
+                    type = NavType.LongType
+                    defaultValue = 0L
+                },
+            ),
+        ) { navBackStackEntry ->
+            ChallengeCreateScreen(
+                navController = navController,
+                studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0,
+                taskId = navBackStackEntry.arguments?.getLong("taskId") ?: 0,
             )
         }
     }

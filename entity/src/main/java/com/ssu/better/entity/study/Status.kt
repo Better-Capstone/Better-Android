@@ -2,7 +2,7 @@ package com.ssu.better.entity.study
 
 import com.google.gson.annotations.SerializedName
 
-enum class StudyStatus {
+enum class Status {
     @SerializedName("INPROGRESS")
     INPROGRESS,
 
