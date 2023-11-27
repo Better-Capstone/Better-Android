@@ -32,7 +32,7 @@ class SearchViewModel @Inject constructor(
     private val _userInfo = MutableStateFlow<String>("")
     val userInfo get() = _userInfo
 
-    init {
+    fun initView() {
         loadUserInfo()
         loadList()
     }
