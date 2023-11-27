@@ -137,9 +137,10 @@ fun HomeScreen(
                 is HomeViewModel.HomeUiState.Success -> {
                     StudyTaskListView(
                         list = (uiState as HomeViewModel.HomeUiState.Success).list,
-                        onClickStudy = {},
+                        onClickStudy = { studyId ->
+                            navHostController.navigate(Screen.StudyDetail.route + "?studyId=$studyId")
+                        },
                         onClickTaskChallenge = { studyId, title ->
-                            navHostController.navigate(Screen.CreateTask.route + "?studyId=$studyId&title=$title")
                         },
                         baseDate = selectedDate,
                     )
