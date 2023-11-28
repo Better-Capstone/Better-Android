@@ -9,6 +9,7 @@ sealed class Screen(val route: String) {
         object Main : Screen("search-main")
         object Detail : Screen("search-detail")
     }
+
     object MyPage : Screen("mypage")
 
     object Sample : Screen("sample")
@@ -24,4 +25,6 @@ sealed class Screen(val route: String) {
     object CreateTask : Screen("create-task")
 
     object CreateChallenge : Screen("create-challenge")
+
+    object VerifyChallenge : Screen("verify-challenge")
 }
