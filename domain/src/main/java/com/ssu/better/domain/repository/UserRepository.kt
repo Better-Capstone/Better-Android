@@ -10,7 +10,7 @@ import com.ssu.better.entity.user.UserRegisterRequest
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun registerUser(userRegisterRequest: UserRegisterRequest): Flow<User>
+    suspend fun registerUser(userRegisterRequest: UserRegisterRequest): Flow<UserLoginResponse>
 
     suspend fun login(kakaoToken: String): Flow<UserLoginResponse>
 

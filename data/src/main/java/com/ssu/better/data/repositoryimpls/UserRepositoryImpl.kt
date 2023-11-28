@@ -16,7 +16,7 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(
     private val userRemoteDataSource: UserRemoteDataSource,
 ) : UserRepository {
-    override suspend fun registerUser(userRegisterRequest: UserRegisterRequest): Flow<User> {
+    override suspend fun registerUser(userRegisterRequest: UserRegisterRequest): Flow<UserLoginResponse> {
         return CommonAPILogic.checkError(userRemoteDataSource.registerUser(userRegisterRequest))
     }
 

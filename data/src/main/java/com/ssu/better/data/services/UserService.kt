@@ -16,7 +16,7 @@ import retrofit2.http.Query
 
 interface UserService {
     @POST("/user/register")
-    suspend fun registerUser(@Body userRegisterRequest: UserRegisterRequest): Response<User>
+    suspend fun registerUser(@Body userRegisterRequest: UserRegisterRequest): Response<UserLoginResponse>
 
     @POST("/user/login")
     suspend fun login(@Query("kakaoToken") kakaoToken: String): Response<UserLoginResponse>

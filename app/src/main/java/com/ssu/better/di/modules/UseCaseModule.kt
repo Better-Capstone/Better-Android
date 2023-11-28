@@ -1,8 +1,11 @@
 package com.ssu.better.di.modules
 
+import com.ssu.better.domain.repository.ChallengeRepository
 import com.ssu.better.domain.repository.StudyRepository
 import com.ssu.better.domain.repository.TaskRepository
 import com.ssu.better.domain.repository.UserRepository
+import com.ssu.better.domain.usecase.challenge.GetChallengeUseCase
+import com.ssu.better.domain.usecase.challenge.PostChallengeCommentUseCase
 import com.ssu.better.domain.usecase.study.GetGroupRankHistoryUseCase
 import com.ssu.better.domain.usecase.study.GetStudyListByCategoryUseCase
 import com.ssu.better.domain.usecase.study.GetStudyListByQueryUseCase
@@ -136,5 +139,17 @@ object UseCaseModule {
     @Singleton
     fun providesPostCreateChallengeUseCase(repository: TaskRepository): PostCreateChallengeUseCase {
         return PostCreateChallengeUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetChallengeUseCase(repository: ChallengeRepository): GetChallengeUseCase {
+        return GetChallengeUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesPostChallengeCommentUseCase(repository: ChallengeRepository): PostChallengeCommentUseCase {
+        return PostChallengeCommentUseCase(repository)
     }
 }
