@@ -73,6 +73,10 @@ fun SearchScreen(
 
     val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.initView()
+    }
+
     LaunchedEffect(uiState) {
         listState.animateScrollToItem(0)
     }

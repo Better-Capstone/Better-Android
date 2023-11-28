@@ -77,9 +77,25 @@ fun String.toLocalDate(): LocalDate? {
 
 fun getDDay(now: LocalDate, target: LocalDate): String {
     val period = Period.between(now, target)
-    return if (period.isNegative) {
-        "D${period.days}"
+    return if (period.days >= 0) {
+        "D-${period.days}"
     } else {
-        "D+${period.days}"
+        "D+${period.days * (-1)}"
+    }
+}
+
+fun LocalDate.calendarFormatStr(): String {
+    val pattern = "MM월 dd일(E)"
+    return dateFormat(pattern, Locale.KOREA)
+}
+
+fun convertToLocalDateByFormat(text: String, pattern: String): LocalDate? {
+    val dateFormat = DateTimeFormatter.ofPattern(pattern)
+    return try {
+        val localDate = LocalDate.parse(text, dateFormat)
+        localDate
+    } catch (e: ParseException) {
+        e.printStackTrace()
+        null
     }
 }

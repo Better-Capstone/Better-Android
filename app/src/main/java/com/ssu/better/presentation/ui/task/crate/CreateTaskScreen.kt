@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,12 +40,16 @@ import com.ssu.better.ui.theme.BetterColors
 fun CreateTaskScreen(
     navHostController: NavHostController,
     createViewModel: TaskCreateViewModel = hiltViewModel(),
-    // study: Study,
+    studyId: Long,
+    studyTitle: String,
 ) {
     val selectedDate by createViewModel.selectedDate.collectAsStateWithLifecycle()
     val content by createViewModel.content.collectAsStateWithLifecycle()
 
     val CONTENT_MAX = 100
+
+    LaunchedEffect(Unit) {
+    }
 
     Scaffold(
         topBar = {
@@ -63,7 +68,7 @@ fun CreateTaskScreen(
                 )
 
                 Text(
-                    text = "스터디 이름",
+                    text = studyTitle,
                     modifier = Modifier.weight(1f).offset(x = -12.dp),
                     textAlign = Center,
                     style = BetterAndroidTheme.typography.headline3,
