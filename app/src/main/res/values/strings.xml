@@ -31,4 +31,7 @@
     <string name="verify">인증하기</string>
 
     <string name="task_empty">등록된 테스크가 없습니다.</string>
+    <string name="task_inprogress">인증중</string>
+    <string name="task_end">완료됨</string>
+
 </resources>
