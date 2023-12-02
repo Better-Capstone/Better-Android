@@ -16,6 +16,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -25,6 +27,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.member.Member
@@ -42,6 +46,8 @@ import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.BetterRoundChip
+import com.ssu.better.presentation.component.ErrorScreen
+import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
@@ -56,8 +62,13 @@ import java.time.format.DateTimeFormatter
 fun ReportScreen(
     navController: NavHostController,
     studyId: Long,
+    viewModel: ReportViewModel = hiltViewModel(),
 ) {
-    val history = listOf<GroupRankHistory>()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getGroupRankHistory(studyId)
+    }
 
     Scaffold(
         topBar = {
@@ -86,25 +97,35 @@ fun ReportScreen(
         },
 
     ) {
-        LazyVerticalGrid(
-            modifier = Modifier
-                .background(BetterColors.Gray00)
-                .padding(top = it.calculateTopPadding() + 20.dp)
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 20.dp)
-                .fillMaxSize(),
-            columns = GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            itemsIndexed(history) { idx, report ->
-                ReportItem(
-                    idx = idx,
-                    groupRankHistory = report,
-                    onClick = {
-                        navController.navigate(route = Screen.Report.ReportDetail.route)
-                    },
-                )
+        when (uiState) {
+            is ReportUiState.Loading -> {
+                ShowLoadingAnimation()
+            }
+
+            is ReportUiState.Fail -> (ErrorScreen(modifier = Modifier.fillMaxSize(), message = (uiState as ReportUiState.Fail).message))
+
+            is ReportUiState.Success -> {
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .background(BetterColors.Gray00)
+                        .padding(top = it.calculateTopPadding() + 20.dp)
+                        .padding(horizontal = 20.dp)
+                        .padding(bottom = 20.dp)
+                        .fillMaxSize(),
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    itemsIndexed((uiState as ReportUiState.Success).list) { idx, report ->
+                        ReportItem(
+                            idx = idx,
+                            groupRankHistory = report,
+                            onClick = {
+                                navController.navigate(route = Screen.Report.ReportDetail.route)
+                            },
+                        )
+                    }
+                }
             }
         }
     }

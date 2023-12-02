@@ -29,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -38,6 +39,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.challenge.Challenge
@@ -57,6 +60,8 @@ import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.BetterRoundChip
 import com.ssu.better.presentation.component.CircleRankProfile
+import com.ssu.better.presentation.component.ErrorScreen
+import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.toLocalDate
@@ -70,80 +75,12 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ReportDetailScreen(
     navHostController: NavHostController,
-    study: Study? = null,
-    groupRankHistoryList: List<GroupRankHistory> = emptyList(),
+    viewModel: ReportViewModel = hiltViewModel(),
 ) {
-    // test 용
-    val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val testTime = LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate()
-    val time = "2023-11-28T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
-    val testUser = User(1, "배현빈", "개발하는 북극곰")
-    val testMember = Member(1, 1, MemberType.MEMBER, time)
-    val testTaskGroup = TaskGroup(
-        taskGroupId = 1,
-        status = Status.END,
-        startDate = "",
-        endDate = time,
-        createdAt = "",
-        updatedAt = "",
-    )
-    val testTask = Task(
-        taskId = 1,
-        taskGroup = testTaskGroup,
-        member = testMember,
-        challenge = null,
-        createdAt = time,
-        updatedAt = time,
-        title = "",
-    )
-    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
-    val testCategory = StudyCategory(1, Category.IT.name)
-    val testGroupRank = GroupRank(1, 80)
-    val tasks = List(5) { testTask }.toMutableList()
-    val testStudy = Study(
-        1,
-        testUser,
-        testCategory,
-        "알고리즘 스터디",
-        "스터디 설명",
-        Status.INPROGRESS,
-        StudyPeriod.EVERYDAY,
-        StudyCheckDay.EVERYDAY,
-        5,
-        1,
-        10,
-        1500,
-        arrayListOf(testMember),
-        userRankHistoryList = arrayListOf(testUserRankHistory, testUserRankHistory.copy(score = 67)),
-        groupRank = testGroupRank,
-        createdAt = "",
-        taskGroupList = arrayListOf(),
-    )
-    val groupRankHistory = GroupRankHistory(
-        groupRankHistoryId = 1,
-        score = 38,
-        participantsNumber = 4,
-        totalNumber = 6,
-        groupRank = testGroupRank,
-        taskGroup = testTaskGroup,
-    )
-//
+    val scrollState = rememberScrollState()
 
-    val endTasks = groupRankHistoryList.filter { it.taskGroup.status == Status.END }.sortedByDescending { it.taskGroup.endDate }
-    val latest = endTasks.first()
-    val challenge =
-        Challenge(
-            id = 1,
-            description = "",
-            image = "",
-            approveMember = arrayListOf(1, 2, 3, 4, 5, 6, 6, 3, 7),
-            rejectMember = arrayListOf(),
-            createdAt = "191",
-            updatedAt = "",
-        )
-
-    val listState = rememberScrollState()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -156,7 +93,7 @@ fun ReportDetailScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { navHostController.popBackStack() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_left),
                             contentDescription = "Back",
@@ -167,79 +104,94 @@ fun ReportDetailScreen(
         },
 
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = it.calculateTopPadding() + 8.dp, bottom = 10.dp)
-                .verticalScroll(listState),
-        ) {
-            Text(
-                text = stringResource(id = R.string.report_category_level),
-                textAlign = TextAlign.Left,
-                style = BetterAndroidTheme.typography
-                    .headline2,
-                modifier = Modifier.padding(12.dp),
-            )
-
-            StudyRankingCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(horizontal = 12.dp),
-                study = testStudy,
-                history = groupRankHistoryList,
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 40.dp, horizontal = 20.dp),
-            ) {
-                ChallengePercent(
-                    modifier = Modifier.weight(1f),
-                    percent = 78,
-                    text = stringResource(id = R.string.report_team_percent),
-                    color = BetterColors.Gray90,
-                )
-                ChallengePercent(
-                    modifier = Modifier.weight(1f),
-                    percent = 100,
-                    text = stringResource(id = R.string.report_my_percent),
-                    color = BetterColors.Primary50,
-                )
+        when (uiState) {
+            is ReportUiState.Loading -> {
+                ShowLoadingAnimation()
             }
 
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(0.dp),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .background(BetterColors.Primary00)
-                        .height(60.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.report_reward),
-                        style = BetterAndroidTheme.typography.subtitle,
-                        color = BetterColors.Black,
-                    )
-                    Text(
-                        text = " ${if (latest.participantsNumber == latest.totalNumber) 20 + 5 * latest.totalNumber else 20}",
-                        style = BetterAndroidTheme.typography.subtitle,
-                        color = BetterColors.Primary50,
-                    )
-                    Text(text = "점", style = BetterAndroidTheme.typography.subtitle, color = BetterColors.Black)
+            is ReportUiState.Fail -> (ErrorScreen(modifier = Modifier.fillMaxSize(), message = (uiState as ReportUiState.Fail).message))
+
+            is ReportUiState.Success -> {
+                with(uiState as ReportUiState.Success) {
+                    val history = this.list
+                    val latest = history.first()
+                    val study = this.study
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = it.calculateTopPadding() + 8.dp, bottom = 10.dp)
+                            .verticalScroll(scrollState),
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.report_category_level),
+                            textAlign = TextAlign.Left,
+                            style = BetterAndroidTheme.typography.headline2,
+                            modifier = Modifier.padding(12.dp),
+                        )
+
+                        StudyRankingCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .padding(horizontal = 12.dp),
+                            study = study,
+                            history = history,
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 40.dp, horizontal = 20.dp),
+                        ) {
+                            ChallengePercent(
+                                modifier = Modifier.weight(1f),
+                                percent = 78,
+                                text = stringResource(id = R.string.report_team_percent),
+                                color = BetterColors.Gray90,
+                            )
+                            ChallengePercent(
+                                modifier = Modifier.weight(1f),
+                                percent = 100,
+                                text = stringResource(id = R.string.report_my_percent),
+                                color = BetterColors.Primary50,
+                            )
+                        }
+
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .padding(0.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .background(BetterColors.Primary00)
+                                    .height(60.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.report_reward),
+                                    style = BetterAndroidTheme.typography.subtitle,
+                                    color = BetterColors.Black,
+                                )
+                                Text(
+                                    text = " ${if (latest.participantsNumber == latest.totalNumber) 20 + 5 * latest.totalNumber else 20}",
+                                    style = BetterAndroidTheme.typography.subtitle,
+                                    color = BetterColors.Primary50,
+                                )
+                                Text(text = "점", style = BetterAndroidTheme.typography.subtitle, color = BetterColors.Black)
+                            }
+                        }
+
+                        RankingListView(
+                            totalMember = latest.totalNumber,
+                            challenges = arrayListOf(),
+                        )
+                    }
                 }
             }
-
-            RankingListView(
-                totalMember = latest.totalNumber,
-                challenges = arrayListOf(challenge, challenge, challenge),
-            )
         }
     }
 }
@@ -343,18 +295,18 @@ fun RankingListView(
     listState: LazyListState = rememberLazyListState(),
 ) {
     Column(
-        Modifier
-            .padding(horizontal = 16.dp, vertical = 30.dp),
+        Modifier.padding(horizontal = 16.dp, vertical = 30.dp),
     ) {
         Text(
             text = stringResource(id = R.string.report_early_bird),
             textAlign = TextAlign.Left,
-            style = BetterAndroidTheme.typography
-                .headline2,
+            style = BetterAndroidTheme.typography.headline2,
             modifier = Modifier.padding(bottom = 30.dp),
         )
         LazyColumn(
-            modifier = Modifier.heightIn(min = 200.dp, max = 500.dp).padding(horizontal = 8.dp),
+            modifier = Modifier
+                .heightIn(min = 200.dp, max = 500.dp)
+                .padding(horizontal = 8.dp),
             state = listState,
         ) {
             item {
