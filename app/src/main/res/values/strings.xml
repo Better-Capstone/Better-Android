@@ -31,4 +31,17 @@
     <string name="verify">인증하기</string>
 
     <string name="task_empty">등록된 테스크가 없습니다.</string>
+
+    <string name="report_topbar">회차 리포트</string>
+    <string name="report_category_level">카테고리 별 스터디 레벨</string>
+    <string name="study_count">%d회차</string>
+    <string name="study_rank_up">지난 회차 대비 %d%% 성장했어요!</string>
+    <string name="study_rank_down">지난 회차 대비 %d%% 떨어졌어요!</string>
+    <string name="study_rank_none">지난 회차 정보가 없습니다!</string>
+    <string name="report_reward">이번 주차에 내가 획득한 리워드</string>
+    <string name="report_team_percent">팀 인증율</string>
+    <string name="report_my_percent">내 인증율</string>
+    <string name="report_early_bird">이번 회차 얼리버드</string>
+    <string name="report_count">%d회차 리포트</string>
+
 </resources>
