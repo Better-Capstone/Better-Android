@@ -8,7 +8,4 @@ data class ChallengeRequest(
 
     @SerializedName("description")
     val description: String,
-
-    @SerializedName("image")
-    val image: String,
 )

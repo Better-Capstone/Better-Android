@@ -43,6 +43,7 @@ import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.ShowLoadingAnimation
+import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.toLocalDate
@@ -60,6 +61,9 @@ fun StudyDetailScreen(
     StudyDetailContent(
         onClickFinish = {},
         studyEvent = studyEvent.value,
+        onClickAdd = {
+//            navHostController.navigate(Screen.CreateChallenge.route + "?studyId=2&taskId=4")
+        },
     )
 }
 
@@ -113,7 +117,8 @@ fun StudyDetailPreview() {
     )
     StudyDetailContent(
         onClickFinish = { },
-        StudyDetailViewModel.StudyEvent.Success(testStudy, tasks),
+        studyEvent = StudyDetailViewModel.StudyEvent.Success(testStudy, tasks),
+        onClickAdd = { },
     )
 }
 
@@ -122,6 +127,7 @@ fun StudyDetailPreview() {
 fun StudyDetailContent(
     onClickFinish: () -> Unit,
     studyEvent: StudyDetailViewModel.StudyEvent,
+    onClickAdd: (Study) -> Unit,
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf(
@@ -188,7 +194,12 @@ fun StudyDetailContent(
                         }
                     }
                     when (tabIndex) {
-                        0 -> StudyHomeScreen(study = studyEvent.study, taskList = studyEvent.taskList)
+                        0 -> StudyHomeScreen(
+                            study = studyEvent.study,
+                            taskList = studyEvent.taskList,
+                            onClickAdd = onClickAdd,
+                        )
+
                         1 -> StudyChallengeScreen(study = studyEvent.study)
                         2 -> StudyInfoScreen(study = studyEvent.study)
                     }
