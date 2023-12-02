@@ -6,9 +6,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,36 +25,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
-import com.ssu.better.entity.member.Member
-import com.ssu.better.entity.member.MemberType
-import com.ssu.better.entity.study.Category
-import com.ssu.better.entity.study.GroupRank
-import com.ssu.better.entity.study.Study
-import com.ssu.better.entity.study.StudyCategory
-import com.ssu.better.entity.study.StudyCheckDay
-import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.Status
-import com.ssu.better.entity.task.Task
-import com.ssu.better.entity.task.TaskGroup
-import com.ssu.better.entity.user.User
-import com.ssu.better.entity.user.UserRankHistory
+import com.ssu.better.entity.task.UserTask
+import com.ssu.better.entity.task.UserTaskStudy
+import com.ssu.better.presentation.component.ErrorScreen
+import com.ssu.better.presentation.component.ShowLoadingAnimation
+import com.ssu.better.presentation.component.StudyTaskCard
+import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.AnimatedTransitionDialog
 import com.ssu.better.util.CustomDialogPosition
+import com.ssu.better.util.calendarFormatStr
 import com.ssu.better.util.customDialogModifier
 import com.ssu.better.util.noRippleClickable
-import com.ssu.better.util.toLocalDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -62,60 +56,21 @@ fun HomeScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val uiState = homeViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+
+    val selectedDate by homeViewModel.selectedDate.collectAsStateWithLifecycle()
 
     var isDialogOpen by remember { mutableStateOf(false) }
 
-    val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-    val testTime = LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate()
-    val time = "2023-11-28T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
-    val testUser = User(1, "배현빈", "개발하는 북극곰")
-    val testMember = Member(1, 1, MemberType.MEMBER, time)
-    val testTaskGroup = TaskGroup(
-        taskGroupId = 1,
-        status = Status.INPROGRESS,
-        startDate = "",
-        endDate = time,
-        createdAt = "",
-        updatedAt = "",
-    )
-    val testTask = Task(
-        taskId = 1,
-        taskGroup = testTaskGroup,
-        member = testMember,
-        challenge = null,
-        createdAt = time,
-        updatedAt = time,
-        title = "",
-    )
-    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
-    val testCategory = StudyCategory(1, Category.IT.name)
-    val testGroupRank = GroupRank(1, 18000)
-    val tasks = List(2) { testTask }.toMutableList()
-    val testStudy = Study(
-        1,
-        testUser,
-        testCategory,
-        "알고리즘 스터디",
-        "스터디 설명",
-        Status.INPROGRESS,
-        StudyPeriod.EVERYDAY,
-        StudyCheckDay.EVERYDAY,
-        5,
-        1,
-        10,
-        1500,
-        arrayListOf(testMember),
-        arrayListOf(testTaskGroup),
-        arrayListOf(testUserRankHistory),
-        testGroupRank,
-        "",
-    )
-
-    LaunchedEffect(uiState) {
+    LaunchedEffect(Unit) {
+        homeViewModel.loadStudyTaskList()
     }
 
-    Scaffold() {
+    LaunchedEffect(selectedDate) {
+        homeViewModel.loadStudyTaskList()
+    }
+
+    Scaffold {
         if (isDialogOpen) {
             AnimatedTransitionDialog(
                 onDismissRequest = {
@@ -138,10 +93,8 @@ fun HomeScreen(
                                 dialogHelper::triggerAnimatedDismiss.invoke()
                             }
                         },
-                        selectedDate = uiState.value.selectedDate,
+                        selectedDate = selectedDate,
                         isDialogType = true, // 닫기 아이콘 활성화 여부를 위함
-                        // activateDayList.size >0 일시, 선택 가능 날찌 지정하는 것으로 간주하여 이외의 날짜 클릭 disable됨
-                        // LocalDate 형식으로 전달하기 때문에 위와 같은 형식으로 사용하면 해당요일의 체크데이만 가져올 수 있음
                     )
                 },
             )
@@ -161,7 +114,7 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = uiState.value.selectedDateStr,
+                    text = selectedDate.calendarFormatStr(),
                     style = BetterAndroidTheme.typography.subtitle,
                     color = BetterColors.Gray90,
                 )
@@ -174,6 +127,60 @@ fun HomeScreen(
                         .rotate(180f)
                         .noRippleClickable { isDialogOpen = !isDialogOpen },
                     tint = BetterColors.Primary50,
+                )
+            }
+            when (uiState) {
+                is HomeViewModel.HomeUiState.Loading -> {
+                    ShowLoadingAnimation()
+                }
+
+                is HomeViewModel.HomeUiState.Success -> {
+                    StudyTaskListView(
+                        list = (uiState as HomeViewModel.HomeUiState.Success).list,
+                        onClickStudy = { studyId ->
+                            navHostController.navigate(Screen.StudyDetail.route + "?studyId=$studyId")
+                        },
+                        onClickTaskChallenge = { studyId, title ->
+                        },
+                        baseDate = selectedDate,
+                    )
+                }
+
+                is HomeViewModel.HomeUiState.Empty -> {
+                    ErrorScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        message = stringResource(id = R.string.task_empty),
+                    )
+                }
+
+                is HomeViewModel.HomeUiState.Fail -> {
+                    ErrorScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        message = (uiState as HomeViewModel.HomeUiState.Fail).message,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun StudyTaskListView(
+    list: Map<UserTaskStudy, List<UserTask>>,
+    onClickStudy: (Long) -> Unit,
+    onClickTaskChallenge: (Long, String) -> Unit,
+    baseDate: LocalDate,
+) {
+    LazyColumn() {
+        item {
+            list.forEach {
+                StudyTaskCard(
+                    studyId = it.key.id,
+                    studyTitle = it.key.title,
+                    taskList = it.value,
+                    baseDate = baseDate,
+                    onClickMore = onClickStudy,
+                    onClickChallenge = onClickTaskChallenge,
                 )
             }
         }

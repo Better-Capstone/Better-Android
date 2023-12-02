@@ -26,8 +26,11 @@
     <string name="search_guide">어떤 스터디를 찾고 신가요?</string>
     <string name="search_empty">검색 결과가 없습니다.</string>
     <string name="create_challenge">챌린지 생성</string>
+    <string name="verify_challenge">챌린지 인증</string>
     <string name="description">설명</string>
     <string name="verify">인증하기</string>
+
+    <string name="task_empty">등록된 테스크가 없습니다.</string>
 
     <string name="report_topbar">회차 리포트</string>
     <string name="report_category_level">카테고리 별 스터디 레벨</string>

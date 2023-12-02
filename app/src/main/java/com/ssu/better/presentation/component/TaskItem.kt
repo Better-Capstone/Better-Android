@@ -15,6 +15,7 @@ import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
+import com.ssu.better.util.convertToLocalDateByFormat
 import com.ssu.better.util.getDDay
 import com.ssu.better.util.toLocalDate
 import java.time.LocalDate
@@ -30,14 +31,14 @@ fun TaskItem(
     onClick: () -> Unit,
 
 ) {
-    val taskEnabled = Period.between(task.taskGroup.endDate.toLocalDate(), baseDate).isNegative
+    val taskEnabled = Period.between(LocalDate.now(), convertToLocalDateByFormat(task.taskGroup.endDate, "yyyy-MM-dd")).days >= 0
 
     Row(
         modifier = modifier.padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = getDDay(baseDate, task.taskGroup.endDate.toLocalDate() ?: baseDate),
+            text = getDDay(baseDate, convertToLocalDateByFormat(task.taskGroup.endDate, "yyyy-MM-dd") ?: baseDate),
             style = BetterAndroidTheme.typography.headline3,
             color = BetterColors.Primary50,
         )
