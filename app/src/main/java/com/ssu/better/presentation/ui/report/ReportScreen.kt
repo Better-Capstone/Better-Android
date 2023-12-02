@@ -1,45 +1,31 @@
 package com.ssu.better.presentation.ui.report
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssu.better.R
-import com.ssu.better.entity.challenge.Challenge
 import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
@@ -55,7 +41,6 @@ import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.BetterRoundChip
-import com.ssu.better.presentation.component.CircleRankProfile
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.toLocalDate
@@ -64,27 +49,11 @@ import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
-    study: Study,
-    groupRankHistoryList: List<GroupRankHistory>,
+    history: List<GroupRankHistory>,
 ) {
-    val endTasks = groupRankHistoryList.filter { it.taskGroup.status == Status.END }.sortedByDescending { it.taskGroup.endDate }
-    val latest = endTasks.first()
-    val challenge =
-        Challenge(
-            id = 1,
-            description = "",
-            image = "",
-            approveMember = arrayListOf(1, 2, 3, 4, 5, 6, 6, 3, 7),
-            rejectMember = arrayListOf(),
-            createdAt = "191",
-            updatedAt = "",
-        )
-
-    val listState = rememberScrollState()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -108,244 +77,51 @@ fun ReportScreen(
         },
 
     ) {
-        Column(
+        LazyVerticalGrid(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(top = it.calculateTopPadding() + 8.dp, bottom = 10.dp)
-                .verticalScroll(listState),
+                .background(BetterColors.Gray00)
+                .padding(top = it.calculateTopPadding() + 20.dp)
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 20.dp)
+                .fillMaxSize(),
+            columns = GridCells.Fixed(2),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Text(
-                text = stringResource(id = R.string.report_category_level),
-                textAlign = TextAlign.Left,
-                style = BetterAndroidTheme.typography
-                    .headline2,
-                modifier = Modifier.padding(12.dp),
-            )
-
-            StudyRankingCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(horizontal = 12.dp),
-                study = study,
-                history = groupRankHistoryList,
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 40.dp, horizontal = 20.dp),
-            ) {
-                ChallengePercent(
-                    modifier = Modifier.weight(1f),
-                    percent = 78,
-                    text = stringResource(id = R.string.report_team_percent),
-                    color = BetterColors.Gray90,
-                )
-                ChallengePercent(
-                    modifier = Modifier.weight(1f),
-                    percent = 100,
-                    text = stringResource(id = R.string.report_my_percent),
-                    color = BetterColors.Primary50,
-                )
+            itemsIndexed(history) { idx, report ->
+                ReportItem(idx = idx, groupRankHistory = report, onClick = {})
             }
-
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(0.dp),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .background(BetterColors.Primary00)
-                        .height(60.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.report_reward),
-                        style = BetterAndroidTheme.typography.subtitle,
-                        color = BetterColors.Black,
-                    )
-                    Text(
-                        text = " ${if (latest.participantsNumber == latest.totalNumber) 20 + 5 * latest.totalNumber else 20}",
-                        style = BetterAndroidTheme.typography.subtitle,
-                        color = BetterColors.Primary50,
-                    )
-                    Text(text = "점", style = BetterAndroidTheme.typography.subtitle, color = BetterColors.Black)
-                }
-            }
-
-            RankingListView(
-                totalMember = latest.totalNumber,
-                challenges = arrayListOf(challenge, challenge, challenge),
-            )
         }
     }
 }
 
 @Composable
-fun StudyRankingCard(
-    modifier: Modifier = Modifier,
-    study: Study,
-    history: List<GroupRankHistory>,
-) {
-    val endTasks = history.filter { it.taskGroup.status == Status.END }.sortedByDescending { it.taskGroup.endDate }
-    val latest = endTasks.first()
-
-    val growth = if (history.size > 1) {
-        val prev = endTasks[1]
-        val score = latest.score - prev.score
-        if (score >= 0) {
-            format(stringResource(id = R.string.study_rank_up), score)
-        } else {
-            format(stringResource(id = R.string.study_rank_down), score)
-        }
-    } else {
-        stringResource(id = R.string.study_rank_none)
-    }
-
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(10.dp),
-        shadowElevation = 4.dp,
-    ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp),
-                horizontalArrangement = Arrangement.Start,
-            ) {
-                Text(text = Category.safeValueOf(study.category.name).kor, color = BetterColors.Primary50)
-                Text(text = "스터디 내", color = BetterColors.Gray70)
-                Text(text = study.title, color = BetterColors.Gray30)
-                Text(text = "는?", color = BetterColors.Gray70)
-            }
-            Image(
-                painter = painterResource(
-                    id = when (latest.score) {
-                        in 0..19 -> {
-                            R.drawable.ic_report_level1
-                        }
-
-                        in 20..39 -> {
-                            R.drawable.ic_report_level2
-                        }
-
-                        in 40..59 -> {
-                            R.drawable.ic_report_level3
-                        }
-
-                        in 60..79 -> {
-                            R.drawable.ic_report_level4
-                        }
-
-                        else -> {
-                            R.drawable.ic_report_level5
-                        }
-                    },
-                ),
-                contentDescription = "report group rank",
-                modifier = Modifier.width(200.dp),
-            )
-            Text(text = growth, modifier = Modifier.padding(vertical = 16.dp))
-            BetterRoundChip(enabled = true, text = format(stringResource(id = R.string.study_count), endTasks.size), onClick = {})
-        }
-    }
-}
-
-@Composable
-fun ChallengePercent(
-    modifier: Modifier = Modifier,
-    percent: Int,
-    text: String,
-    color: Color,
+fun ReportItem(
+    idx: Int,
+    groupRankHistory: GroupRankHistory,
+    onClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .paint(painterResource(id = R.drawable.bg_report), contentScale = ContentScale.FillWidth)
+            .padding(vertical = 20.dp).clickable { onClick() },
         verticalArrangement = Arrangement.Center,
-    ) {
-        Text(text = "$percent%", color = color, style = BetterAndroidTheme.typography.headline0)
-        Text(text = text, style = BetterAndroidTheme.typography.subtitle, modifier = Modifier.padding(top = 6.dp))
-    }
-}
+        horizontalAlignment = Alignment.CenterHorizontally,
 
-@Composable
-fun RankingListView(
-    totalMember: Int,
-    challenges: List<Challenge>,
-    listState: LazyListState = rememberLazyListState(),
-) {
-    Column(
-        Modifier
-            .padding(horizontal = 16.dp, vertical = 30.dp),
     ) {
         Text(
-            text = stringResource(id = R.string.report_early_bird),
-            textAlign = TextAlign.Left,
-            style = BetterAndroidTheme.typography
-                .headline2,
-            modifier = Modifier.padding(bottom = 30.dp),
-        )
-        LazyColumn(
-            modifier = Modifier.heightIn(min = 200.dp, max = 500.dp).padding(horizontal = 8.dp),
-            state = listState,
-        ) {
-            item {
-                challenges.filter { it.approveMember.size >= (totalMember / 2) }.sortedBy { it.createdAt }.forEachIndexed { idx, v ->
-                    RankingItem(idx + 1, "name")
-                }
-            }
-        }
-    }
-}
+            text = "${groupRankHistory.participantsNumber / groupRankHistory.totalNumber * 100}%",
+            style = BetterAndroidTheme.typography.headline0,
+            modifier = Modifier.padding(vertical = 10.dp),
 
-@Composable
-fun RankingItem(
-    rank: Int,
-    nickName: String,
-) {
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = "$rank",
-                color = BetterColors.Primary50,
-                style = BetterAndroidTheme.typography.title,
-                modifier = Modifier.padding(end = 16.dp),
-            )
-            CircleRankProfile(score = 2100, modifier = Modifier.size(35.dp))
-            Text(
-                text = nickName,
-                style = BetterAndroidTheme.typography.subtitle,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 12.dp),
-            )
-        }
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(BetterColors.Gray00),
         )
+        BetterRoundChip(enabled = true, text = format(stringResource(id = R.string.study_count), idx)) {}
     }
 }
 
 @Preview
 @Composable
-fun PreviewReportScreen() {
+fun PreviewReportDetail() {
     val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
     val testTime = LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate()
@@ -400,5 +176,9 @@ fun PreviewReportScreen() {
         groupRank = testGroupRank,
         taskGroup = testTaskGroup,
     )
-    ReportScreen(study = testStudy, groupRankHistoryList = listOf(groupRankHistory, groupRankHistory.copy(score = 79)))
+    ReportScreen(
+        history = List(10) { groupRankHistory }.mapIndexed { idx, report ->
+            report.copy(totalNumber = (idx + 1) * 2, participantsNumber = (idx) + 2)
+        },
+    )
 }
