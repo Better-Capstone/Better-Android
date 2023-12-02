@@ -33,16 +33,17 @@ import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.ShowLoadingAnimation
+import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.toLocalDate
@@ -59,6 +60,7 @@ fun StudyDetailScreen(
     viewModel.setStudyId(studyId)
     StudyDetailContent(
         onClickFinish = {},
+        onClickReport = { navHostController.navigate(Screen.Report.ReportList.route + "?studyId=$studyId") },
         studyEvent = studyEvent.value,
     )
 }
@@ -113,6 +115,7 @@ fun StudyDetailPreview() {
     )
     StudyDetailContent(
         onClickFinish = { },
+        onClickReport = {},
         StudyDetailViewModel.StudyEvent.Success(testStudy, tasks),
     )
 }
@@ -121,6 +124,7 @@ fun StudyDetailPreview() {
 @Composable
 fun StudyDetailContent(
     onClickFinish: () -> Unit,
+    onClickReport: () -> Unit,
     studyEvent: StudyDetailViewModel.StudyEvent,
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
@@ -188,7 +192,14 @@ fun StudyDetailContent(
                         }
                     }
                     when (tabIndex) {
-                        0 -> StudyHomeScreen(study = studyEvent.study, taskList = studyEvent.taskList)
+                        0 -> StudyHomeScreen(
+                            study = studyEvent.study,
+                            taskList = studyEvent.taskList,
+                            onClickReport = {
+                                onClickReport()
+                            },
+                        )
+
                         1 -> StudyChallengeScreen(study = studyEvent.study)
                         2 -> StudyInfoScreen(study = studyEvent.study)
                     }

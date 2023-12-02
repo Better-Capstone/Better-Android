@@ -14,6 +14,8 @@ import com.ssu.better.presentation.ui.main.home.SampleScreen
 import com.ssu.better.presentation.ui.main.mypage.MyPageScreen
 import com.ssu.better.presentation.ui.main.search.SearchDetailScreen
 import com.ssu.better.presentation.ui.main.search.SearchScreen
+import com.ssu.better.presentation.ui.report.ReportDetailScreen
+import com.ssu.better.presentation.ui.report.ReportScreen
 import com.ssu.better.presentation.ui.study.create.CreateStudyScreen
 import com.ssu.better.presentation.ui.study.detail.StudyDetailScreen
 import com.ssu.better.presentation.ui.study.join.StudyJoinScreen
@@ -33,10 +35,8 @@ fun MainNavGraph(navController: NavHostController) {
             composable(route = Screen.Search.Main.route) {
                 SearchScreen(navController)
             }
-
             composable(
                 route = Screen.Search.Detail.route + "?query={query}&category={category}",
-
                 arguments = listOf(
                     navArgument("query") {
                         type = NavType.StringType
@@ -150,6 +150,26 @@ fun MainNavGraph(navController: NavHostController) {
                 studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0,
                 taskId = navBackStackEntry.arguments?.getLong("taskId") ?: 0,
             )
+        }
+
+        navigation(route = Screen.Report.route, startDestination = Screen.StudyDetail.route) {
+            composable(
+                route = Screen.Report.ReportList.route + "?studyId={studyId}",
+                arguments = listOf(
+                    navArgument("studyId") {
+                        type = NavType.LongType
+                        defaultValue = 0L
+                    },
+                ),
+            ) { navBackStackEntry ->
+                ReportScreen(
+                    navController = navController,
+                    studyId = navBackStackEntry.arguments?.getLong("studyId", 0) ?: 0,
+                )
+            }
+            composable(route = Screen.Report.ReportDetail.route) {
+                ReportDetailScreen(navController)
+            }
         }
     }
 }

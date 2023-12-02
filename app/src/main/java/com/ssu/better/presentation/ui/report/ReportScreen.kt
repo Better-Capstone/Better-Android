@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
@@ -41,6 +42,7 @@ import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.BetterRoundChip
+import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.toLocalDate
@@ -52,8 +54,11 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
-    history: List<GroupRankHistory>,
+    navController: NavHostController,
+    studyId: Long,
 ) {
+    val history = listOf<GroupRankHistory>()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -66,7 +71,11 @@ fun ReportScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(
+                        onClick = {
+                            navController.popBackStack()
+                        },
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_left),
                             contentDescription = "Back",
@@ -89,7 +98,13 @@ fun ReportScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             itemsIndexed(history) { idx, report ->
-                ReportItem(idx = idx, groupRankHistory = report, onClick = {})
+                ReportItem(
+                    idx = idx,
+                    groupRankHistory = report,
+                    onClick = {
+                        navController.navigate(route = Screen.Report.ReportDetail.route)
+                    },
+                )
             }
         }
     }
@@ -104,7 +119,8 @@ fun ReportItem(
     Column(
         modifier = Modifier
             .paint(painterResource(id = R.drawable.bg_report), contentScale = ContentScale.FillWidth)
-            .padding(vertical = 20.dp).clickable { onClick() },
+            .padding(vertical = 20.dp)
+            .clickable { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
@@ -176,9 +192,10 @@ fun PreviewReportDetail() {
         groupRank = testGroupRank,
         taskGroup = testTaskGroup,
     )
-    ReportScreen(
-        history = List(10) { groupRankHistory }.mapIndexed { idx, report ->
-            report.copy(totalNumber = (idx + 1) * 2, participantsNumber = (idx) + 2)
-        },
-    )
+//    ReportScreen(
+//        history = List(10) { groupRankHistory }.mapIndexed { idx, report ->
+//            report.copy(totalNumber = (idx + 1) * 2, participantsNumber = (idx) + 2)
+//        },
+//
+//    )
 }

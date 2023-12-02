@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.challenge.Challenge
 import com.ssu.better.entity.member.Member
@@ -68,9 +69,67 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportDetailScreen(
-    study: Study,
-    groupRankHistoryList: List<GroupRankHistory>,
+    navHostController: NavHostController,
+    study: Study? = null,
+    groupRankHistoryList: List<GroupRankHistory> = emptyList(),
 ) {
+    // test 용
+    val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+
+    val testTime = LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate()
+    val time = "2023-11-28T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
+    val testUser = User(1, "배현빈", "개발하는 북극곰")
+    val testMember = Member(1, 1, MemberType.MEMBER, time)
+    val testTaskGroup = TaskGroup(
+        taskGroupId = 1,
+        status = Status.END,
+        startDate = "",
+        endDate = time,
+        createdAt = "",
+        updatedAt = "",
+    )
+    val testTask = Task(
+        taskId = 1,
+        taskGroup = testTaskGroup,
+        member = testMember,
+        challenge = null,
+        createdAt = time,
+        updatedAt = time,
+        title = "",
+    )
+    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
+    val testCategory = StudyCategory(1, Category.IT.name)
+    val testGroupRank = GroupRank(1, 80)
+    val tasks = List(5) { testTask }.toMutableList()
+    val testStudy = Study(
+        1,
+        testUser,
+        testCategory,
+        "알고리즘 스터디",
+        "스터디 설명",
+        Status.INPROGRESS,
+        StudyPeriod.EVERYDAY,
+        StudyCheckDay.EVERYDAY,
+        5,
+        1,
+        10,
+        1500,
+        arrayListOf(testMember),
+        userRankHistoryList = arrayListOf(testUserRankHistory, testUserRankHistory.copy(score = 67)),
+        groupRank = testGroupRank,
+        createdAt = "",
+        taskGroupList = arrayListOf(),
+    )
+    val groupRankHistory = GroupRankHistory(
+        groupRankHistoryId = 1,
+        score = 38,
+        participantsNumber = 4,
+        totalNumber = 6,
+        groupRank = testGroupRank,
+        taskGroup = testTaskGroup,
+    )
+//
+
     val endTasks = groupRankHistoryList.filter { it.taskGroup.status == Status.END }.sortedByDescending { it.taskGroup.endDate }
     val latest = endTasks.first()
     val challenge =
@@ -127,7 +186,7 @@ fun ReportDetailScreen(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .padding(horizontal = 12.dp),
-                study = study,
+                study = testStudy,
                 history = groupRankHistoryList,
             )
 
@@ -400,5 +459,5 @@ fun PreviewReportScreen() {
         groupRank = testGroupRank,
         taskGroup = testTaskGroup,
     )
-    ReportDetailScreen(study = testStudy, groupRankHistoryList = listOf(groupRankHistory, groupRankHistory.copy(score = 79)))
+//    ReportDetailScreen(study = testStudy, groupRankHistoryList = listOf(groupRankHistory, groupRankHistory.copy(score = 79)))
 }

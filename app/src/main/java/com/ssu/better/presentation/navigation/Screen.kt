@@ -26,6 +26,8 @@ sealed class Screen(val route: String) {
 
     object CreateChallenge : Screen("create-challenge")
 
-    object Report : Screen("report")
-    object ReportDetail : Screen("report-detail")
+    object Report : Screen("report") {
+        object ReportList : Screen("report-list")
+        object ReportDetail : Screen("report-detail")
+    }
 }
