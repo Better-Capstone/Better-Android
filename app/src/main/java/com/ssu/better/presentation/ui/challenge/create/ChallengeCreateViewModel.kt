@@ -12,6 +12,7 @@ import com.ssu.better.entity.challenge.ChallengeRequest
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.task.Task
 import com.ssu.better.util.getHttpErrorMsg
+import com.ssu.better.util.getMultipartBodyFromUri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -93,15 +94,16 @@ class ChallengeCreateViewModel @Inject constructor(
             val request = ChallengeRequest(
                 title = it.title,
                 description = _description.value,
-                image = "https://velog.velcdn.com/images/spy03128/post/f9592660-5745-4317-bcc8-96cff69b368e/image.png",
             )
 
             viewModelScope.launch {
-                postCreateChallengeUseCase.postCreateChallenge(it.taskId, request)
-                    .collectLatest {
-                        Timber.d("태스크 생성 성공")
-                        _event.emit(ChallengeCreateEvent.Finish)
-                    }
+                _imageUri.value?.let { it1 ->
+                    postCreateChallengeUseCase.postCreateChallenge(it.taskId, it1.getMultipartBodyFromUri(getApplication()), request)
+                        .collectLatest {
+                            Timber.d("태스크 생성 성공")
+                            _event.emit(ChallengeCreateEvent.Finish)
+                        }
+                }
             }
         }
     }

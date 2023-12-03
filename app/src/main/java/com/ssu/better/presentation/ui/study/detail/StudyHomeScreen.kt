@@ -94,7 +94,7 @@ fun StudyHomeScreen(
                             BetterRoundChip(
                                 modifier = Modifier.padding(top = 18.dp, bottom = 25.dp),
                                 enabled = true,
-                                text = "89회차",
+                                text = "${study.taskGroupList.size}회차",
                                 onClick = {},
                             )
                         }
@@ -136,7 +136,7 @@ fun StudyHomeScreen(
                                         modifier = Modifier
                                             .width(51.dp)
                                             .height(46.dp),
-                                        text = "8",
+                                        text = study.memberCount.toString(),
                                         textAlign = TextAlign.Center,
                                         style = BetterAndroidTheme.typography.headline0,
                                         color = BetterColors.White,
