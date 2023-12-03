@@ -20,7 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ssu.better.R
+import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.Study
+import com.ssu.better.util.getCategoryIcon
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
@@ -102,7 +104,7 @@ fun StudyCard(
                     color = BetterColors.Gray20,
                 )
 
-//                GradientIcon(src = getCategoryIcon(Category.valueOf(study.category.name)), modifier = Modifier.width(20.dp).height(20.dp))
+                GradientIcon(src = getCategoryIcon(Category.safeValueOf(study.category.name)), modifier = Modifier.width(20.dp).height(20.dp))
             }
         }
     }
