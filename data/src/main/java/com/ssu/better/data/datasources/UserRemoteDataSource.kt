@@ -32,5 +32,5 @@ class UserRemoteDataSource(
         publicUserService.getUserCheck(userId)
 
     suspend fun getUserRankHistory(userId: Long) =
-        publicUserService.getUserRankHistory(userId)
+        tokenUserService.getUserRankHistory(userId)
 }

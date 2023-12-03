@@ -66,6 +66,9 @@ fun MyPageScreen(
         onClickStudy = { study ->
             navHostController.navigate(Screen.StudyDetail.route + "?studyId=${study.studyId}")
         },
+        onClickHistory = {
+            navHostController.navigate(Screen.UserRankHistory.route)
+        },
     )
 }
 
@@ -75,6 +78,7 @@ fun MyPageContent(
     isNotifyEnabled: Boolean,
     onClickNotifyChange: (Boolean) -> Unit,
     onClickStudy: (Study) -> Unit,
+    onClickHistory: () -> Unit,
 ) {
     when (uiState) {
         is MyPageViewModel.UIState.Success -> {
@@ -86,6 +90,7 @@ fun MyPageContent(
                 onClickLogout = {},
                 onClickWithDraw = {},
                 onClickStudy = onClickStudy,
+                onClickHistory = onClickHistory,
             )
         }
 
@@ -104,13 +109,18 @@ fun MyPage(
     onClickLogout: () -> Unit,
     onClickWithDraw: () -> Unit,
     onClickStudy: (Study) -> Unit,
+    onClickHistory: () -> Unit,
 ) {
     Surface(color = BetterColors.Gray00) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            UserRankCard(userName = "배현빈", userRank = userRank)
+            UserRankCard(
+                userName = "배현빈",
+                userRank = userRank,
+                onClickHistory = onClickHistory,
+            )
 
             Text(
                 modifier = Modifier.padding(top = 23.dp, start = 20.dp, bottom = 10.dp),
@@ -248,11 +258,16 @@ fun PreviewMyPage() {
         onClickLogout = { },
         onClickWithDraw = { },
         onClickStudy = { },
+        onClickHistory = { },
     )
 }
 
 @Composable
-fun UserRankCard(userName: String, userRank: UserRank) {
+fun UserRankCard(
+    userName: String,
+    userRank: UserRank,
+    onClickHistory: () -> Unit = { },
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -277,8 +292,7 @@ fun UserRankCard(userName: String, userRank: UserRank) {
                 MoreButton(
                     modifier = Modifier.padding(end = 12.dp),
                     text = "적립 내역",
-                    onClick = {
-                    },
+                    onClick = onClickHistory,
                 )
             }
 
