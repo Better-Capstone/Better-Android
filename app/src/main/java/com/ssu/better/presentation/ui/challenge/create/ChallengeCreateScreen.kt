@@ -120,7 +120,7 @@ fun PreviewChallengeCreate() {
         updatedAt = time,
         title = "",
     )
-    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
+    val testUserRankHistory = UserRankHistory(1, 50, "50점 추가", testTask, "", "")
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
     val tasks = List(2) { testTask }.toMutableList()

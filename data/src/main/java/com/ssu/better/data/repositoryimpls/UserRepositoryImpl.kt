@@ -9,6 +9,7 @@ import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserCheck
 import com.ssu.better.entity.user.UserLoginResponse
 import com.ssu.better.entity.user.UserRank
+import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.entity.user.UserRegisterRequest
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -42,5 +43,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getUserCheck(userId: Long): Flow<UserCheck> {
         return CommonAPILogic.checkError(userRemoteDataSource.getUserCheck(userId))
+    }
+
+    override suspend fun getUserRankHistory(userId: Long): Flow<List<UserRankHistory>> {
+        return CommonAPILogic.checkError(userRemoteDataSource.getUserRankHistory(userId))
     }
 }

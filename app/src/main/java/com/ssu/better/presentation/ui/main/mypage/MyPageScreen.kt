@@ -44,6 +44,7 @@ import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.entity.user.UserRankName
+import com.ssu.better.presentation.component.MoreButton
 import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.component.StudyCard
 import com.ssu.better.presentation.navigation.Screen
@@ -187,17 +188,7 @@ fun MyPage(
 @Composable
 @Preview(showSystemUi = true)
 fun PreviewMyPage() {
-    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
     val testUser = User(1, "배현빈", "개발하는 북극곰")
-    val testUserRank = UserRank(
-        id = 3,
-        user = testUser,
-        score = 7530,
-        createdAt = "",
-        updatedAt = "",
-        userRankHistoryList = arrayListOf(testUserRankHistory),
-    )
-
     val testMember = Member(1, 1, MemberType.MEMBER, "")
     val testTaskGroup = TaskGroup(
         taskGroupId = 1,
@@ -215,6 +206,15 @@ fun PreviewMyPage() {
         createdAt = "",
         updatedAt = "",
         title = "",
+    )
+    val testUserRankHistory = UserRankHistory(1, 50, "50점 추가", testTask, "", "")
+    val testUserRank = UserRank(
+        id = 3,
+        user = testUser,
+        score = 7530,
+        createdAt = "",
+        updatedAt = "",
+        userRankHistoryList = arrayListOf(testUserRankHistory),
     )
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
@@ -271,6 +271,14 @@ fun UserRankCard(userName: String, userRank: UserRank) {
                     modifier = Modifier.padding(top = 16.dp, start = 12.dp),
                     text = "$userName 님의 Better 점수",
                     style = BetterAndroidTheme.typography.headline2,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+
+                MoreButton(
+                    modifier = Modifier.padding(end = 12.dp),
+                    text = "적립 내역",
+                    onClick = {
+                    },
                 )
             }
 
