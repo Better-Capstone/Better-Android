@@ -119,7 +119,6 @@ fun StudyDetailPreview() {
     StudyDetailContent(
         onClickFinish = { },
         onClickReport = {},
-        StudyDetailViewModel.StudyEvent.Success(testStudy, tasks),
         studyEvent = StudyDetailViewModel.StudyEvent.Success(testStudy, tasks),
         onClickAdd = { },
     )
@@ -205,7 +204,7 @@ fun StudyDetailContent(
                                 onClickReport()
                             },
                             onClickAdd = onClickAdd,
-                            )
+                        )
 
                         1 -> StudyChallengeScreen(study = studyEvent.study)
                         2 -> StudyInfoScreen(study = studyEvent.study)
