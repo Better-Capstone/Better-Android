@@ -168,6 +168,8 @@ fun SearchScreen(
                             .fillMaxSize()
                             .padding(bottom = 30.dp),
                         listState = listState,
+                        onClick = { studyId -> navHostController.navigate(Screen.StudyDetail.route + "?studyId=$studyId") },
+
                     )
                 }
 
@@ -219,6 +221,7 @@ fun StudyListView(
     list: List<Study>,
     modifier: Modifier = Modifier,
     listState: LazyGridState = rememberLazyGridState(),
+    onClick: (Long) -> Unit,
 ) {
     LazyVerticalGrid(
         state = listState,
@@ -232,6 +235,7 @@ fun StudyListView(
                 StudyCard(
                     modifier = Modifier.padding(),
                     study = study,
+                    onClick = onClick,
                 )
             }
         },

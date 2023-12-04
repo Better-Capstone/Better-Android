@@ -10,6 +10,7 @@ import com.ssu.better.domain.usecase.study.GetStudyListUseCase
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.SortOption
 import com.ssu.better.entity.study.Study
+import com.ssu.better.entity.user.UserPref
 import com.ssu.better.util.getHttpErrorMsg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,7 @@ class SearchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Loading)
     val uiState get() = _uiState
 
-    private val _userInfo = MutableStateFlow<String>("")
+    private val _userInfo = MutableStateFlow<UserPref>(UserPref(id = -1, ""))
     val userInfo get() = _userInfo
 
     fun initView() {
@@ -40,7 +41,7 @@ class SearchViewModel @Inject constructor(
     private fun loadUserInfo() {
         viewModelScope.launch {
             userPrefManager.getUserPref().collectLatest {
-                it?.let { pref -> _userInfo.emit(pref.nickname) }
+                it?.let { pref -> _userInfo.emit(pref) }
             }
         }
     }
