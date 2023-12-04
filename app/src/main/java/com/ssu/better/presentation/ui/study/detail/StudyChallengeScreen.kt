@@ -44,7 +44,10 @@ fun StudyChallengeScreen(
             onClick = {},
         )
 
-        LazyVerticalGrid(columns = GridCells.Fixed(3)) {
+        LazyVerticalGrid(
+            modifier = Modifier.padding(start = 25.dp, end = 25.dp),
+            columns = GridCells.Fixed(3),
+        ) {
             if (myTask != null) {
                 item {
                     Box(
@@ -76,15 +79,14 @@ fun StudyChallengeScreen(
                         }
                     }
                 }
-
-                items(tasks.size) { index ->
-                    val item = tasks[index]
-                    UserChallengeCard(
-                        studyTask = item,
-                        memberCount = study.memberCount,
-                        onClick = onClickChallengeApprove,
-                    )
-                }
+            }
+            items(tasks.size) { index ->
+                val item = tasks[index]
+                UserChallengeCard(
+                    studyTask = item,
+                    memberCount = study.memberCount,
+                    onClick = onClickChallengeApprove,
+                )
             }
         }
     }

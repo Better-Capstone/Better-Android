@@ -75,6 +75,17 @@ fun String.toLocalDate(): LocalDate? {
     }
 }
 
+fun String.toLocalDate(pattern: String): LocalDate? {
+    val dateFormat = DateTimeFormatter.ofPattern(pattern)
+    return try {
+        val localDate = LocalDate.parse(this, dateFormat)
+        localDate
+    } catch (e: ParseException) {
+        e.printStackTrace()
+        null
+    }
+}
+
 fun getDDay(now: LocalDate, target: LocalDate): String {
     val period = Period.between(now, target)
     return if (period.days >= 0) {

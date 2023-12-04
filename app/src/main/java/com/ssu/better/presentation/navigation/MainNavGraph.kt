@@ -214,7 +214,7 @@ fun MainNavGraph(navController: NavHostController) {
         ) { navBackStackEntry ->
             ChallengeApproveScreen(
                 navController = navController,
-                challengeId = navBackStackEntry.arguments?.getLong("taskId") ?: 0,
+                challengeId = navBackStackEntry.arguments?.getLong("challengeId") ?: 0,
                 studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0,
                 userName = navBackStackEntry.arguments?.getString("userName") ?: "",
             )
