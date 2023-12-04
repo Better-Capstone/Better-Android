@@ -29,7 +29,7 @@ import com.ssu.better.util.getCategoryIcon
 @Composable
 fun StudyCard(
     study: Study,
-    onClick: ((Long) -> Unit)? = null,
+    onClick: ((Long) -> Unit) = {},
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -93,12 +93,12 @@ fun StudyCard(
             ) {
                 Text(
                     text = "${
-                    when (study.minRank) {
-                        1 -> "꺼진촛불"
-                        2 -> "촛불"
-                        3 -> "불꽃"
-                        else -> "모닥불"
-                    }
+                        when (study.minRank) {
+                            1 -> "꺼진촛불"
+                            2 -> "촛불"
+                            3 -> "불꽃"
+                            else -> "모닥불"
+                        }
                     }이상",
                     style = BetterAndroidTheme.typography.subtitle,
                     color = BetterColors.Gray20,
