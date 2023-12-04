@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -21,14 +23,15 @@ import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
+import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
@@ -87,30 +90,48 @@ fun StudyHomeTaskCard(
                 )
             }
         }
-//        if (!study.taskList.isNullOrEmpty()) {
-//            LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
-//                item {
-//                    study.taskList.forEach {
-//                        TaskItem(
-//                            modifier = Modifier.fillMaxWidth(),
-//                            task = it,
-//                            baseDate = baseDate,
-//                            onClick = {
-//                                onClickTask(it)
-//                            },
-//                        )
-//                        Spacer(
-//                            modifier = Modifier
-//                                .height(1.dp)
-//                                .background(BetterColors.Gray00)
-//                                .fillMaxWidth()
-//                                .padding(horizontal = 2.dp),
-//                        )
-//                        Spacer(modifier = Modifier.height(10.dp))
-//                    }
-//                }
-//            }
-//        }
+        if (study.taskGroupList.isNotEmpty()) {
+            LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(150.dp, 250.dp)) {
+                item {
+                    study.taskGroupList.forEach {
+                    }
+                }
+            }
+            val pattern = "YYYY-MM-dd"
+            val time = "2023-11-28T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
+            val testUser = User(1, "배현빈", "개발하는 북극곰")
+            val testMember = Member(1, 1, MemberType.MEMBER, time)
+            val testTaskGroup = TaskGroup(
+                taskGroupId = 1,
+                status = Status.INPROGRESS,
+                startDate = "",
+                endDate = time,
+                createdAt = "",
+                updatedAt = "",
+            )
+            val testTask = Task(
+                taskId = 1,
+                taskGroup = testTaskGroup,
+                member = testMember,
+                challenge = null,
+                createdAt = time,
+                updatedAt = time,
+                title = "something",
+            )
+            MemberTaskItem(
+                modifier = Modifier.fillMaxWidth(),
+                task = testTask,
+                userRank = UserRank(
+                    score = 2001,
+                    user = testUser,
+                    id = 1,
+                    "",
+                    "",
+                    userRankHistoryList = arrayListOf(),
+                ),
+                onClick = {},
+            )
+        }
     }
 }
 
@@ -138,7 +159,7 @@ fun PreviewStudyHomeTaskCard() {
         challenge = null,
         createdAt = time,
         updatedAt = time,
-        title = "",
+        title = "할일",
     )
     val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
     val testCategory = StudyCategory(1, Category.IT.name)
@@ -161,7 +182,7 @@ fun PreviewStudyHomeTaskCard() {
         userRankHistoryList = arrayListOf(testUserRankHistory),
         groupRank = testGroupRank,
         createdAt = "",
-        taskGroupList = arrayListOf(),
+        taskGroupList = arrayListOf(testTaskGroup),
     )
     StudyHomeTaskCard(study = testStudy, baseDate = testTime, onClickAdd = {}, onClickTask = {})
 }

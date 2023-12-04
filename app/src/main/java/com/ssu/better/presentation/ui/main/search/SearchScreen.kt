@@ -57,6 +57,7 @@ import com.ssu.better.presentation.component.StudyCard
 import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
+import com.ssu.better.util.getUserRankIcon
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -114,7 +115,7 @@ fun SearchScreen(
                     .padding(10.dp),
             ) {
                 Column() {
-                    Text(text = "$userInfo,님", style = BetterAndroidTheme.typography.headline2, color = BetterColors.Gray30)
+                    Text(text = "${userInfo.nickname}님,", style = BetterAndroidTheme.typography.headline2, color = BetterColors.Gray30)
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = stringResource(id = R.string.search_guide),
@@ -303,7 +304,7 @@ fun UserRankProfile(
 
     ) {
         val image = when (rank) {
-            else -> R.drawable.ic_study_fire
+            else -> getUserRankIcon(rank)
         }
         Box(
             modifier = Modifier

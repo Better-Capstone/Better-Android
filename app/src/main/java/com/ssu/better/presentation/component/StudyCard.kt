@@ -104,7 +104,7 @@ fun StudyCard(
                     color = BetterColors.Gray20,
                 )
 
-                GradientIcon(src = getCategoryIcon(Category.valueOf(study.category.name)), modifier = Modifier.width(20.dp).height(20.dp))
+                GradientIcon(src = getCategoryIcon(Category.safeValueOf(study.category.name)), modifier = Modifier.width(20.dp).height(20.dp))
             }
         }
     }
