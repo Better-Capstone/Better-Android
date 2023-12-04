@@ -43,5 +43,6 @@
     <string name="report_my_percent">내 인증율</string>
     <string name="report_early_bird">이번 회차 얼리버드</string>
     <string name="report_count">%d회차 리포트</string>
+    <string name="report_empty">회차 정보가 없습니다.</string>
 
 </resources>
