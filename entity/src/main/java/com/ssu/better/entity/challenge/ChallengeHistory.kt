@@ -1,10 +1,15 @@
 package com.ssu.better.entity.challenge
 
 import com.google.gson.annotations.SerializedName
+import com.ssu.better.entity.user.UserScore
 
-data class Challenge(
+data class ChallengeHistory(
     @SerializedName("id")
     val id: Long,
+
+    val task: SimpleTask,
+
+    val user: UserScore,
 
     @SerializedName("description")
     val description: String,
@@ -23,4 +28,13 @@ data class Challenge(
 
     @SerializedName("updatedAt")
     val updatedAt: String,
+)
+
+data class SimpleTask(
+    @SerializedName("id")
+    val id: Long,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("createdAt")
+    val createdAt: String,
 )

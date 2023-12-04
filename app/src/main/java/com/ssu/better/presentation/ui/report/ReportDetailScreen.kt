@@ -43,7 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
-import com.ssu.better.entity.challenge.Challenge
+import com.ssu.better.entity.challenge.ChallengeHistory
 import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
@@ -58,6 +58,7 @@ import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
+import com.ssu.better.entity.user.UserScore
 import com.ssu.better.presentation.component.BetterRoundChip
 import com.ssu.better.presentation.component.CircleRankProfile
 import com.ssu.better.presentation.component.ErrorScreen
@@ -291,7 +292,7 @@ fun ChallengePercent(
 @Composable
 fun RankingListView(
     totalMember: Int,
-    challenges: List<Challenge>,
+    challenges: List<ChallengeHistory>,
     listState: LazyListState = rememberLazyListState(),
 ) {
     Column(
@@ -310,8 +311,8 @@ fun RankingListView(
             state = listState,
         ) {
             item {
-                challenges.filter { it.approveMember.size >= (totalMember / 2) }.sortedBy { it.createdAt }.forEachIndexed { idx, v ->
-                    RankingItem(idx + 1, "name")
+                challenges.filter { it.approveMember.size >= (totalMember / 2) }.sortedBy { it.createdAt }.forEachIndexed { idx, history ->
+                    RankingItem(idx + 1, history.user)
                 }
             }
         }
@@ -321,7 +322,7 @@ fun RankingListView(
 @Composable
 fun RankingItem(
     rank: Int,
-    nickName: String,
+    userScore: UserScore,
 ) {
     Column {
         Row(
@@ -336,9 +337,9 @@ fun RankingItem(
                 style = BetterAndroidTheme.typography.title,
                 modifier = Modifier.padding(end = 16.dp),
             )
-            CircleRankProfile(score = 2100, modifier = Modifier.size(35.dp))
+            CircleRankProfile(score = userScore.score, modifier = Modifier.size(35.dp))
             Text(
-                text = nickName,
+                text = userScore.nickname,
                 style = BetterAndroidTheme.typography.subtitle,
                 modifier = Modifier
                     .weight(1f)
@@ -403,13 +404,6 @@ fun PreviewReportScreen() {
         createdAt = "",
         taskGroupList = arrayListOf(),
     )
-    val groupRankHistory = GroupRankHistory(
-        groupRankHistoryId = 1,
-        score = 38,
-        participantsNumber = 4,
-        totalNumber = 6,
-        groupRank = testGroupRank,
-        taskGroup = testTaskGroup,
-    )
+
 //    ReportDetailScreen(study = testStudy, groupRankHistoryList = listOf(groupRankHistory, groupRankHistory.copy(score = 79)))
 }

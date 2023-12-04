@@ -217,14 +217,6 @@ fun PreviewReportDetail() {
         createdAt = "",
         taskGroupList = arrayListOf(),
     )
-    val groupRankHistory = GroupRankHistory(
-        groupRankHistoryId = 1,
-        score = 38,
-        participantsNumber = 4,
-        totalNumber = 6,
-        groupRank = testGroupRank,
-        taskGroup = testTaskGroup,
-    )
 //    ReportScreen(
 //        history = List(10) { groupRankHistory }.mapIndexed { idx, report ->
 //            report.copy(totalNumber = (idx + 1) * 2, participantsNumber = (idx) + 2)
