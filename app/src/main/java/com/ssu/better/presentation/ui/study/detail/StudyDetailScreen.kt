@@ -66,7 +66,7 @@ fun StudyDetailScreen(
     StudyDetailContent(
         onClickFinish = {},
         onClickReport = { navHostController.navigate(Screen.Report.ReportList.route + "?studyId=$studyId") },
-        onClickAddTask = { study ->
+        onClickAdd = { study ->
             if (viewModel.isValidToAddTask(study)) {
                 navHostController.navigate(Screen.CreateTask.route + "?studyId=${study.studyId}")
             } else {
@@ -135,6 +135,8 @@ fun StudyDetailPreview() {
     StudyDetailContent(
         onClickFinish = { },
         StudyDetailViewModel.StudyEvent.Success(testStudy, tasks),
+        onClickReport = {},
+        onClickAdd = {},
     )
 }
 
@@ -144,6 +146,7 @@ fun StudyDetailContent(
     onClickFinish: () -> Unit,
     studyEvent: StudyDetailViewModel.StudyEvent,
     onClickAdd: (Study) -> Unit,
+    onClickReport: () -> Unit,
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf(

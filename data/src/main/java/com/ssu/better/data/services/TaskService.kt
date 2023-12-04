@@ -3,8 +3,10 @@ package com.ssu.better.data.services
 import com.ssu.better.entity.challenge.Challenge
 import com.ssu.better.entity.challenge.ChallengeRequest
 import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.TaskCreateRequest
 import okhttp3.MultipartBody
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
