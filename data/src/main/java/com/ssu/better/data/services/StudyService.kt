@@ -5,7 +5,7 @@ import com.ssu.better.entity.study.GroupRankHistory
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyRequest
 import com.ssu.better.entity.study.StudyUser
-import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.StudyTask
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -39,7 +39,7 @@ interface StudyService {
     suspend fun getStudyUserList(@Path("studyId") studyId: Long): Response<ArrayList<StudyUser>>
 
     @GET("/study/{studyId}/tasks")
-    suspend fun getStudyTaskList(@Path("studyId") studyId: Long): Response<ArrayList<Task>>
+    suspend fun getStudyTaskList(@Path("studyId") studyId: Long): Response<ArrayList<StudyTask>>
 
     @POST("/study/{studyId}/join")
     suspend fun joinStudy(@Path("studyId") studyId: Long): Response<Unit>
