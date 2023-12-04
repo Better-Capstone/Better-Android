@@ -6,6 +6,7 @@ import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserCheck
 import com.ssu.better.entity.user.UserLoginResponse
 import com.ssu.better.entity.user.UserRank
+import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.entity.user.UserRegisterRequest
 import kotlinx.coroutines.flow.Flow
 
@@ -23,4 +24,6 @@ interface UserRepository {
     suspend fun getUserChallenges(userId: Long): Flow<List<Challenge>>
 
     suspend fun getUserCheck(userId: Long): Flow<UserCheck>
+
+    suspend fun getUserRankHistory(userId: Long): Flow<List<UserRankHistory>>
 }

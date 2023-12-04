@@ -6,6 +6,7 @@ import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserCheck
 import com.ssu.better.entity.user.UserLoginResponse
 import com.ssu.better.entity.user.UserRank
+import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.entity.user.UserRegisterRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -35,4 +36,7 @@ interface UserService {
 
     @GET("/user/check/{id}")
     suspend fun getUserCheck(@Path("id") userId: Long): Response<UserCheck>
+
+    @GET("/user/{id}/rank/history")
+    suspend fun getUserRankHistory(@Path("id") userId: Long): Response<List<UserRankHistory>>
 }
