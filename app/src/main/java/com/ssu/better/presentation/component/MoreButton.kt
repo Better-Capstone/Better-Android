@@ -23,11 +23,13 @@ import com.ssu.better.ui.theme.BetterColors
 
 @Composable
 fun MoreButton(
+    modifier: Modifier = Modifier,
+    text: String = "더보기",
     onClick: () -> Unit,
 ) {
     OutlinedButton(
         border = BorderStroke(1.dp, BetterColors.Primary50),
-        modifier = Modifier.defaultMinSize(
+        modifier = modifier.defaultMinSize(
             minWidth = ButtonDefaults.MinWidth,
             minHeight = 10.dp,
         ),
@@ -47,7 +49,7 @@ fun MoreButton(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "더보기",
+                text = text,
                 modifier = Modifier.padding(end = 2.dp),
                 color = BetterColors.Primary50,
                 style = BetterAndroidTheme.typography.body,

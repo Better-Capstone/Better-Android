@@ -1,7 +1,10 @@
 package com.ssu.better.presentation.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -24,13 +27,15 @@ import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
+import com.ssu.better.entity.task.UserTask
+import com.ssu.better.entity.task.toTask
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.ui.theme.BetterAndroidTheme
@@ -43,15 +48,17 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun StudyTaskCard(
     modifier: Modifier = Modifier,
-    study: Study,
+    studyId: Long,
+    studyTitle: String,
+    taskList: List<UserTask>,
     baseDate: LocalDate,
-    onClickMore: (Study) -> Unit,
-    onClickTask: (Task) -> Unit,
+    onClickMore: (Long) -> Unit,
+    onClickChallenge: (Long, String) -> Unit,
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(8.dp)
             .shadow(elevation = 4.dp, RoundedCornerShape(10.dp)),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
@@ -75,7 +82,7 @@ fun StudyTaskCard(
                     .padding(end = 8.dp),
             )
             Text(
-                text = study.title,
+                text = studyTitle,
                 style = BetterAndroidTheme.typography.headline3,
                 modifier = Modifier
                     .weight(1f)
@@ -83,31 +90,31 @@ fun StudyTaskCard(
             )
             MoreButton(
                 onClick = {
-//                    onClickMore(userTask.id)
+                    onClickMore(studyId)
                 },
             )
         }
-        LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
-//            item {
-//                userTask.taskGroup.forEach {
-//                    TaskItem(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        taskGroup = it.taskGroup,
-//                        baseDate = baseDate,
-//                        onClick = {
-//                            onClickTask(it)
-//                        },
-//                    )
-//                    Spacer(
-//                        modifier = Modifier
-//                            .height(1.dp)
-//                            .background(BetterColors.Gray00)
-//                            .fillMaxWidth()
-//                            .padding(horizontal = 2.dp),
-//                    )
-//                    Spacer(modifier = Modifier.height(10.dp))
-//                }
-//            }
+        LazyColumn(modifier = Modifier.heightIn(100.dp, 190.dp)) {
+            item {
+                taskList.forEach {
+                    TaskItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        task = it.toTask(),
+                        baseDate = baseDate,
+                        onClick = {
+                            onClickChallenge(studyId, studyTitle)
+                        },
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .height(1.dp)
+                            .background(BetterColors.Gray00)
+                            .fillMaxWidth()
+                            .padding(horizontal = 2.dp),
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+            }
         }
     }
 }
@@ -138,7 +145,14 @@ fun PreviewStudyCard() {
         updatedAt = time,
         title = "",
     )
-    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
+    val testUserRankHistory = UserRankHistory(
+        1,
+        50,
+        "50점 추가",
+        testTask,
+        "2023-12-04T00:00:02.815615",
+        "2023-12-04T00:00:02.815615",
+    )
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
     val tasks = List(5) { testTask }.toMutableList()

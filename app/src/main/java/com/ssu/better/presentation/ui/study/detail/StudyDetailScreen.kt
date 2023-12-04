@@ -65,6 +65,7 @@ fun StudyDetailScreen(
     viewModel.setStudyId(studyId)
     StudyDetailContent(
         onClickFinish = {},
+        onClickReport = { navHostController.navigate(Screen.Report.ReportList.route + "?studyId=$studyId") },
         onClickAddTask = { study ->
             if (viewModel.isValidToAddTask(study)) {
                 navHostController.navigate(Screen.CreateTask.route + "?studyId=${study.studyId}")
@@ -100,7 +101,14 @@ fun StudyDetailPreview() {
         updatedAt = "",
         title = "",
     )
-    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
+    val testUserRankHistory = UserRankHistory(
+        1,
+        50,
+        "50점 추가",
+        testTask,
+        "2023-12-04T00:00:02.815615",
+        "2023-12-04T00:00:02.815615",
+    )
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
     val tasks = ArrayList(List(2) { testTask }.toMutableList())
@@ -126,11 +134,7 @@ fun StudyDetailPreview() {
     )
     StudyDetailContent(
         onClickFinish = { },
-        onClickAddTask = { study -> },
-        StudyDetailViewModel.StudyEvent.Success(
-            testStudy,
-            tasks,
-        ),
+        StudyDetailViewModel.StudyEvent.Success(testStudy, tasks),
     )
 }
 
@@ -138,8 +142,8 @@ fun StudyDetailPreview() {
 @Composable
 fun StudyDetailContent(
     onClickFinish: () -> Unit,
-    onClickAddTask: (Study) -> Unit,
     studyEvent: StudyDetailViewModel.StudyEvent,
+    onClickAdd: (Study) -> Unit,
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf(
@@ -206,7 +210,7 @@ fun StudyDetailContent(
                         }
                     }
                     when (tabIndex) {
-                        0 -> StudyHomeScreen(study = studyEvent.study, taskList = studyEvent.taskList, onClickAdd = onClickAddTask)
+                        0 -> StudyHomeScreen(study = studyEvent.study, taskList = studyEvent.taskList)
                         1 -> StudyChallengeScreen(study = studyEvent.study)
                         2 -> StudyInfoScreen(study = studyEvent.study)
                     }

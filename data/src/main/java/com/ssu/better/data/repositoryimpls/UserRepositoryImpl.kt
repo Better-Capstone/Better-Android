@@ -4,11 +4,12 @@ import com.ssu.better.data.datasources.UserRemoteDataSource
 import com.ssu.better.data.util.CommonAPILogic
 import com.ssu.better.domain.repository.UserRepository
 import com.ssu.better.entity.challenge.Challenge
-import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.UserTask
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserCheck
 import com.ssu.better.entity.user.UserLoginResponse
 import com.ssu.better.entity.user.UserRank
+import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.entity.user.UserRegisterRequest
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -32,7 +33,7 @@ class UserRepositoryImpl @Inject constructor(
         return CommonAPILogic.checkError(userRemoteDataSource.getUserRank(userId))
     }
 
-    override suspend fun getUserTasks(userId: Long): Flow<List<Task>> {
+    override suspend fun getUserTasks(userId: Long): Flow<List<UserTask>> {
         return CommonAPILogic.checkError(userRemoteDataSource.getUserTasks(userId))
     }
 
@@ -42,5 +43,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getUserCheck(userId: Long): Flow<UserCheck> {
         return CommonAPILogic.checkError(userRemoteDataSource.getUserCheck(userId))
+    }
+
+    override suspend fun getUserRankHistory(userId: Long): Flow<List<UserRankHistory>> {
+        return CommonAPILogic.checkError(userRemoteDataSource.getUserRankHistory(userId))
     }
 }
