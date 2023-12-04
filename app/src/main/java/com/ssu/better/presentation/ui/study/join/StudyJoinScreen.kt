@@ -33,11 +33,11 @@ import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.StudyUser
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
@@ -138,7 +138,7 @@ fun PreviewStudyJoin() {
     )
     val testStudyUser = StudyUser(1, "배현빈", "개발하는 북극곰", testUserRank, arrayListOf(testMember), arrayListOf(testStudy), "", "")
 
-    StudyJoin(study = testStudy, userList = arrayListOf(testStudyUser), onClickFinish = {}, "12", "30", { }, { }, { }, { }, true)
+    // StudyJoin(study = testStudy, userList = arrayListOf(testStudyUser), onClickFinish = {}, "12", "30", { }, { }, { }, { }, true)
 }
 
 @Composable
@@ -158,6 +158,7 @@ fun StudyJoinContent(
             StudyJoin(
                 study = uiState.study,
                 userList = uiState.userList,
+                userId = uiState.userPref.id,
                 onClickFinish = onClickFinish,
                 hour = hour,
                 minute = minute,
@@ -168,6 +169,7 @@ fun StudyJoinContent(
                 isAm = isAm,
             )
         }
+
         is StudyJoinViewModel.UIState.Loading -> {
             ShowLoadingAnimation()
         }
@@ -183,6 +185,7 @@ fun StudyJoinContent(
 fun StudyJoin(
     study: Study,
     userList: ArrayList<StudyUser>,
+    userId: Long,
     onClickFinish: () -> Unit,
     hour: String,
     minute: String,
@@ -385,6 +388,7 @@ fun StudyJoin(
                         text = "참여하기",
                         type = BetterButtonType.DEFAULT,
                         onClick = onClickJoinButton,
+                        enabled = userList.none { it.userId == userId },
                     )
                 }
             }

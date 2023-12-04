@@ -164,7 +164,7 @@ fun SearchDetailScreen(
                         list = (uiState as SearchViewModel.SearchUiState.Success).list,
                         modifier = Modifier.fillMaxSize(),
                         listState = listState,
-                        onClick = { studyId -> navHostController.navigate(Screen.StudyDetail.route + "?studyId=$studyId") },
+                        onClick = { studyId -> navHostController.navigate(Screen.StudyJoin.route + "?studyId=$studyId") },
                     )
                 }
 
