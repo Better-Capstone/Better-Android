@@ -19,6 +19,7 @@ import com.ssu.better.domain.usecase.study.PostJoinStudyUseCase
 import com.ssu.better.domain.usecase.task.GetTaskUseCase
 import com.ssu.better.domain.usecase.task.PostCreateChallengeUseCase
 import com.ssu.better.domain.usecase.user.GetUserChallengeUseCase
+import com.ssu.better.domain.usecase.user.GetUserRankHistoryUseCase
 import com.ssu.better.domain.usecase.user.GetUserRankUseCase
 import com.ssu.better.domain.usecase.user.GetUserTasksUseCase
 import com.ssu.better.domain.usecase.user.GetUserUseCase
@@ -151,5 +152,11 @@ object UseCaseModule {
     @Singleton
     fun providesPostChallengeCommentUseCase(repository: ChallengeRepository): PostChallengeCommentUseCase {
         return PostChallengeCommentUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetUserRankHistoryUseCase(repository: UserRepository): GetUserRankHistoryUseCase {
+        return GetUserRankHistoryUseCase(repository)
     }
 }

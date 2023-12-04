@@ -15,6 +15,7 @@ import com.ssu.better.presentation.ui.main.home.SampleScreen
 import com.ssu.better.presentation.ui.main.mypage.MyPageScreen
 import com.ssu.better.presentation.ui.main.search.SearchDetailScreen
 import com.ssu.better.presentation.ui.main.search.SearchScreen
+import com.ssu.better.presentation.ui.main.user_rank_history.UserRankHistoryScreen
 import com.ssu.better.presentation.ui.report.ReportDetailScreen
 import com.ssu.better.presentation.ui.report.ReportScreen
 import com.ssu.better.presentation.ui.study.create.CreateStudyScreen
@@ -187,6 +188,10 @@ fun MainNavGraph(navController: NavHostController) {
             composable(route = Screen.Report.ReportDetail.route) {
                 ReportDetailScreen(navController)
             }
+        }
+
+        composable(route = Screen.UserRankHistory.route) {
+            UserRankHistoryScreen(navController)
         }
 
         composable(

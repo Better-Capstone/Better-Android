@@ -28,6 +28,8 @@ sealed class Screen(val route: String) {
 
     object VerifyChallenge : Screen("verify-challenge")
 
+    object UserRankHistory : Screen("user-rank-history")
+
     object Report : Screen("report") {
         object ReportList : Screen("report-list")
         object ReportDetail : Screen("report-detail")

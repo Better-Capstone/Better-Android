@@ -44,6 +44,7 @@ import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.entity.user.UserRankName
+import com.ssu.better.presentation.component.MoreButton
 import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.component.StudyCard
 import com.ssu.better.presentation.navigation.Screen
@@ -65,6 +66,9 @@ fun MyPageScreen(
         onClickStudy = { study ->
             navHostController.navigate(Screen.StudyDetail.route + "?studyId=${study.studyId}")
         },
+        onClickHistory = {
+            navHostController.navigate(Screen.UserRankHistory.route)
+        },
     )
 }
 
@@ -74,6 +78,7 @@ fun MyPageContent(
     isNotifyEnabled: Boolean,
     onClickNotifyChange: (Boolean) -> Unit,
     onClickStudy: (Study) -> Unit,
+    onClickHistory: () -> Unit,
 ) {
     when (uiState) {
         is MyPageViewModel.UIState.Success -> {
@@ -85,6 +90,7 @@ fun MyPageContent(
                 onClickLogout = {},
                 onClickWithDraw = {},
                 onClickStudy = onClickStudy,
+                onClickHistory = onClickHistory,
             )
         }
 
@@ -103,13 +109,18 @@ fun MyPage(
     onClickLogout: () -> Unit,
     onClickWithDraw: () -> Unit,
     onClickStudy: (Study) -> Unit,
+    onClickHistory: () -> Unit,
 ) {
     Surface(color = BetterColors.Gray00) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            UserRankCard(userName = "배현빈", userRank = userRank)
+            UserRankCard(
+                userName = "배현빈",
+                userRank = userRank,
+                onClickHistory = onClickHistory,
+            )
 
             Text(
                 modifier = Modifier.padding(top = 23.dp, start = 20.dp, bottom = 10.dp),
@@ -187,17 +198,7 @@ fun MyPage(
 @Composable
 @Preview(showSystemUi = true)
 fun PreviewMyPage() {
-    val testUserRankHistory = UserRankHistory(1, 1, 1, 1, 1700, "100점 추가")
     val testUser = User(1, "배현빈", "개발하는 북극곰")
-    val testUserRank = UserRank(
-        id = 3,
-        user = testUser,
-        score = 7530,
-        createdAt = "",
-        updatedAt = "",
-        userRankHistoryList = arrayListOf(testUserRankHistory),
-    )
-
     val testMember = Member(1, 1, MemberType.MEMBER, "")
     val testTaskGroup = TaskGroup(
         taskGroupId = 1,
@@ -215,6 +216,15 @@ fun PreviewMyPage() {
         createdAt = "",
         updatedAt = "",
         title = "",
+    )
+    val testUserRankHistory = UserRankHistory(1, 50, "50점 추가", testTask, "", "")
+    val testUserRank = UserRank(
+        id = 3,
+        user = testUser,
+        score = 7530,
+        createdAt = "",
+        updatedAt = "",
+        userRankHistoryList = arrayListOf(testUserRankHistory),
     )
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
@@ -248,11 +258,16 @@ fun PreviewMyPage() {
         onClickLogout = { },
         onClickWithDraw = { },
         onClickStudy = { },
+        onClickHistory = { },
     )
 }
 
 @Composable
-fun UserRankCard(userName: String, userRank: UserRank) {
+fun UserRankCard(
+    userName: String,
+    userRank: UserRank,
+    onClickHistory: () -> Unit = { },
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -271,6 +286,13 @@ fun UserRankCard(userName: String, userRank: UserRank) {
                     modifier = Modifier.padding(top = 16.dp, start = 12.dp),
                     text = "$userName 님의 Better 점수",
                     style = BetterAndroidTheme.typography.headline2,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+
+                MoreButton(
+                    modifier = Modifier.padding(end = 12.dp),
+                    text = "적립 내역",
+                    onClick = onClickHistory,
                 )
             }
 
