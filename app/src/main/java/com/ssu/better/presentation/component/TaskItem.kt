@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Status
+import com.ssu.better.entity.task.StudyTask
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.ui.theme.BetterAndroidTheme
@@ -28,6 +29,38 @@ fun TaskItem(
     modifier: Modifier = Modifier,
     baseDate: LocalDate = LocalDate.now(),
     task: Task,
+    onClick: () -> Unit,
+
+) {
+    val taskEnabled = Period.between(LocalDate.now(), convertToLocalDateByFormat(task.taskGroup.endDate, "yyyy-MM-dd")).days >= 0
+
+    Row(
+        modifier = modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = getDDay(baseDate, convertToLocalDateByFormat(task.taskGroup.endDate, "yyyy-MM-dd") ?: baseDate),
+            style = BetterAndroidTheme.typography.headline3,
+            color = BetterColors.Primary50,
+        )
+        Text(
+            text = task.title,
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 10.dp),
+            style = BetterAndroidTheme.typography.headline3,
+            color = BetterColors.Gray90,
+        )
+
+        BetterRoundChip(enabled = taskEnabled, text = "인증하기", onClick = onClick)
+    }
+}
+
+@Composable
+fun TaskItem(
+    modifier: Modifier = Modifier,
+    baseDate: LocalDate = LocalDate.now(),
+    task: StudyTask,
     onClick: () -> Unit,
 
 ) {

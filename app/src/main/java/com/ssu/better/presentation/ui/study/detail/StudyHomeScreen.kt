@@ -228,6 +228,7 @@ fun StudyHomeScreen(
                     baseDate = testTime,
                     onClickAdd = onClickAdd,
                     onClickTask = onClickTask,
+                    taskList = taskList,
                 )
             }
         }

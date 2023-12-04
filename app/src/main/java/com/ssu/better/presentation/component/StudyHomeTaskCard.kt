@@ -3,10 +3,14 @@ package com.ssu.better.presentation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -43,6 +47,7 @@ import java.time.format.DateTimeFormatter
 fun StudyHomeTaskCard(
     modifier: Modifier = Modifier,
     study: Study,
+    taskList: ArrayList<StudyTask>?,
     baseDate: LocalDate,
     onClickAdd: (Study) -> Unit,
     onClickTask: (StudyTask) -> Unit,
@@ -88,30 +93,30 @@ fun StudyHomeTaskCard(
                 )
             }
         }
-//        if (!study.taskList.isNullOrEmpty()) {
-//            LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
-//                item {
-//                    study.taskList.forEach {
-//                        TaskItem(
-//                            modifier = Modifier.fillMaxWidth(),
-//                            task = it,
-//                            baseDate = baseDate,
-//                            onClick = {
-//                                onClickTask(it)
-//                            },
-//                        )
-//                        Spacer(
-//                            modifier = Modifier
-//                                .height(1.dp)
-//                                .background(BetterColors.Gray00)
-//                                .fillMaxWidth()
-//                                .padding(horizontal = 2.dp),
-//                        )
-//                        Spacer(modifier = Modifier.height(10.dp))
-//                    }
-//                }
-//            }
-//        }
+        if (!taskList.isNullOrEmpty()) {
+            LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
+                item {
+                    taskList.forEach {
+                        TaskItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            task = it,
+                            baseDate = baseDate,
+                            onClick = {
+                                onClickTask(it)
+                            },
+                        )
+                        Spacer(
+                            modifier = Modifier
+                                .height(1.dp)
+                                .background(BetterColors.Gray00)
+                                .fillMaxWidth()
+                                .padding(horizontal = 2.dp),
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -151,7 +156,6 @@ fun PreviewStudyHomeTaskCard() {
     )
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
-    val tasks = List(5) { testTask }.toMutableList()
     val testStudy = Study(
         1,
         testUser,
@@ -171,5 +175,5 @@ fun PreviewStudyHomeTaskCard() {
         createdAt = "",
         taskGroupList = arrayListOf(),
     )
-    StudyHomeTaskCard(study = testStudy, baseDate = testTime, onClickAdd = {}, onClickTask = {})
+    StudyHomeTaskCard(study = testStudy, baseDate = testTime, onClickAdd = {}, taskList = arrayListOf(), onClickTask = {})
 }
