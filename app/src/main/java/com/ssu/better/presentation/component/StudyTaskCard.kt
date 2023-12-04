@@ -40,8 +40,10 @@ import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
+import com.ssu.better.util.convertToLocalDateByFormat
 import com.ssu.better.util.toLocalDate
 import java.time.LocalDate
+import java.time.Period
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
@@ -101,6 +103,8 @@ fun StudyTaskCard(
                         modifier = Modifier.fillMaxWidth(),
                         task = it.toTask(),
                         baseDate = baseDate,
+                        isActive = Period.between(LocalDate.now(), convertToLocalDateByFormat(it.taskGroup.endDate, "yyyy-MM-dd")).days >= 0 && it
+                            .challenge == null,
                         onClick = {
                             onClickChallenge(studyId, it.toTask().taskId)
                         },

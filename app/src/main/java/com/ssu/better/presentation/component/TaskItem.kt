@@ -19,7 +19,6 @@ import com.ssu.better.util.convertToLocalDateByFormat
 import com.ssu.better.util.getDDay
 import com.ssu.better.util.toLocalDate
 import java.time.LocalDate
-import java.time.Period
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
@@ -28,11 +27,10 @@ fun TaskItem(
     modifier: Modifier = Modifier,
     baseDate: LocalDate = LocalDate.now(),
     task: Task,
+    isActive: Boolean = false,
     onClick: () -> Unit,
 
 ) {
-    val taskEnabled = Period.between(LocalDate.now(), convertToLocalDateByFormat(task.taskGroup.endDate, "yyyy-MM-dd")).days >= 0
-
     Row(
         modifier = modifier.padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -51,7 +49,7 @@ fun TaskItem(
             color = BetterColors.Gray90,
         )
 
-        BetterRoundChip(enabled = taskEnabled, text = "인증하기", onClick = onClick)
+        BetterRoundChip(enabled = isActive, text = "인증하기", onClick = onClick)
     }
 }
 
