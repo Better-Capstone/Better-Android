@@ -53,7 +53,7 @@ fun StudyTaskCard(
     taskList: List<UserTask>,
     baseDate: LocalDate,
     onClickMore: (Long) -> Unit,
-    onClickChallenge: (Long, String) -> Unit,
+    onClickChallenge: (Long, Long) -> Unit,
 ) {
     Card(
         modifier = modifier
@@ -102,7 +102,7 @@ fun StudyTaskCard(
                         task = it.toTask(),
                         baseDate = baseDate,
                         onClick = {
-                            onClickChallenge(studyId, studyTitle)
+                            onClickChallenge(studyId, it.toTask().taskId)
                         },
                     )
                     Spacer(
