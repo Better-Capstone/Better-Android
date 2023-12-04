@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.ssu.better.data.util.HttpException
 import com.ssu.better.entity.error.NotFoundErrorBody
 import com.ssu.better.entity.error.ValidationErrorBody
-import java.lang.Exception
 
 fun String.convertToNotFoundError(): NotFoundErrorBody {
     return Gson().fromJson(this, NotFoundErrorBody::class.java)
@@ -20,6 +19,7 @@ fun HttpException.getHttpErrorMsg(): String {
         return when (this.code) {
             404 -> this.message?.convertToNotFoundError()?.data ?: unknownErrorMsg
             403 -> this.message?.convertToValidationError()?.data.toString()
+            415 -> this.message?.convertToValidationError()?.error.toString()
             else -> unknownErrorMsg
         }
     } catch (e: Exception) {

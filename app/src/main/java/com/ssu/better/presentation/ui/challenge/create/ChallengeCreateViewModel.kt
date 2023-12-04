@@ -97,7 +97,9 @@ class ChallengeCreateViewModel @Inject constructor(
             )
 
             viewModelScope.launch {
-                postCreateChallengeUseCase.postCreateChallenge(it.taskId, request)
+                postCreateChallengeUseCase.postCreateChallenge(it.taskId, request).catch {
+                    Timber.d((it as HttpException).getHttpErrorMsg())
+                }
                     .collectLatest {
                         Timber.d("태스크 생성 성공")
                         _event.emit(ChallengeCreateEvent.Finish)
