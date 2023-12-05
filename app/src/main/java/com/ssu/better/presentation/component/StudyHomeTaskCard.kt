@@ -3,7 +3,9 @@ package com.ssu.better.presentation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -28,6 +30,8 @@ import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
+import com.ssu.better.entity.study.Status
+import com.ssu.better.entity.task.StudyTask
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
@@ -45,9 +49,10 @@ import java.time.format.DateTimeFormatter
 fun StudyHomeTaskCard(
     modifier: Modifier = Modifier,
     study: Study,
+    taskList: ArrayList<StudyTask>?,
     baseDate: LocalDate,
     onClickAdd: (Study) -> Unit,
-    onClickTask: (Task) -> Unit,
+    onClickTask: (StudyTask) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -90,47 +95,29 @@ fun StudyHomeTaskCard(
                 )
             }
         }
-        if (study.taskGroupList.isNotEmpty()) {
-            LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(150.dp, 250.dp)) {
+        if (!taskList.isNullOrEmpty()) {
+            LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
                 item {
-                    study.taskGroupList.forEach {
+                    taskList.forEach {
+                        TaskItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            task = it,
+                            baseDate = baseDate,
+                            onClick = {
+                                onClickTask(it)
+                            },
+                        )
+                        Spacer(
+                            modifier = Modifier
+                                .height(1.dp)
+                                .background(BetterColors.Gray00)
+                                .fillMaxWidth()
+                                .padding(horizontal = 2.dp),
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
             }
-            val pattern = "YYYY-MM-dd"
-            val time = "2023-11-28T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
-            val testUser = User(1, "배현빈", "개발하는 북극곰")
-            val testMember = Member(1, 1, MemberType.MEMBER, time)
-            val testTaskGroup = TaskGroup(
-                taskGroupId = 1,
-                status = Status.INPROGRESS,
-                startDate = "",
-                endDate = time,
-                createdAt = "",
-                updatedAt = "",
-            )
-            val testTask = Task(
-                taskId = 1,
-                taskGroup = testTaskGroup,
-                member = testMember,
-                challenge = null,
-                createdAt = time,
-                updatedAt = time,
-                title = "something",
-            )
-            MemberTaskItem(
-                modifier = Modifier.fillMaxWidth(),
-                task = testTask,
-                userRank = UserRank(
-                    score = 2001,
-                    user = testUser,
-                    id = 1,
-                    "",
-                    "",
-                    userRankHistoryList = arrayListOf(),
-                ),
-                onClick = {},
-            )
         }
     }
 }
@@ -171,7 +158,6 @@ fun PreviewStudyHomeTaskCard() {
     )
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
-    val tasks = List(5) { testTask }.toMutableList()
     val testStudy = Study(
         1,
         testUser,
@@ -191,5 +177,5 @@ fun PreviewStudyHomeTaskCard() {
         createdAt = "",
         taskGroupList = arrayListOf(testTaskGroup),
     )
-    StudyHomeTaskCard(study = testStudy, baseDate = testTime, onClickAdd = {}, onClickTask = {})
+    StudyHomeTaskCard(study = testStudy, baseDate = testTime, onClickAdd = {}, taskList = arrayListOf(), onClickTask = {})
 }

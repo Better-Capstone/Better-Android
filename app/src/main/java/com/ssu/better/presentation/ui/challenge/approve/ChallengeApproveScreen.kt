@@ -22,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -71,8 +72,10 @@ fun ChallengeApproveScreen(
     val viewModel: ChallengeApproveViewModel = hiltViewModel()
 
     val event by viewModel.event.collectAsState()
-    viewModel.load(studyId, challengeId)
 
+    LaunchedEffect(Unit) {
+        viewModel.load(studyId, challengeId)
+    }
     ChallengeApproveContent(
         event = event,
         userName = userName,
@@ -138,8 +141,8 @@ fun PreviewApproveScreen() {
         image = "https://velog.velcdn.com/images/spy03128/post/f9592660-5745-4317-bcc8-96cff69b368e/image.png",
         approveMember = arrayListOf(1, 2, 3),
         rejectMember = arrayListOf(4, 5, 6),
-        createdAt = "2023-11-26T12:51:34.239Z",
-        updatedAt = "2023-11-26T12:51:34.239Z",
+        createdAt = "2023-11-26T12:51:34.239234",
+        updatedAt = "2023-11-26T12:51:34.239234",
     )
     ChallengeApproveContent(
         event = ChallengeApproveViewModel.ChallengeApproveEvent.Success(challenge, testStudy),
@@ -203,7 +206,8 @@ fun ChallengeApproveContent(
                 ) {
                     Text(
                         modifier = Modifier.padding(start = 20.dp, top = 30.dp),
-                        text = event.challenge.createdAt.toLocalDate()?.format(DateTimeFormatter.ofPattern(pattern)) ?: "",
+                        text = event.challenge.createdAt.toLocalDate("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+                            ?.format(DateTimeFormatter.ofPattern(pattern)) ?: "",
                         style = BetterAndroidTheme.typography.headline4,
                         color = BetterColors.Gray30,
                     )

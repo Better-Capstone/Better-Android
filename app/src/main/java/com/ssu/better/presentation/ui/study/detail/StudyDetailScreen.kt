@@ -3,6 +3,7 @@ package com.ssu.better.presentation.ui.study.detail
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -15,6 +16,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -33,20 +35,22 @@ import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.SimpleStudy
 import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.StudyTask
 import com.ssu.better.entity.task.TaskGroup
+import com.ssu.better.entity.user.ScoreUser
 import com.ssu.better.entity.user.User
-import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.toLocalDate
+import timber.log.Timber
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
@@ -56,15 +60,26 @@ fun StudyDetailScreen(
     studyId: Int,
     viewModel: StudyDetailViewModel = hiltViewModel(),
 ) {
-    val studyEvent = viewModel.studyEventStateFlow.collectAsState()
-    viewModel.setStudyId(studyId)
+    val studyEvent by viewModel.studyEventStateFlow.collectAsState()
+    val myTask by viewModel.myTask.collectAsState()
+
+    LaunchedEffect(Unit) {
+        Timber.d("테스트")
+        viewModel.setStudyId(studyId)
+    }
     StudyDetailContent(
         onClickFinish = {},
         onClickReport = { navHostController.navigate(Screen.Report.ReportList.route + "?studyId=$studyId") },
-        studyEvent = studyEvent.value,
-        onClickAdd = {
-//            navHostController.navigate(Screen.CreateChallenge.route + "?studyId=2&taskId=4")
+        studyEvent = studyEvent,
+        onClickAdd = {},
+        myTask = myTask,
+        onClickChallengeAdd = { task ->
+            navHostController.navigate(Screen.CreateChallenge.route + "?studyId=${task.study.studyId}&taskId=${task.taskId}")
         },
+        onClickChallengeApprove = { task ->
+            navHostController.navigate(Screen.VerifyChallenge.route + "?studyId=${task.study.studyId}&challengeId=${task.challenge?.id}")
+        },
+
     )
 }
 
@@ -83,7 +98,7 @@ fun StudyDetailPreview() {
         createdAt = "",
         updatedAt = "",
     )
-    val testTask = Task(
+    val testTask = StudyTask(
         taskId = 1,
         taskGroup = testTaskGroup,
         member = testMember,
@@ -91,15 +106,11 @@ fun StudyDetailPreview() {
         createdAt = "",
         updatedAt = "",
         title = "",
+        user = ScoreUser(1, "개발하는 북극곰", 5000),
+        study = SimpleStudy(1, "컴포즈 스터디"),
+        userRankHistory = arrayListOf(),
     )
-    val testUserRankHistory = UserRankHistory(
-        1,
-        50,
-        "50점 추가",
-        testTask,
-        "2023-12-04T00:00:02.815615",
-        "2023-12-04T00:00:02.815615",
-    )
+
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
     val tasks = ArrayList(List(2) { testTask }.toMutableList())
@@ -117,7 +128,7 @@ fun StudyDetailPreview() {
         10,
         1500,
         arrayListOf(testMember),
-        userRankHistoryList = arrayListOf(testUserRankHistory),
+        userRankHistoryList = arrayListOf(),
         groupRank = testGroupRank,
         createdAt = "",
         taskGroupList = arrayListOf(),
@@ -138,8 +149,11 @@ fun StudyDetailContent(
     onClickReport: () -> Unit,
     studyEvent: StudyDetailViewModel.StudyEvent,
     onClickAdd: (Study) -> Unit,
+    onClickChallengeAdd: (StudyTask) -> Unit = { },
+    onClickChallengeApprove: (StudyTask) -> Unit = { },
+    myTask: StudyTask? = null,
 ) {
-    var tabIndex by remember { mutableIntStateOf(0) }
+    var tabIndex by remember { mutableIntStateOf(1) }
     val tabs = listOf(
         stringResource(id = R.string.tab_home),
         stringResource(id = R.string.challenge),
@@ -179,6 +193,7 @@ fun StudyDetailContent(
             ) { paddingValues ->
                 Column(
                     modifier = Modifier
+                        .fillMaxSize()
                         .padding(paddingValues = paddingValues)
                         .background(color = BetterColors.Bg),
                 ) {
@@ -213,7 +228,14 @@ fun StudyDetailContent(
                             onClickAdd = onClickAdd,
                         )
 
-                        1 -> StudyChallengeScreen(study = studyEvent.study)
+                        1 -> StudyChallengeScreen(
+                            study = studyEvent.study,
+                            tasks = studyEvent.taskList,
+                            onClickChallengeAdd = onClickChallengeAdd,
+                            onClickChallengeApprove = onClickChallengeApprove,
+                            myTask = myTask,
+                        )
+
                         2 -> StudyInfoScreen(study = studyEvent.study)
                     }
                 }
