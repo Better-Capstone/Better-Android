@@ -29,7 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ssu.better.R
 import com.ssu.better.entity.study.Study
-import com.ssu.better.entity.task.Task
+import com.ssu.better.entity.task.StudyTask
 import com.ssu.better.presentation.component.BetterRoundChip
 import com.ssu.better.presentation.component.GradientProgressIndicator
 import com.ssu.better.presentation.component.StudyHomeTaskCard
@@ -41,12 +41,12 @@ import java.time.ZoneOffset
 @Composable
 fun StudyHomeScreen(
     study: Study,
-    taskList: ArrayList<Task>,
+    taskList: ArrayList<StudyTask>,
     onClickMember: () -> Unit = { },
     onClickReport: () -> Unit = { },
     onClickMyStudy: () -> Unit = { },
     onClickAdd: (Study) -> Unit = { },
-    onClickTask: (Task) -> Unit = { },
+    onClickTask: (StudyTask) -> Unit = { },
 ) {
     Column {
         LazyColumn {
@@ -228,6 +228,7 @@ fun StudyHomeScreen(
                     baseDate = testTime,
                     onClickAdd = onClickAdd,
                     onClickTask = onClickTask,
+                    taskList = taskList,
                 )
             }
         }
