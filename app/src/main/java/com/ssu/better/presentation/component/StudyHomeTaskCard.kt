@@ -30,12 +30,10 @@ import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.StudyTask
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
-import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
