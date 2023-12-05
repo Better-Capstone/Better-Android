@@ -22,14 +22,14 @@ import androidx.compose.ui.unit.dp
 import com.ssu.better.R
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.Study
-import com.ssu.better.util.getCategoryIcon
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
+import com.ssu.better.util.getCategoryIcon
 
 @Composable
 fun StudyCard(
     study: Study,
-    onClick: (() -> Unit)? = null,
+    onClick: ((Long) -> Unit) = {},
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -37,7 +37,7 @@ fun StudyCard(
         shape = RoundedCornerShape(10.dp),
         modifier = modifier.clickable {
             if (onClick != null) {
-                onClick()
+                onClick(study.studyId)
             }
         },
     ) {

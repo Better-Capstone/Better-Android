@@ -25,11 +25,11 @@ import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.StudyTask
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
@@ -144,7 +144,7 @@ fun PreviewStudyHomeTaskCard() {
         challenge = null,
         createdAt = time,
         updatedAt = time,
-        title = "",
+        title = "할일",
     )
     val testUserRankHistory = UserRankHistory(
         1,
@@ -173,7 +173,7 @@ fun PreviewStudyHomeTaskCard() {
         userRankHistoryList = arrayListOf(testUserRankHistory),
         groupRank = testGroupRank,
         createdAt = "",
-        taskGroupList = arrayListOf(),
+        taskGroupList = arrayListOf(testTaskGroup),
     )
     StudyHomeTaskCard(study = testStudy, baseDate = testTime, onClickAdd = {}, taskList = arrayListOf(), onClickTask = {})
 }

@@ -29,11 +29,10 @@ fun TaskItem(
     modifier: Modifier = Modifier,
     baseDate: LocalDate = LocalDate.now(),
     task: Task,
+    isActive: Boolean = false,
     onClick: () -> Unit,
 
 ) {
-    val taskEnabled = Period.between(LocalDate.now(), convertToLocalDateByFormat(task.taskGroup.endDate, "yyyy-MM-dd")).days >= 0
-
     Row(
         modifier = modifier.padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -52,7 +51,7 @@ fun TaskItem(
             color = BetterColors.Gray90,
         )
 
-        BetterRoundChip(enabled = taskEnabled, text = "인증하기", onClick = onClick)
+        BetterRoundChip(enabled = isActive, text = "인증하기", onClick = onClick)
     }
 }
 

@@ -12,8 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.ssu.better.R
 import com.ssu.better.ui.theme.BetterColors
+import com.ssu.better.util.getUserRankIcon
 
 @Composable
 fun CircleRankProfile(
@@ -26,21 +26,10 @@ fun CircleRankProfile(
         contentColor = BetterColors.Gray00,
         shadowElevation = 1.dp,
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(BetterColors.Gray00)
-                .padding(6.dp),
-            contentAlignment = Alignment.Center,
-        ) {
+        Box(modifier = Modifier.fillMaxSize().background(BetterColors.Gray00).padding(6.dp), contentAlignment = Alignment.Center) {
             Image(
                 painter = painterResource(
-                    id = when (score) {
-                        in 0..3999 -> R.drawable.ic_candle_empty
-                        in 4000..5999 -> R.drawable.ic_candle
-                        in 6000..7999 -> R.drawable.ic_fire_base
-                        else -> R.drawable.ic_bonfire
-                    },
+                    id = getUserRankIcon(score),
                 ),
                 modifier = Modifier.fillMaxSize(),
                 contentDescription = null,

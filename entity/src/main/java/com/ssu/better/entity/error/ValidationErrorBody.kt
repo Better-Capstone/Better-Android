@@ -14,4 +14,6 @@ data class ValidationErrorBody(
 
     @SerializedName("data")
     val data: ArrayList<ValidationErrorData>,
+
+    val error: String? = null,
 )
