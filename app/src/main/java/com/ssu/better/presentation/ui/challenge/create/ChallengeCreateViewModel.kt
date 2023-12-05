@@ -98,7 +98,9 @@ class ChallengeCreateViewModel @Inject constructor(
 
             viewModelScope.launch {
                 _imageUri.value?.let { it1 ->
-                    postCreateChallengeUseCase.postCreateChallenge(it.taskId, it1.getMultipartBodyFromUri(getApplication()), request)
+                    postCreateChallengeUseCase.postCreateChallenge(it.taskId, it1.getMultipartBodyFromUri(getApplication()), request).catch {
+                        Timber.d((it as HttpException).getHttpErrorMsg())
+                    }
                         .collectLatest {
                             Timber.d("태스크 생성 성공")
                             _event.emit(ChallengeCreateEvent.Finish)

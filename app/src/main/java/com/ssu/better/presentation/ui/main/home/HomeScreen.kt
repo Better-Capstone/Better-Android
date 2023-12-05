@@ -70,7 +70,10 @@ fun HomeScreen(
         homeViewModel.loadStudyTaskList()
     }
 
-    Scaffold {
+    Scaffold(
+        Modifier
+            .background(BetterColors.Bg),
+    ) {
         if (isDialogOpen) {
             AnimatedTransitionDialog(
                 onDismissRequest = {
@@ -102,7 +105,6 @@ fun HomeScreen(
 
         Column(
             modifier = Modifier
-                .background(BetterColors.Bg)
                 .padding(16.dp)
                 .padding(bottom = 60.dp),
         ) {
@@ -140,7 +142,8 @@ fun HomeScreen(
                         onClickStudy = { studyId ->
                             navHostController.navigate(Screen.StudyDetail.route + "?studyId=$studyId")
                         },
-                        onClickTaskChallenge = { studyId, title ->
+                        onClickTaskChallenge = { studyId, taskId ->
+                            navHostController.navigate(Screen.CreateChallenge.route + "?studyId=$studyId&taskId=$taskId")
                         },
                         baseDate = selectedDate,
                     )
@@ -168,7 +171,7 @@ fun HomeScreen(
 fun StudyTaskListView(
     list: Map<UserTaskStudy, List<UserTask>>,
     onClickStudy: (Long) -> Unit,
-    onClickTaskChallenge: (Long, String) -> Unit,
+    onClickTaskChallenge: (Long, Long) -> Unit,
     baseDate: LocalDate,
 ) {
     LazyColumn() {

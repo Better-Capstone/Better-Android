@@ -6,7 +6,7 @@ import com.ssu.better.entity.user.UserRank
 
 data class StudyUser(
     @SerializedName("id")
-    val userId: Int,
+    val userId: Long,
 
     @SerializedName("nickname")
     val nickname: String,

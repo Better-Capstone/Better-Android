@@ -3,12 +3,14 @@ package com.ssu.better.presentation.ui.study.join
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.ssu.better.data.datasources.UserPrefManager
 import com.ssu.better.data.util.HttpException
 import com.ssu.better.domain.usecase.study.GetStudyUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUserListUseCase
 import com.ssu.better.domain.usecase.study.PostJoinStudyUseCase
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyUser
+import com.ssu.better.entity.user.UserPref
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,12 +27,13 @@ class StudyJoinViewModel @Inject constructor(
     private val getStudyUseCase: GetStudyUseCase,
     private val getStudyUserListUseCase: GetStudyUserListUseCase,
     private val postJoinStudyUseCase: PostJoinStudyUseCase,
+    private val userPrefManager: UserPrefManager,
 ) : AndroidViewModel(application) {
     private var studyId: Int = 0
 
     sealed class UIState {
         object Loading : UIState()
-        data class Success(val study: Study, val userList: ArrayList<StudyUser>) : UIState()
+        data class Success(val study: Study, val userList: ArrayList<StudyUser>, val userPref: UserPref) : UIState()
 
         object Finish : UIState()
     }
@@ -58,10 +61,13 @@ class StudyJoinViewModel @Inject constructor(
 
     private fun load() {
         viewModelScope.launch {
-            getStudyUseCase.getStudy(studyId.toLong())
-                .combine(getStudyUserListUseCase.getStudyUserList(studyId.toLong())) { study: Study, userList: ArrayList<StudyUser> ->
-                    UIState.Success(study, userList)
-                }
+            combine(
+                userPrefManager.getUserPref(),
+                getStudyUseCase.getStudy(studyId.toLong()),
+                getStudyUserListUseCase.getStudyUserList
+                (studyId.toLong()),
+                ::Triple,
+            )
                 .catch { t ->
                     if (t is HttpException) {
                         Timber.e(t.message)
@@ -69,10 +75,11 @@ class StudyJoinViewModel @Inject constructor(
                             403 -> Timber.e("403 Forbidden")
                             401 -> Timber.e("401")
                         }
+                    } else {
                     }
                 }
                 .collectLatest {
-                    _uiState.emit(it)
+                    if (it.first != null) _uiState.emit(UIState.Success(study = it.second, userPref = it.first!!, userList = it.third))
                 }
         }
     }

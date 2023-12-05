@@ -38,6 +38,7 @@ import com.ssu.better.entity.study.SortOption
 import com.ssu.better.presentation.component.ErrorScreen
 import com.ssu.better.presentation.component.SearchTextField
 import com.ssu.better.presentation.component.ShowLoadingAnimation
+import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
@@ -91,7 +92,9 @@ fun SearchDetailScreen(
                 modifier = Modifier
                     .size(50.dp)
                     .offset(y = -10.dp),
-                onClick = {},
+                onClick = {
+                    navHostController.navigate(Screen.SelectCategory.route)
+                },
             )
         },
     ) {
@@ -161,6 +164,7 @@ fun SearchDetailScreen(
                         list = (uiState as SearchViewModel.SearchUiState.Success).list,
                         modifier = Modifier.fillMaxSize(),
                         listState = listState,
+                        onClick = { studyId -> navHostController.navigate(Screen.StudyJoin.route + "?studyId=$studyId") },
                     )
                 }
 

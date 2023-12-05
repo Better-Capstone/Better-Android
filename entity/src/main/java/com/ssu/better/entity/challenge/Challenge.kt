@@ -13,10 +13,10 @@ data class Challenge(
     val image: String,
 
     @SerializedName("approveMember")
-    val approveMember: ArrayList<Int>,
+    val approveMember: ArrayList<Long>,
 
     @SerializedName("rejectMember")
-    val rejectMember: ArrayList<Int>,
+    val rejectMember: ArrayList<Long>,
 
     @SerializedName("createdAt")
     val createdAt: String,
