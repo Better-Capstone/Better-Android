@@ -1,4 +1,4 @@
-package com.ssu.better.presentation.ui.task.crate
+package com.ssu.better.presentation.ui.task_create
 
 import BetterCalendar
 import android.annotation.SuppressLint

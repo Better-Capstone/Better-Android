@@ -22,7 +22,7 @@ import com.ssu.better.presentation.ui.study.create.CreateStudyScreen
 import com.ssu.better.presentation.ui.study.detail.StudyDetailScreen
 import com.ssu.better.presentation.ui.study.join.StudyJoinScreen
 import com.ssu.better.presentation.ui.study.select_category.SelectCategoryScreen
-import com.ssu.better.presentation.ui.task.crate.CreateTaskScreen
+import com.ssu.better.presentation.ui.task_create.CreateTaskScreen
 
 @Composable
 fun MainNavGraph(navController: NavHostController) {
