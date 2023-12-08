@@ -72,6 +72,14 @@ fun StudyDetailScreen(
         onClickReport = { navHostController.navigate(Screen.Report.ReportList.route + "?studyId=$studyId") },
         studyEvent = studyEvent,
         onClickAdd = {},
+        onClickMember = {
+            if (studyEvent is StudyDetailViewModel.StudyEvent.Success) {
+                navHostController.navigate(
+                    Screen.MemberList.route +
+                        "?studyId=$studyId&title=${(studyEvent as StudyDetailViewModel.StudyEvent.Success).study.title}",
+                )
+            }
+        },
         myTask = myTask,
         onClickChallengeAdd = { task ->
             navHostController.navigate(Screen.CreateChallenge.route + "?studyId=${task.study.studyId}&taskId=${task.taskId}")
@@ -80,7 +88,7 @@ fun StudyDetailScreen(
             navHostController.navigate(Screen.VerifyChallenge.route + "?studyId=${task.study.studyId}&challengeId=${task.challenge?.id}")
         },
 
-    )
+        )
 }
 
 @Composable
@@ -133,7 +141,7 @@ fun StudyDetailPreview() {
         createdAt = "",
         taskGroupList = arrayListOf(),
 
-    )
+        )
     StudyDetailContent(
         onClickFinish = { },
         onClickReport = {},
@@ -147,13 +155,14 @@ fun StudyDetailPreview() {
 fun StudyDetailContent(
     onClickFinish: () -> Unit,
     onClickReport: () -> Unit,
+    onClickMember: () -> Unit = { },
     studyEvent: StudyDetailViewModel.StudyEvent,
     onClickAdd: (Study) -> Unit,
     onClickChallengeAdd: (StudyTask) -> Unit = { },
     onClickChallengeApprove: (StudyTask) -> Unit = { },
     myTask: StudyTask? = null,
 ) {
-    var tabIndex by remember { mutableIntStateOf(1) }
+    var tabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf(
         stringResource(id = R.string.tab_home),
         stringResource(id = R.string.challenge),
@@ -224,6 +233,9 @@ fun StudyDetailContent(
                             taskList = studyEvent.taskList,
                             onClickReport = {
                                 onClickReport()
+                            },
+                            onClickMember = {
+                                onClickMember()
                             },
                             onClickAdd = onClickAdd,
                         )
