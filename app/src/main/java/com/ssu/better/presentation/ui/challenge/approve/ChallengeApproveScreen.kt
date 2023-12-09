@@ -55,6 +55,7 @@ import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.BetterRoundChip
 import com.ssu.better.presentation.component.CircleRankProfile
 import com.ssu.better.presentation.component.ShowLoadingAnimation
+import com.ssu.better.presentation.state.IdleEvent
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.toLocalDate
@@ -73,16 +74,17 @@ fun ChallengeApproveScreen(
     val viewModel: ChallengeApproveViewModel = hiltViewModel()
 
     val event by viewModel.event.collectAsState()
+    val idleEvent by viewModel.idleEvent.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.load(studyId, challengeId)
     }
     ChallengeApproveContent(
         event = event,
+        idleEvent = idleEvent,
         userName = userName,
         userScore = userScore,
-        onClickFinish = viewModel::onClickFinish,
-        finishEvent = { navController.popBackStack() },
+        onClickFinish = { navController.popBackStack() },
         onClickApprove = viewModel::onClickApprove,
         onClickReject = viewModel::onClickReject,
     )
@@ -148,10 +150,10 @@ fun PreviewApproveScreen() {
     )
     ChallengeApproveContent(
         event = ChallengeApproveViewModel.ChallengeApproveEvent.Success(challenge, testStudy),
+        idleEvent = IdleEvent.Idle,
         userName = "개발하는 북극곰",
         userScore = 5000,
         onClickFinish = { },
-        finishEvent = { },
         onClickApprove = { },
         onClickReject = { },
     )
@@ -161,10 +163,10 @@ fun PreviewApproveScreen() {
 @Composable
 fun ChallengeApproveContent(
     event: ChallengeApproveViewModel.ChallengeApproveEvent,
+    idleEvent: IdleEvent,
     userName: String,
     userScore: Int,
     onClickFinish: () -> Unit,
-    finishEvent: () -> Unit,
     onClickApprove: () -> Unit,
     onClickReject: () -> Unit,
 ) {
@@ -192,13 +194,12 @@ fun ChallengeApproveContent(
             )
         },
     ) { paddingValues ->
+        LaunchedEffect(idleEvent) {
+            onClickFinish()
+        }
         when (event) {
             is ChallengeApproveViewModel.ChallengeApproveEvent.Load -> {
                 ShowLoadingAnimation()
-            }
-
-            is ChallengeApproveViewModel.ChallengeApproveEvent.Finish -> {
-                finishEvent()
             }
 
             is ChallengeApproveViewModel.ChallengeApproveEvent.Success -> {

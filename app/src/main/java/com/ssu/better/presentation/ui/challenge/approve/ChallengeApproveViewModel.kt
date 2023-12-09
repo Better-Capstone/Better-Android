@@ -10,6 +10,7 @@ import com.ssu.better.domain.usecase.study.GetStudyUseCase
 import com.ssu.better.entity.challenge.Challenge
 import com.ssu.better.entity.challenge.ChallengeVerifyRequest
 import com.ssu.better.entity.study.Study
+import com.ssu.better.presentation.state.IdleEvent
 import com.ssu.better.util.getHttpErrorMsg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,8 +32,6 @@ class ChallengeApproveViewModel @Inject constructor(
     sealed class ChallengeApproveEvent {
         object Load : ChallengeApproveEvent()
         data class Success(val challenge: Challenge, val study: Study) : ChallengeApproveEvent()
-
-        object Finish : ChallengeApproveEvent()
     }
 
     private val _event: MutableStateFlow<ChallengeApproveEvent> = MutableStateFlow(ChallengeApproveEvent.Load)
@@ -41,11 +40,9 @@ class ChallengeApproveViewModel @Inject constructor(
 
     private var challengeId = 0L
 
-    fun onClickFinish() {
-        viewModelScope.launch {
-            _event.emit(ChallengeApproveEvent.Finish)
-        }
-    }
+    private val _idleEvent: MutableStateFlow<IdleEvent> = MutableStateFlow(IdleEvent.Idle)
+    val idleEvent: StateFlow<IdleEvent>
+        get() = _idleEvent
 
     fun load(studyId: Long, challengeId: Long) {
         this.challengeId = challengeId
@@ -75,7 +72,7 @@ class ChallengeApproveViewModel @Inject constructor(
                 }
                 .collectLatest {
                     Timber.d("성공")
-                    _event.emit(ChallengeApproveEvent.Finish)
+                    _idleEvent.emit(IdleEvent.Finish)
                 }
         }
     }
@@ -90,7 +87,7 @@ class ChallengeApproveViewModel @Inject constructor(
                 }
                 .collectLatest {
                     Timber.d("성공")
-                    _event.emit(ChallengeApproveEvent.Finish)
+                    _idleEvent.emit(IdleEvent.Finish)
                 }
         }
     }
