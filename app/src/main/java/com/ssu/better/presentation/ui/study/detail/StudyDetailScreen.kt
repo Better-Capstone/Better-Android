@@ -86,7 +86,6 @@ fun StudyDetailScreen(
         onClickChallengeApprove = { task ->
             navHostController.navigate(Screen.VerifyChallenge.route + "?studyId=${task.study.studyId}&challengeId=${task.challenge?.id}")
         },
-
     )
 }
 
@@ -139,7 +138,6 @@ fun StudyDetailPreview() {
         groupRank = testGroupRank,
         createdAt = "",
         taskGroupList = arrayListOf(),
-
     )
     StudyDetailContent(
         onClickFinish = { },
