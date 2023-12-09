@@ -165,6 +165,7 @@ fun StudyDetailPreview() {
         onClickReport = {},
         studyEvent = StudyDetailViewModel.StudyEvent.Success(testStudy, tasks, testUserPref),
         onClickTaskAdd = { study, task -> },
+        onClickMyStudy = {},
     )
 }
 

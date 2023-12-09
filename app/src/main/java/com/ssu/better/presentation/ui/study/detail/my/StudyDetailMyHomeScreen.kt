@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -19,6 +17,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -26,8 +26,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
+import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import okhttp3.internal.format
@@ -37,8 +40,14 @@ import okhttp3.internal.format
 @Composable
 fun StudyDetailMyHomeScreen(
     navHostController: NavHostController,
+    viewModel: StudyDetailMyHomeViewModel = hiltViewModel(),
     studyId: Long,
 ) {
+    val uiState by viewModel.uistate.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewModel.getStudyInfo(studyId)
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -61,13 +70,40 @@ fun StudyDetailMyHomeScreen(
             )
         },
         content = {
-            Column(Modifier.padding(top = it.calculateTopPadding() + 10.dp).padding(horizontal = 12.dp)) {
-                StudyInfoCard()
-                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 10.dp).padding(top = 25.dp)) {
-                    Text(text = stringResource(id = R.string.study_home_my_tasks), style = BetterAndroidTheme.typography.headline3)
+            when (uiState) {
+                is StudyDetailMyHomeViewModel.StudyDetailMyUiState.Loading -> {
+                    ShowLoadingAnimation()
                 }
-                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 10.dp)) {
-                    Text(text = stringResource(id = R.string.study_home_my_challenge), style = BetterAndroidTheme.typography.headline3)
+
+                is StudyDetailMyHomeViewModel.StudyDetailMyUiState.Success -> {
+                    val state = (uiState as StudyDetailMyHomeViewModel.StudyDetailMyUiState.Success)
+                    Column(
+                        Modifier
+                            .padding(top = it.calculateTopPadding() + 10.dp)
+                            .padding(horizontal = 12.dp),
+                    ) {
+                        StudyInfoCard(
+                            state.nickname,
+                            percent = state.percent,
+                            challengeCount = state.challengeCount,
+                            kickCount = state.kickCount,
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp, horizontal = 10.dp)
+                                .padding(top = 25.dp),
+                        ) {
+                            Text(text = stringResource(id = R.string.study_home_my_tasks), style = BetterAndroidTheme.typography.headline3)
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp, horizontal = 10.dp),
+                        ) {
+                            Text(text = stringResource(id = R.string.study_home_my_challenge), style = BetterAndroidTheme.typography.headline3)
+                        }
+                    }
                 }
             }
         },
@@ -75,7 +111,12 @@ fun StudyDetailMyHomeScreen(
 }
 
 @Composable
-fun StudyInfoCard() {
+fun StudyInfoCard(
+    nickcname: String,
+    percent: Int,
+    challengeCount: Int,
+    kickCount: Int,
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,12 +126,12 @@ fun StudyInfoCard() {
                 shape = RoundedCornerShape(10.dp),
             ),
     ) {
-        Column(Modifier.padding(vertical = 12.dp, horizontal = 20.dp)) {
+        Column(Modifier.padding(vertical = 20.dp, horizontal = 20.dp)) {
             Text(
-                text = format(stringResource(id = R.string.task_my_progress), ""),
+                text = format(stringResource(id = R.string.task_my_progress), nickcname),
                 color = BetterColors.White,
                 style = BetterAndroidTheme.typography.headline3,
-                modifier = Modifier.padding(top = 8.dp),
+                modifier = Modifier.padding(bottom = 12.dp),
             )
             Row(
                 modifier = Modifier
@@ -98,27 +139,21 @@ fun StudyInfoCard() {
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Box(
-                    modifier = Modifier.weight(1f)
-                        .padding(top = 20.dp),
+                    modifier = Modifier.weight(1f),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                     ) {
                         Text(
-                            modifier = Modifier
-                                .width(51.dp)
-                                .height(46.dp),
-                            text = "78",
+                            text = "$percent%",
                             textAlign = TextAlign.Center,
                             style = BetterAndroidTheme.typography.headline0,
                             color = BetterColors.White,
+                            modifier = Modifier.padding(bottom = 6.dp),
                         )
                         Text(
-                            modifier = Modifier
-                                .padding(top = 10.dp)
-                                .width(79.dp)
-                                .height(24.dp),
                             text = stringResource(id = R.string.study_home_my_info_percent),
                             color = BetterColors.White,
                             style = BetterAndroidTheme.typography.headline3,
@@ -128,28 +163,22 @@ fun StudyInfoCard() {
                 }
 
                 Box(
-                    modifier = Modifier.weight(1f)
-                        .padding(top = 20.dp),
+                    modifier = Modifier.weight(1f),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                     ) {
                         Text(
-                            modifier = Modifier
-                                .width(51.dp)
-                                .height(46.dp),
-                            text = "82",
+                            text = "$challengeCount",
                             textAlign = TextAlign.Center,
                             style = BetterAndroidTheme.typography.headline0,
                             color = BetterColors.White,
+                            modifier = Modifier.padding(bottom = 6.dp),
                         )
                         Text(
-                            modifier = Modifier
-                                .padding(top = 10.dp)
-                                .width(79.dp)
-                                .height(24.dp),
-                            text = stringResource(id = R.string.study_home_my_info_percent),
+                            text = stringResource(id = R.string.study_home_my_info_challenge),
                             color = BetterColors.White,
                             style = BetterAndroidTheme.typography.headline3,
                             textAlign = TextAlign.Center,
@@ -158,27 +187,21 @@ fun StudyInfoCard() {
                 }
 
                 Box(
-                    modifier = Modifier.weight(1f)
-                        .padding(top = 20.dp),
+                    modifier = Modifier.weight(1f),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                     ) {
                         Text(
-                            modifier = Modifier
-                                .width(51.dp)
-                                .height(46.dp),
-                            text = "1",
+                            text = "$kickCount",
                             textAlign = TextAlign.Center,
                             style = BetterAndroidTheme.typography.headline0,
                             color = BetterColors.White,
+                            modifier = Modifier.padding(bottom = 6.dp),
                         )
                         Text(
-                            modifier = Modifier
-                                .padding(top = 10.dp)
-                                .width(79.dp)
-                                .height(24.dp),
                             text = stringResource(id = R.string.study_home_my_info_count),
                             color = BetterColors.White,
                             style = BetterAndroidTheme.typography.headline3,
