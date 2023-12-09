@@ -75,8 +75,7 @@ fun StudyDetailScreen(
         onClickMember = {
             if (studyEvent is StudyDetailViewModel.StudyEvent.Success) {
                 navHostController.navigate(
-                    Screen.MemberList.route +
-                        "?studyId=$studyId&title=${(studyEvent as StudyDetailViewModel.StudyEvent.Success).study.title}",
+                    Screen.MemberList.route + "?studyId=$studyId&title=${(studyEvent as StudyDetailViewModel.StudyEvent.Success).study.title}",
                 )
             }
         },

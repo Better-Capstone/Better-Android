@@ -102,7 +102,7 @@ fun MemberList(userList: ArrayList<StudyUser>) {
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.participate_member),
             textAlign = TextAlign.Center,
-            style = BetterAndroidTheme.typography.headline2
+            style = BetterAndroidTheme.typography.headline2,
         )
         Spacer(modifier = Modifier.height(10.dp))
         LazyVerticalGrid(columns = GridCells.Fixed(4)) {
