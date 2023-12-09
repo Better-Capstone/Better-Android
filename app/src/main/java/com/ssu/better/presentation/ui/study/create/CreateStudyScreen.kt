@@ -47,8 +47,8 @@ import com.ssu.better.entity.study.StudyPeriod
 import com.ssu.better.entity.user.UserRankName
 import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
+import com.ssu.better.presentation.component.BetterTextBox
 import com.ssu.better.presentation.component.BetterTextField
-import com.ssu.better.presentation.ui.study.join.StudyCheckDayCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import kotlinx.coroutines.flow.collectLatest
@@ -60,16 +60,17 @@ fun CreateStudyScreen(
     categoryId: Int,
 ) {
     viewModel.setCategoryId(categoryId)
-    val kickCondition = viewModel.kickCondition.collectAsState()
-    val title = viewModel.title.collectAsState()
-    val description = viewModel.description.collectAsState()
-    val checkDay = viewModel.checkDay.collectAsState()
-    val period = viewModel.period.collectAsState()
-    val minRank = viewModel.minRank.collectAsState()
+    val kickCondition by viewModel.kickCondition.collectAsState()
+    val title by viewModel.title.collectAsState()
+    val description by viewModel.description.collectAsState()
+    val checkDay by viewModel.checkDay.collectAsState()
+    val period by viewModel.period.collectAsState()
+    val minRank by viewModel.minRank.collectAsState()
     val completeButtonEnabled by viewModel.buttonEnabled.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.event.collectLatest { event ->
             if (event is CreateStudyViewModel.Event.Finish) {
+                navHostController.popBackStack()
                 navHostController.popBackStack()
             }
         }
@@ -78,17 +79,17 @@ fun CreateStudyScreen(
         onClickFinish = {
             navHostController.popBackStack()
         },
-        title = title.value,
+        title = title,
         onTitleChanged = viewModel::updateTitle,
-        description = description.value,
+        description = description,
         onDescriptionChanged = viewModel::updateDescription,
-        period = period.value,
+        period = period,
         onClickPeriod = viewModel::updatePeriod,
-        checkDay = checkDay.value,
+        checkDay = checkDay,
         onCheckDayChanged = viewModel::updateCheckDay,
-        minRank = minRank.value,
+        minRank = minRank,
         onMinRankChanged = viewModel::updateMinRank,
-        kickCondition = kickCondition.value,
+        kickCondition = kickCondition,
         onKickConditionChanged = viewModel::updateKickCondition,
         onClickComplete = viewModel::createStudy,
         completeButtonEnabled = completeButtonEnabled,
@@ -233,42 +234,138 @@ fun CreateStudy(
             }
 
             Text(
-                modifier = Modifier.padding(start = 20.dp),
-                text = "종료 날짜",
-                style = BetterAndroidTheme.typography.subtitle,
-                color = BetterColors.Black,
-            )
-
-            Row(
-                modifier = Modifier.padding(start = 20.dp, top = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_calendar_line),
-                    contentDescription = "달력 아이콘",
-                    tint = BetterColors.Primary40,
-                )
-
-                Text(
-                    modifier = Modifier.padding(10.dp),
-                    text = "10월 1일 (월)",
-                    style = BetterAndroidTheme.typography.subtitle,
-                    color = BetterColors.Black,
-                )
-            }
-
-            Text(
                 modifier = Modifier.padding(start = 20.dp, top = 10.dp),
                 text = "반복 요일",
                 style = BetterAndroidTheme.typography.subtitle,
                 color = BetterColors.Black,
             )
 
-            StudyCheckDayCard(
-                checkDay = checkDay,
-                onClick = onCheckDayChanged,
-                topPadding = 10.dp,
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, top = 10.dp, end = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                BetterTextBox(
+                    text = "월",
+                    backgroundColor = if ((checkDay == StudyCheckDay.MON || checkDay == StudyCheckDay.EVERYDAY)) {
+                        BetterColors.Primary00
+                    } else {
+                        BetterColors.Gray00
+                    },
+                    textColor = BetterColors.Gray90,
+                    width = 35.dp,
+                    height = 35.dp,
+                    onClick = {
+                        onCheckDayChanged(StudyCheckDay.MON)
+                    },
+                )
+
+                BetterTextBox(
+                    text = "화",
+                    backgroundColor = if ((checkDay == StudyCheckDay.TUE || checkDay == StudyCheckDay.EVERYDAY)) {
+                        BetterColors.Primary00
+                    } else {
+                        BetterColors.Gray00
+                    },
+                    textColor = BetterColors.Gray90,
+                    width = 35.dp,
+                    height = 35.dp,
+                    onClick = {
+                        onCheckDayChanged(StudyCheckDay.TUE)
+                    },
+                )
+
+                BetterTextBox(
+                    text = "수",
+                    backgroundColor = if ((checkDay == StudyCheckDay.WED || checkDay == StudyCheckDay.EVERYDAY)) {
+                        BetterColors.Primary00
+                    } else {
+                        BetterColors.Gray00
+                    },
+                    textColor = BetterColors.Gray90,
+                    width = 35.dp,
+                    height = 35.dp,
+                    onClick = {
+                        onCheckDayChanged(StudyCheckDay.WED)
+                    },
+                )
+
+                BetterTextBox(
+                    text = "목",
+                    backgroundColor = if ((checkDay == StudyCheckDay.THU || checkDay == StudyCheckDay.EVERYDAY)) {
+                        BetterColors.Primary00
+                    } else {
+                        BetterColors.Gray00
+                    },
+                    textColor = BetterColors.Gray90,
+                    width = 35.dp,
+                    height = 35.dp,
+                    onClick = {
+                        onCheckDayChanged(StudyCheckDay.THU)
+                    },
+                )
+
+                BetterTextBox(
+                    text = "금",
+                    backgroundColor = if ((checkDay == StudyCheckDay.FRI || checkDay == StudyCheckDay.EVERYDAY)) {
+                        BetterColors.Primary00
+                    } else {
+                        BetterColors.Gray00
+                    },
+                    textColor = BetterColors.Gray90,
+                    width = 35.dp,
+                    height = 35.dp,
+                    onClick = {
+                        onCheckDayChanged(StudyCheckDay.FRI)
+                    },
+                )
+
+                BetterTextBox(
+                    text = "토",
+                    backgroundColor = if ((checkDay == StudyCheckDay.SAT || checkDay == StudyCheckDay.EVERYDAY)) {
+                        BetterColors.Primary00
+                    } else {
+                        BetterColors.Gray00
+                    },
+                    textColor = BetterColors.Gray90,
+                    width = 35.dp,
+                    height = 35.dp,
+                    onClick = {
+                        onCheckDayChanged(StudyCheckDay.SAT)
+                    },
+                )
+
+                BetterTextBox(
+                    text = "일",
+                    backgroundColor = if ((checkDay == StudyCheckDay.SUN || checkDay == StudyCheckDay.EVERYDAY)) {
+                        BetterColors.Primary00
+                    } else {
+                        BetterColors.Gray00
+                    },
+                    textColor = BetterColors.Gray90,
+                    width = 35.dp,
+                    height = 35.dp,
+                    onClick = {
+                        onCheckDayChanged(StudyCheckDay.SUN)
+                    },
+                )
+
+                BetterTextBox(
+                    text = "매일",
+                    backgroundColor = if (checkDay == StudyCheckDay.EVERYDAY) {
+                        BetterColors.Primary00
+                    } else {
+                        BetterColors.Gray00
+                    },
+                    textColor = BetterColors.Gray90,
+                    width = 35.dp,
+                    height = 35.dp,
+                    onClick = {
+                        onCheckDayChanged(StudyCheckDay.EVERYDAY)
+                    },
+                )
+            }
 
             Text(
                 modifier = Modifier.padding(start = 20.dp, top = 20.dp),
