@@ -111,13 +111,13 @@ fun MyPage(
     onClickStudy: (Study) -> Unit,
     onClickHistory: () -> Unit,
 ) {
-    Surface(color = BetterColors.Gray00) {
+    Surface(color = BetterColors.Bg) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
             UserRankCard(
-                userName = "배현빈",
+                userName = userRank.user.nickname,
                 userRank = userRank,
                 onClickHistory = onClickHistory,
             )
@@ -147,32 +147,32 @@ fun MyPage(
                 }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
-            ) {
-                Text(
-                    text = "알림 설정",
-                    style = BetterAndroidTheme.typography.headline3,
-                    color = BetterColors.Black,
-                )
-
-                Spacer(Modifier.weight(1f))
-
-                Text(
-                    modifier = Modifier.clickable { onClickNotifyEnabledChange(true) },
-                    text = "ON",
-                    color = if (isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
-                )
-                Text(
-                    modifier = Modifier
-                        .padding(start = 10.dp)
-                        .clickable { onClickNotifyEnabledChange(false) },
-                    text = "OFF",
-                    color = if (!isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
-                )
-            }
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+//            ) {
+//                Text(
+//                    text = "알림 설정",
+//                    style = BetterAndroidTheme.typography.headline3,
+//                    color = BetterColors.Black,
+//                )
+//
+//                Spacer(Modifier.weight(1f))
+//
+//                Text(
+//                    modifier = Modifier.clickable { onClickNotifyEnabledChange(true) },
+//                    text = "ON",
+//                    color = if (isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
+//                )
+//                Text(
+//                    modifier = Modifier
+//                        .padding(start = 10.dp)
+//                        .clickable { onClickNotifyEnabledChange(false) },
+//                    text = "OFF",
+//                    color = if (!isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
+//                )
+//            }
 
             Text(
                 modifier = Modifier

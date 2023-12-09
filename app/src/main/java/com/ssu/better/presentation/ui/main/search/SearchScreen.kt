@@ -104,7 +104,8 @@ fun SearchScreen(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .background(BetterColors.Bg)
                 .padding(horizontal = 12.dp, vertical = 30.dp),
         ) {
             Row(
