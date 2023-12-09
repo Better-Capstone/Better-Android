@@ -1,13 +1,11 @@
 package com.ssu.better.presentation.ui.study.join
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -18,12 +16,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,8 +45,8 @@ import com.ssu.better.entity.user.UserRank
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
-import com.ssu.better.presentation.component.BetterTextField
 import com.ssu.better.presentation.component.ShowLoadingAnimation
+import com.ssu.better.presentation.state.IdleEvent
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 
@@ -58,18 +57,11 @@ fun StudyJoinScreen(
     viewModel: StudyJoinViewModel = hiltViewModel(),
 ) {
     viewModel.setStudyId(studyId)
-    val uiState = viewModel.uiState.collectAsState()
-    val hour = viewModel.hour.collectAsState()
-    val minute = viewModel.minute.collectAsState()
-    val isAm = viewModel.isAm.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    val idleEvent by viewModel.idleEvent.collectAsState()
     StudyJoinContent(
-        uiState = uiState.value,
-        hour = hour.value,
-        minute = minute.value,
-        isAm = isAm.value,
-        onHourChanged = viewModel::updateHour,
-        onMinuteChanged = viewModel::updateMinute,
-        onClickTime = viewModel::updateIsAm,
+        uiState = uiState,
+        idleEvent = idleEvent,
         onClickJoinButton = viewModel::join,
         onClickFinish = {
             navController.popBackStack()
@@ -138,21 +130,27 @@ fun PreviewStudyJoin() {
     )
     val testStudyUser = StudyUser(1, "배현빈", "개발하는 북극곰", testUserRank, arrayListOf(testMember), arrayListOf(testStudy), "", "")
 
-    // StudyJoin(study = testStudy, userList = arrayListOf(testStudyUser), onClickFinish = {}, "12", "30", { }, { }, { }, { }, true)
+    StudyJoin(
+        study = testStudy,
+        userList = arrayListOf(testStudyUser),
+        onClickFinish = { },
+        onClickJoinButton = { },
+        userId = 0,
+    )
 }
 
 @Composable
 fun StudyJoinContent(
     uiState: StudyJoinViewModel.UIState,
-    hour: String,
-    minute: String,
-    isAm: Boolean,
-    onHourChanged: (String) -> Unit,
-    onMinuteChanged: (String) -> Unit,
-    onClickTime: (Boolean) -> Unit,
+    idleEvent: IdleEvent,
     onClickJoinButton: () -> Unit,
     onClickFinish: () -> Unit,
 ) {
+    LaunchedEffect(idleEvent) {
+        if (idleEvent is IdleEvent.Finish) {
+            onClickFinish()
+        }
+    }
     when (uiState) {
         is StudyJoinViewModel.UIState.Success -> {
             StudyJoin(
@@ -160,22 +158,12 @@ fun StudyJoinContent(
                 userList = uiState.userList,
                 userId = uiState.userPref.id,
                 onClickFinish = onClickFinish,
-                hour = hour,
-                minute = minute,
-                onHourChanged = onHourChanged,
-                onMinuteChanged = onMinuteChanged,
-                onClickTime = onClickTime,
                 onClickJoinButton = onClickJoinButton,
-                isAm = isAm,
             )
         }
 
         is StudyJoinViewModel.UIState.Loading -> {
             ShowLoadingAnimation()
-        }
-
-        else -> {
-            onClickFinish()
         }
     }
 }
@@ -187,13 +175,7 @@ fun StudyJoin(
     userList: ArrayList<StudyUser>,
     userId: Long,
     onClickFinish: () -> Unit,
-    hour: String,
-    minute: String,
-    onHourChanged: (String) -> Unit,
-    onMinuteChanged: (String) -> Unit,
-    onClickTime: (Boolean) -> Unit,
     onClickJoinButton: () -> Unit,
-    isAm: Boolean,
 ) {
     Scaffold(
         topBar = {
@@ -318,73 +300,11 @@ fun StudyJoin(
             }
 
             item(span = { GridItemSpan(4) }) {
-                Column(modifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp)) {
-                    Text(
-                        text = "알람 설정",
-                        style = BetterAndroidTheme.typography.subtitle,
-                        color = BetterColors.Black,
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .padding(top = 20.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        BetterTextField(
-                            modifier = Modifier
-                                .width(42.dp)
-                                .height(42.dp),
-                            value = hour,
-                            textStyle = BetterAndroidTheme.typography.body.copy(textAlign = TextAlign.Center),
-                            onValueChange = onHourChanged,
-                        )
-
-                        Text(
-                            modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                            text = ":",
-                            style = BetterAndroidTheme.typography.title,
-                            color = BetterColors.Black,
-                        )
-
-                        BetterTextField(
-                            modifier = Modifier
-                                .width(42.dp)
-                                .height(42.dp),
-                            value = minute,
-                            textStyle = BetterAndroidTheme.typography.body.copy(textAlign = TextAlign.Center),
-                            onValueChange = onMinuteChanged,
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .padding(start = 10.dp, end = 10.dp)
-                                .clickable { onClickTime(true) },
-                            text = "AM",
-                            style = BetterAndroidTheme.typography.headline3,
-                            color = if (isAm) BetterColors.Primary50 else BetterColors.Gray10,
-                        )
-
-                        Text(
-                            text = "|",
-                            style = BetterAndroidTheme.typography.headline3,
-                            color = BetterColors.Gray20,
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .padding(start = 10.dp, end = 10.dp)
-                                .clickable { onClickTime(false) },
-                            text = "PM",
-                            style = BetterAndroidTheme.typography.headline3,
-                            color = if (!isAm) BetterColors.Primary50 else BetterColors.Gray10,
-                        )
-                    }
-
+                Column {
                     Spacer(modifier = Modifier.height(74.dp))
 
                     BetterButton(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
                         text = "참여하기",
                         type = BetterButtonType.DEFAULT,
                         onClick = onClickJoinButton,
