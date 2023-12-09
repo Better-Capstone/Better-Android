@@ -154,13 +154,13 @@ fun StudyDetailPreview() {
         id = 0L,
         nickname = "북극곰",
         rank = 1500,
-        score = 1500
+        score = 1500,
     )
     StudyDetailContent(
         onClickFinish = { },
         onClickReport = {},
         studyEvent = StudyDetailViewModel.StudyEvent.Success(testStudy, tasks, testUserPref),
-        onClickTaskAdd = {study, task -> },
+        onClickTaskAdd = { study, task -> },
     )
 }
 
