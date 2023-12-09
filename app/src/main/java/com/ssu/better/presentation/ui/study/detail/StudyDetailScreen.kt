@@ -47,6 +47,7 @@ import com.ssu.better.entity.task.StudyTask
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.ScoreUser
 import com.ssu.better.entity.user.User
+import com.ssu.better.entity.user.UserPref
 import com.ssu.better.presentation.component.ErrorScreen
 import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.navigation.Screen
@@ -75,6 +76,13 @@ fun StudyDetailScreen(
         onClickFinish = {},
         onClickReport = { navHostController.navigate(Screen.Report.ReportList.route + "?studyId=$studyId") },
         studyEvent = studyEvent,
+        onClickMember = {
+            if (studyEvent is StudyDetailViewModel.StudyEvent.Success) {
+                navHostController.navigate(
+                    Screen.MemberList.route + "?studyId=$studyId&title=${(studyEvent as StudyDetailViewModel.StudyEvent.Success).study.title}",
+                )
+            }
+        },
         myTask = myTask,
         onClickTaskAdd = { study, myTask ->
             if (viewModel.isValidToAddTask(study, myTask)) {
@@ -89,7 +97,6 @@ fun StudyDetailScreen(
         onClickChallengeApprove = { task ->
             navHostController.navigate(Screen.VerifyChallenge.route + "?studyId=${task.study.studyId}&challengeId=${task.challenge?.id}")
         },
-
     )
 }
 
@@ -142,19 +149,26 @@ fun StudyDetailPreview() {
         groupRank = testGroupRank,
         createdAt = "",
         taskGroupList = arrayListOf(),
-
     )
-//    StudyDetailContent(
-//        onClickFinish = { },
-//        StudyDetailViewModel.StudyEvent.Load,
-//        onClickReport = {},
-//    )
+    val testUserPref = UserPref(
+        id = 0L,
+        nickname = "북극곰",
+        rank = 1500,
+        score = 1500,
+    )
+    StudyDetailContent(
+        onClickFinish = { },
+        onClickReport = {},
+        studyEvent = StudyDetailViewModel.StudyEvent.Success(testStudy, tasks, testUserPref),
+        onClickTaskAdd = { study, task -> },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudyDetailContent(
     onClickFinish: () -> Unit,
+    onClickMember: () -> Unit = { },
     studyEvent: StudyDetailViewModel.StudyEvent,
     onClickChallengeAdd: (StudyTask) -> Unit = { },
     onClickChallengeApprove: (StudyTask) -> Unit = { },
@@ -162,7 +176,7 @@ fun StudyDetailContent(
     onClickReport: () -> Unit,
     onClickTaskAdd: (Study, StudyTask?) -> Unit,
 ) {
-    var tabIndex by remember { mutableIntStateOf(1) }
+    var tabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf(
         stringResource(id = R.string.tab_home),
         stringResource(id = R.string.challenge),
@@ -237,6 +251,9 @@ fun StudyDetailContent(
                             taskList = studyEvent.taskList,
                             onClickReport = {
                                 onClickReport()
+                            },
+                            onClickMember = {
+                                onClickMember()
                             },
                             onClickTaskAdd = {
                                 onClickTaskAdd(studyEvent.study, myTask)
