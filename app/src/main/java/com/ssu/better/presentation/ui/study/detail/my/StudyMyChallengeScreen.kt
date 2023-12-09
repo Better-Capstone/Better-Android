@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -16,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -87,7 +89,7 @@ fun StudyMyChallengeScreen(
 
                 is StudyMyChallengeViewModel.MyChallengeUiState.Success -> {
                     LazyColumn(
-                        modifier = Modifier.fillMaxWidth().background(BetterColors.Bg).padding(10.dp),
+                        modifier = Modifier.fillMaxSize().background(BetterColors.Bg).padding(10.dp),
                     ) {
                         item {
                             (uiState as StudyMyChallengeViewModel.MyChallengeUiState.Success).challenges.forEach {
@@ -127,18 +129,24 @@ fun StudyChallengeHistoryItem(
                     modifier = Modifier
                         .padding(bottom = 4.dp),
                 )
-                Text(
-                    text = title,
-                    style = BetterAndroidTheme.typography.headline3,
-                    color = BetterColors.Gray90,
-                )
-
-                Image(
-                    painter = rememberAsyncImagePainter(image),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxWidth().height(200.dp),
-                )
+                if (title.isNotEmpty()) {
+                    Text(
+                        text = title,
+                        style = BetterAndroidTheme.typography
+                            .headline3,
+                        color = BetterColors.Gray90,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp),
+                    )
+                }
+                Surface(shape = RoundedCornerShape(8.dp)) {
+                    Image(
+                        painter = rememberAsyncImagePainter(image),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxWidth().height(200.dp),
+                    )
+                }
             }
         }
     }

@@ -82,7 +82,7 @@ fun StudyMyTasksScreen(
 
                 is StudyMyTasksViewModel.MyTasksUiState.Success -> {
                     LazyColumn(
-                        modifier = Modifier.fillMaxWidth().background(BetterColors.Bg).padding(10.dp),
+                        modifier = Modifier.fillMaxSize().background(BetterColors.Bg).padding(10.dp),
                     ) {
                         item {
                             (uiState as StudyMyTasksViewModel.MyTasksUiState.Success).tasks.forEach {
