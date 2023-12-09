@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssu.better.data.util.HttpException
 import com.ssu.better.domain.usecase.study.PostCreateStudyUseCase
+import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
 import com.ssu.better.entity.study.StudyRequest
@@ -27,7 +28,7 @@ class CreateStudyViewModel @Inject constructor(
 
     sealed class Event {
         object Idle : Event()
-        object Finish : Event()
+        data class Success(val study: Study) : Event()
     }
 
     private val _event: MutableStateFlow<Event> = MutableStateFlow(Event.Idle)
@@ -45,7 +46,7 @@ class CreateStudyViewModel @Inject constructor(
     val description: StateFlow<String>
         get() = _description
 
-    private val _checkDay = MutableStateFlow(StudyCheckDay.MON)
+    private val _checkDay = MutableStateFlow(StudyCheckDay.EVERYDAY)
     val checkDay: StateFlow<StudyCheckDay>
         get() = _checkDay
 
@@ -89,12 +90,21 @@ class CreateStudyViewModel @Inject constructor(
     fun updatePeriod(period: StudyPeriod) {
         viewModelScope.launch {
             _period.emit(period)
+            if (period == StudyPeriod.EVERYDAY) {
+                _checkDay.emit(StudyCheckDay.EVERYDAY)
+            } else {
+                if (_checkDay.value == StudyCheckDay.EVERYDAY) {
+                    _checkDay.emit(StudyCheckDay.MON)
+                }
+            }
         }
     }
 
     fun updateCheckDay(checkDay: StudyCheckDay) {
         viewModelScope.launch {
-            _checkDay.emit(checkDay)
+            if (_period.value != StudyPeriod.EVERYDAY) {
+                _checkDay.emit(checkDay)
+            }
         }
     }
 
@@ -138,7 +148,8 @@ class CreateStudyViewModel @Inject constructor(
                 }
                 .collect {
                     Timber.d("스터디 생성 성공")
-                    _event.emit(Event.Finish)
+                    Timber.d("study Id : ${it.studyId}")
+                    _event.emit(Event.Success(it))
                 }
         }
     }
