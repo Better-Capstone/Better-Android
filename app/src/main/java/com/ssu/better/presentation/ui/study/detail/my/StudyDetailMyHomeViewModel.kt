@@ -6,6 +6,7 @@ import com.ssu.better.data.datasources.UserPrefManager
 import com.ssu.better.domain.usecase.study.GetGroupRankHistoryUseCase
 import com.ssu.better.domain.usecase.study.GetStudyListByUserUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUseCase
+import com.ssu.better.entity.study.Study
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -39,7 +40,7 @@ class StudyDetailMyHomeViewModel @Inject constructor(
                             study.taskGroupList
                                 .size
                             ) * 100
-                        StudyDetailMyUiState.Success(userPref.nickname, percent, challengeCount, kickCount)
+                        StudyDetailMyUiState.Success(study, userPref.nickname, percent, challengeCount, kickCount)
                     }.collectLatest {
                         _uistate.emit(it)
                     }
@@ -51,6 +52,7 @@ class StudyDetailMyHomeViewModel @Inject constructor(
     sealed class StudyDetailMyUiState {
         object Loading : StudyDetailMyUiState()
         data class Success(
+            val study: Study,
             val nickname: String,
             val percent: Int,
             val challengeCount: Int,

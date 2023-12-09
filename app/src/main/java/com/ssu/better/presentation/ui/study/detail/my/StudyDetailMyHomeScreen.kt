@@ -31,8 +31,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.presentation.component.ShowLoadingAnimation
+import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
+import com.ssu.better.util.noRippleClickable
 import okhttp3.internal.format
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,7 +56,15 @@ fun StudyDetailMyHomeScreen(
                 modifier = Modifier.shadow(elevation = 3.dp),
                 title = {
                     Text(
-                        text = "",
+                        text = when (uiState) {
+                            is StudyDetailMyHomeViewModel.StudyDetailMyUiState.Loading -> {
+                                ""
+                            }
+
+                            is StudyDetailMyHomeViewModel.StudyDetailMyUiState.Success -> {
+                                (uiState as StudyDetailMyHomeViewModel.StudyDetailMyUiState.Success).study.title
+                            }
+                        },
                         style = BetterAndroidTheme.typography.headline3,
                         color = BetterColors.Black,
                     )
@@ -92,7 +102,12 @@ fun StudyDetailMyHomeScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 12.dp, horizontal = 10.dp)
-                                .padding(top = 25.dp),
+                                .padding(top = 25.dp).noRippleClickable {
+                                    navHostController.navigate(
+                                        Screen.StudyDetailMyTask
+                                            .route + "?studyId=${state.study.studyId}",
+                                    )
+                                },
                         ) {
                             Text(text = stringResource(id = R.string.study_home_my_tasks), style = BetterAndroidTheme.typography.headline3)
                         }

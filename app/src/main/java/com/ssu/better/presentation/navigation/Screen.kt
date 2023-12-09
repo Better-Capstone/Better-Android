@@ -38,4 +38,6 @@ sealed class Screen(val route: String) {
     }
 
     object StudyDetailMy : Screen("study-detail-my")
+    object StudyDetailMyTask : Screen("study-detail-my-task")
+    object StudyDetailMyChallenge : Screen("study-detail-my-challenge")
 }
