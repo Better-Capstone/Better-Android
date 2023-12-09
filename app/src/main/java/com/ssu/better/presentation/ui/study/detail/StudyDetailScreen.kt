@@ -47,6 +47,7 @@ import com.ssu.better.entity.task.StudyTask
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.ScoreUser
 import com.ssu.better.entity.user.User
+import com.ssu.better.entity.user.UserPref
 import com.ssu.better.presentation.component.ErrorScreen
 import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.navigation.Screen
@@ -75,7 +76,6 @@ fun StudyDetailScreen(
         onClickFinish = {},
         onClickReport = { navHostController.navigate(Screen.Report.ReportList.route + "?studyId=$studyId") },
         studyEvent = studyEvent,
-        onClickAdd = {},
         onClickMember = {
             if (studyEvent is StudyDetailViewModel.StudyEvent.Success) {
                 navHostController.navigate(
@@ -150,11 +150,17 @@ fun StudyDetailPreview() {
         createdAt = "",
         taskGroupList = arrayListOf(),
     )
+    val testUserPref = UserPref(
+        id = 0L,
+        nickname = "북극곰",
+        rank = 1500,
+        score = 1500
+    )
     StudyDetailContent(
         onClickFinish = { },
         onClickReport = {},
-        studyEvent = StudyDetailViewModel.StudyEvent.Success(testStudy, tasks),
-        onClickAdd = { },
+        studyEvent = StudyDetailViewModel.StudyEvent.Success(testStudy, tasks, testUserPref),
+        onClickTaskAdd = {study, task -> },
     )
 }
 
@@ -162,7 +168,6 @@ fun StudyDetailPreview() {
 @Composable
 fun StudyDetailContent(
     onClickFinish: () -> Unit,
-    onClickReport: () -> Unit,
     onClickMember: () -> Unit = { },
     studyEvent: StudyDetailViewModel.StudyEvent,
     onClickChallengeAdd: (StudyTask) -> Unit = { },
