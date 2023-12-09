@@ -22,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,6 +62,7 @@ import com.ssu.better.presentation.component.BetterButtonType
 import com.ssu.better.presentation.component.BetterRoundChip
 import com.ssu.better.presentation.component.BetterTextField
 import com.ssu.better.presentation.component.ShowLoadingAnimation
+import com.ssu.better.presentation.state.IdleEvent
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.getIcon
@@ -78,6 +80,7 @@ fun ChallengeCreateScreen(
     val viewModel: ChallengeCreateViewModel = hiltViewModel()
 
     val event by viewModel.event.collectAsState()
+    val idleEvent by viewModel.idleEvent.collectAsState()
     val description by viewModel.description.collectAsState()
     val imageUri by viewModel.imageUri.collectAsState()
 
@@ -85,7 +88,7 @@ fun ChallengeCreateScreen(
 
     ChallengeCreate(
         challengeCreateEvent = event,
-        onClickFinish = viewModel::onClickFinish,
+        idleEvent = idleEvent,
         description = description,
         onDescriptionChanged = viewModel::updateDescription,
         imageUri = imageUri,
@@ -99,7 +102,6 @@ fun ChallengeCreateScreen(
 @Preview
 fun PreviewChallengeCreate() {
     val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-    val testTime = LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate()
     val time = "2023-11-28T04:03:15.458Z".toLocalDate()?.atStartOfDay(ZoneOffset.UTC)?.format(DateTimeFormatter.ofPattern(pattern)) ?: ""
     val testUser = User(1, "배현빈", "개발하는 북극곰")
     val testMember = Member(1, 1, MemberType.MEMBER, time)
@@ -123,7 +125,6 @@ fun PreviewChallengeCreate() {
     val testUserRankHistory = UserRankHistory(1, 50, "50점 추가", testTask, "", "")
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 18000)
-    val tasks = List(2) { testTask }.toMutableList()
     val testStudy = Study(
         1,
         testUser,
@@ -148,7 +149,7 @@ fun PreviewChallengeCreate() {
     var imageUri: Uri? by remember { mutableStateOf(null) }
     ChallengeCreate(
         challengeCreateEvent = ChallengeCreateViewModel.ChallengeCreateEvent.Success(study = testStudy, task = testTask),
-        onClickFinish = { },
+        idleEvent = IdleEvent.Idle,
         description = description,
         onDescriptionChanged = { value ->
             description = value
@@ -165,7 +166,7 @@ fun PreviewChallengeCreate() {
 @Composable
 fun ChallengeCreate(
     challengeCreateEvent: ChallengeCreateViewModel.ChallengeCreateEvent,
-    onClickFinish: () -> Unit,
+    idleEvent: IdleEvent,
     description: String,
     onDescriptionChanged: (String) -> Unit,
     imageUri: Uri?,
@@ -173,6 +174,11 @@ fun ChallengeCreate(
     onClickVerifyButton: () -> Unit,
     finishAction: () -> Unit = {},
 ) {
+    LaunchedEffect(idleEvent) {
+        if (idleEvent is IdleEvent.Finish) {
+            finishAction()
+        }
+    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -187,7 +193,7 @@ fun ChallengeCreate(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onClickFinish) {
+                    IconButton(onClick = finishAction) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_left),
                             contentDescription = "Back",
@@ -200,10 +206,6 @@ fun ChallengeCreate(
         when (challengeCreateEvent) {
             is ChallengeCreateViewModel.ChallengeCreateEvent.Load -> {
                 ShowLoadingAnimation()
-            }
-
-            is ChallengeCreateViewModel.ChallengeCreateEvent.Finish -> {
-                finishAction()
             }
 
             is ChallengeCreateViewModel.ChallengeCreateEvent.Success -> {
@@ -231,7 +233,7 @@ fun ChallengeCreate(
 
                         Text(
                             modifier = Modifier.padding(start = 8.dp),
-                            text = challengeCreateEvent.study.category.name,
+                            text = challengeCreateEvent.study.title,
                             style = BetterAndroidTheme.typography.headline2,
                             color = BetterColors.Black,
                         )
@@ -241,7 +243,7 @@ fun ChallengeCreate(
                         modifier = Modifier.padding(start = 20.dp, top = 20.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        BetterRoundChip(enabled = true, text = "89회차", onClick = {})
+                        BetterRoundChip(enabled = true, text = "${challengeCreateEvent.study.taskGroupList.size}회차", onClick = {})
                         Text(
                             modifier = Modifier.padding(start = 8.dp),
                             text = challengeCreateEvent.task.title,

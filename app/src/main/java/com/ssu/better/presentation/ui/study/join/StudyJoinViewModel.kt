@@ -11,6 +11,7 @@ import com.ssu.better.domain.usecase.study.PostJoinStudyUseCase
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyUser
 import com.ssu.better.entity.user.UserPref
+import com.ssu.better.presentation.state.IdleEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,25 +35,15 @@ class StudyJoinViewModel @Inject constructor(
     sealed class UIState {
         object Loading : UIState()
         data class Success(val study: Study, val userList: ArrayList<StudyUser>, val userPref: UserPref) : UIState()
-
-        object Finish : UIState()
     }
 
     private val _uiState: MutableStateFlow<UIState> = MutableStateFlow(UIState.Loading)
     val uiState: StateFlow<UIState>
         get() = _uiState
 
-    private val _hour: MutableStateFlow<String> = MutableStateFlow("")
-    val hour: StateFlow<String>
-        get() = _hour
-
-    private val _minute: MutableStateFlow<String> = MutableStateFlow("")
-    val minute: StateFlow<String>
-        get() = _minute
-
-    private val _isAm: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    val isAm: StateFlow<Boolean>
-        get() = _isAm
+    private val _idleEvent: MutableStateFlow<IdleEvent> = MutableStateFlow(IdleEvent.Idle)
+    val idleEvent: StateFlow<IdleEvent>
+        get() = _idleEvent
 
     fun setStudyId(studyId: Int) {
         this.studyId = studyId
@@ -75,30 +66,11 @@ class StudyJoinViewModel @Inject constructor(
                             403 -> Timber.e("403 Forbidden")
                             401 -> Timber.e("401")
                         }
-                    } else {
                     }
                 }
                 .collectLatest {
                     if (it.first != null) _uiState.emit(UIState.Success(study = it.second, userPref = it.first!!, userList = it.third))
                 }
-        }
-    }
-
-    fun updateHour(hour: String) {
-        viewModelScope.launch {
-            _hour.emit(hour)
-        }
-    }
-
-    fun updateMinute(minute: String) {
-        viewModelScope.launch {
-            _minute.emit(minute)
-        }
-    }
-
-    fun updateIsAm(isAm: Boolean) {
-        viewModelScope.launch {
-            _isAm.emit(isAm)
         }
     }
 
@@ -116,7 +88,7 @@ class StudyJoinViewModel @Inject constructor(
                 }
                 .collectLatest {
                     Timber.d("스터디 가입 성공")
-                    _uiState.emit(UIState.Finish)
+                    _idleEvent.emit(IdleEvent.Finish)
                 }
         }
     }
