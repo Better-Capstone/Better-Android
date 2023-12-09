@@ -47,5 +47,8 @@
 
     <string name="task_inprogress">인증중</string>
     <string name="task_end">완료됨</string>
+    <string name="participate_member">참여 멤버</string>
 
+    <string name="task_add_fail">진행 중인 테스크가 있습니다.</string>
+    <string name="task_add_title">이번 회차 테스크</string>
 </resources>

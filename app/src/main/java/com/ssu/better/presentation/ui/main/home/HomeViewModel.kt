@@ -3,15 +3,15 @@ package com.ssu.better.presentation.ui.main.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssu.better.data.datasources.UserPrefManager
-import com.ssu.better.data.util.HttpException
+import com.ssu.better.domain.usecase.study.GetStudyListByUserUseCase
 import com.ssu.better.domain.usecase.user.GetUserTasksUseCase
 import com.ssu.better.entity.task.UserTask
 import com.ssu.better.entity.task.UserTaskStudy
-import com.ssu.better.util.getHttpErrorMsg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -20,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getUserTasksUseCase: GetUserTasksUseCase,
+    private val getUserStudyCase: GetStudyListByUserUseCase,
     private val userPrefManager: UserPrefManager,
 ) : ViewModel() {
 
@@ -45,14 +46,19 @@ class HomeViewModel @Inject constructor(
                     return@collectLatest
                 }
                 val userId = it.id
-                getUserTasksUseCase.getUserTasks(userId).catch {
-                    _uiState.emit(HomeUiState.Fail((it as HttpException).getHttpErrorMsg()))
-                }.collectLatest { tasks ->
-                    if (tasks.isEmpty()) {
+                getUserTasksUseCase.getUserTasks(userId).combine(
+                    getUserStudyCase.getStudyListByUser(userId),
+                ) { taskList, studyList ->
+                    val validStudyIds = studyList.map { it.studyId }
+                    val validTasks = taskList.filter { validStudyIds.contains(it.study.id) }.groupBy { UserTaskStudy(it.study.id, it.study.title) }
+                    validTasks
+                }.catch {
+                    _uiState.emit(HomeUiState.Fail("사용자 정보 로드 실패"))
+                }.collectLatest { validTasks ->
+                    if (validTasks.isEmpty()) {
                         _uiState.emit(HomeUiState.Empty)
                     } else {
-                        val list = tasks.groupBy { UserTaskStudy(it.study.id, it.study.title) }
-                        _uiState.emit(HomeUiState.Success(selectedDate.value, list))
+                        _uiState.emit(HomeUiState.Success(selectedDate.value, validTasks))
                     }
                 }
             }

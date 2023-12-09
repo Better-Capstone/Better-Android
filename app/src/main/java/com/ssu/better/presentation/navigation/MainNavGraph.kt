@@ -21,8 +21,9 @@ import com.ssu.better.presentation.ui.report.ReportScreen
 import com.ssu.better.presentation.ui.study.create.CreateStudyScreen
 import com.ssu.better.presentation.ui.study.detail.StudyDetailScreen
 import com.ssu.better.presentation.ui.study.join.StudyJoinScreen
+import com.ssu.better.presentation.ui.study.member_list.MemberListScreen
 import com.ssu.better.presentation.ui.study.select_category.SelectCategoryScreen
-import com.ssu.better.presentation.ui.task.crate.CreateTaskScreen
+import com.ssu.better.presentation.ui.task_create.CreateTaskScreen
 
 @Composable
 fun MainNavGraph(navController: NavHostController) {
@@ -116,6 +117,27 @@ fun MainNavGraph(navController: NavHostController) {
         }
 
         composable(
+            route = Screen.MemberList.route,
+            arguments = listOf(
+                navArgument("studyId") {
+                    type = NavType.LongType
+                    defaultValue = 0L
+                },
+
+                navArgument("title") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+            ),
+        ) { navBackStackEntry ->
+            MemberListScreen(
+                navHostController = navController,
+                title = navBackStackEntry.arguments?.getString("title") ?: "",
+                studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0L,
+            )
+        }
+
+        composable(
             route = Screen.CreateTask.route + "?studyId={studyId}&title={title}",
             arguments = listOf(
                 navArgument("studyId") {
@@ -131,7 +153,6 @@ fun MainNavGraph(navController: NavHostController) {
             CreateTaskScreen(
                 navHostController = navController,
                 studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0,
-                studyTitle = navBackStackEntry.arguments?.getString("title") ?: "",
             )
         }
 
