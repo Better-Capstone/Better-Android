@@ -18,7 +18,7 @@ import com.ssu.better.util.getUserRankIcon
 @Composable
 fun CircleRankProfile(
     modifier: Modifier = Modifier,
-    score: Int,
+    score: Long,
 ) {
     Surface(
         modifier = modifier,

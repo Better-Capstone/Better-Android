@@ -22,8 +22,9 @@ import com.ssu.better.presentation.ui.study.create.CreateStudyScreen
 import com.ssu.better.presentation.ui.study.detail.StudyDetailScreen
 import com.ssu.better.presentation.ui.study.detail.my.StudyDetailMyHomeScreen
 import com.ssu.better.presentation.ui.study.join.StudyJoinScreen
+import com.ssu.better.presentation.ui.study.member_list.MemberListScreen
 import com.ssu.better.presentation.ui.study.select_category.SelectCategoryScreen
-import com.ssu.better.presentation.ui.task.crate.CreateTaskScreen
+import com.ssu.better.presentation.ui.task_create.CreateTaskScreen
 
 @Composable
 fun MainNavGraph(navController: NavHostController) {
@@ -132,6 +133,27 @@ fun MainNavGraph(navController: NavHostController) {
         }
 
         composable(
+            route = Screen.MemberList.route,
+            arguments = listOf(
+                navArgument("studyId") {
+                    type = NavType.LongType
+                    defaultValue = 0L
+                },
+
+                navArgument("title") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+            ),
+        ) { navBackStackEntry ->
+            MemberListScreen(
+                navHostController = navController,
+                title = navBackStackEntry.arguments?.getString("title") ?: "",
+                studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0L,
+            )
+        }
+
+        composable(
             route = Screen.CreateTask.route + "?studyId={studyId}&title={title}",
             arguments = listOf(
                 navArgument("studyId") {
@@ -200,8 +222,24 @@ fun MainNavGraph(navController: NavHostController) {
                     studyId = navBackStackEntry.arguments?.getLong("studyId", 0) ?: 0,
                 )
             }
-            composable(route = Screen.Report.ReportDetail.route) {
-                ReportDetailScreen(navController)
+            composable(
+                route = Screen.Report.ReportDetail.route + "?studyId={studyId}&&historyId={historyId}",
+                arguments = listOf(
+                    navArgument("studyId") {
+                        type = NavType.LongType
+                        defaultValue = 0L
+                    },
+                    navArgument("historyId") {
+                        type = NavType.LongType
+                        defaultValue = 0L
+                    },
+                ),
+            ) { navBackStackEntry ->
+                ReportDetailScreen(
+                    navController,
+                    studyId = navBackStackEntry.arguments?.getLong("studyId", 0) ?: 0,
+                    historyId = navBackStackEntry.arguments?.getLong("historyId", 0) ?: 0,
+                )
             }
         }
 

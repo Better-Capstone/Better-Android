@@ -29,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.ssu.better.R
-import com.ssu.better.entity.challenge.Challenge
+import com.ssu.better.entity.challenge.ChallengeHistory
 import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
@@ -58,6 +59,7 @@ import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
+import com.ssu.better.entity.user.UserScore
 import com.ssu.better.presentation.component.BetterRoundChip
 import com.ssu.better.presentation.component.CircleRankProfile
 import com.ssu.better.presentation.component.ErrorScreen
@@ -66,6 +68,7 @@ import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import com.ssu.better.util.toLocalDate
 import okhttp3.internal.format
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -75,11 +78,17 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ReportDetailScreen(
     navHostController: NavHostController,
-    viewModel: ReportViewModel = hiltViewModel(),
+    studyId: Long,
+    historyId: Long,
+    viewModel: ReportDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        viewModel.getGroupRankHistory(studyId, historyId)
+    }
 
     Scaffold(
         topBar = {
@@ -105,17 +114,20 @@ fun ReportDetailScreen(
 
     ) {
         when (uiState) {
-            is ReportUiState.Loading -> {
+            is ReportDetailUiState.Loading -> {
                 ShowLoadingAnimation()
             }
 
-            is ReportUiState.Fail -> (ErrorScreen(modifier = Modifier.fillMaxSize(), message = (uiState as ReportUiState.Fail).message))
+            is ReportDetailUiState.Fail -> {
+                ErrorScreen(modifier = Modifier.fillMaxSize(), message = (uiState as ReportDetailUiState.Fail).message)
+            }
 
-            is ReportUiState.Success -> {
-                with(uiState as ReportUiState.Success) {
-                    val history = this.list
-                    val latest = history.first()
+            is ReportDetailUiState.Success -> {
+                with(uiState as ReportDetailUiState.Success) {
                     val study = this.study
+                    val history = this.history
+                    val curHistory = this.history.first { it.groupRankHistoryId == historyId }
+                    val myScore = this.userScore
 
                     Column(
                         modifier = Modifier
@@ -136,6 +148,7 @@ fun ReportDetailScreen(
                                 .wrapContentHeight()
                                 .padding(horizontal = 12.dp),
                             study = study,
+                            historyId = historyId,
                             history = history,
                         )
 
@@ -146,13 +159,13 @@ fun ReportDetailScreen(
                         ) {
                             ChallengePercent(
                                 modifier = Modifier.weight(1f),
-                                percent = 78,
+                                percent = curHistory.participantsNumber / curHistory.totalNumber * 100,
                                 text = stringResource(id = R.string.report_team_percent),
                                 color = BetterColors.Gray90,
                             )
                             ChallengePercent(
                                 modifier = Modifier.weight(1f),
-                                percent = 100,
+                                percent = myScore,
                                 text = stringResource(id = R.string.report_my_percent),
                                 color = BetterColors.Primary50,
                             )
@@ -177,7 +190,7 @@ fun ReportDetailScreen(
                                     color = BetterColors.Black,
                                 )
                                 Text(
-                                    text = " ${if (latest.participantsNumber == latest.totalNumber) 20 + 5 * latest.totalNumber else 20}",
+                                    text = " ${viewModel.calculateReward(curHistory, myScore)}",
                                     style = BetterAndroidTheme.typography.subtitle,
                                     color = BetterColors.Primary50,
                                 )
@@ -186,8 +199,8 @@ fun ReportDetailScreen(
                         }
 
                         RankingListView(
-                            totalMember = latest.totalNumber,
-                            challenges = arrayListOf(),
+                            totalMember = curHistory.totalNumber,
+                            challenges = curHistory.challengeList,
                         )
                     }
                 }
@@ -200,14 +213,17 @@ fun ReportDetailScreen(
 fun StudyRankingCard(
     modifier: Modifier = Modifier,
     study: Study,
+    historyId: Long,
     history: List<GroupRankHistory>,
 ) {
     val endTasks = history.filter { it.taskGroup.status == Status.END }.sortedByDescending { it.taskGroup.endDate }
-    val latest = endTasks.first()
+    val curHistory = history.first { it.groupRankHistoryId == historyId }
+
+    Timber.i(curHistory.toString())
 
     val growth = if (history.size > 1) {
         val prev = endTasks[1]
-        val score = latest.score - prev.score
+        val score = curHistory.score - prev.score
         if (score >= 0) {
             format(stringResource(id = R.string.study_rank_up), score)
         } else {
@@ -233,14 +249,18 @@ fun StudyRankingCard(
                     .padding(bottom = 20.dp),
                 horizontalArrangement = Arrangement.Start,
             ) {
-                Text(text = Category.safeValueOf(study.category.name).kor, color = BetterColors.Primary50)
-                Text(text = "스터디 내", color = BetterColors.Gray70)
-                Text(text = study.title, color = BetterColors.Gray30)
-                Text(text = "는?", color = BetterColors.Gray70)
+                Text(
+                    text = Category.safeValueOf(study.category.name).kor,
+                    color = BetterColors.Primary50,
+                    style = BetterAndroidTheme.typography.subtitle,
+                )
+                Text(text = " 스터디 내 ", color = BetterColors.Gray70, style = BetterAndroidTheme.typography.subtitle)
+                Text(text = study.title, color = BetterColors.Gray30, style = BetterAndroidTheme.typography.subtitle)
+                Text(text = "는?", color = BetterColors.Gray70, style = BetterAndroidTheme.typography.subtitle)
             }
             Image(
                 painter = painterResource(
-                    id = when (latest.score) {
+                    id = when (curHistory.score) {
                         in 0..19 -> {
                             R.drawable.ic_report_level1
                         }
@@ -265,8 +285,8 @@ fun StudyRankingCard(
                 contentDescription = "report group rank",
                 modifier = Modifier.width(200.dp),
             )
-            Text(text = growth, modifier = Modifier.padding(vertical = 16.dp))
-            BetterRoundChip(enabled = true, text = format(stringResource(id = R.string.study_count), endTasks.size), onClick = {})
+            Text(text = growth, modifier = Modifier.padding(vertical = 16.dp), style = BetterAndroidTheme.typography.subtitle)
+            BetterRoundChip(enabled = true, text = format(stringResource(id = R.string.study_count), endTasks.indexOf(curHistory) + 1), onClick = {})
         }
     }
 }
@@ -291,7 +311,7 @@ fun ChallengePercent(
 @Composable
 fun RankingListView(
     totalMember: Int,
-    challenges: List<Challenge>,
+    challenges: List<ChallengeHistory>,
     listState: LazyListState = rememberLazyListState(),
 ) {
     Column(
@@ -310,8 +330,8 @@ fun RankingListView(
             state = listState,
         ) {
             item {
-                challenges.filter { it.approveMember.size >= (totalMember / 2) }.sortedBy { it.createdAt }.forEachIndexed { idx, v ->
-                    RankingItem(idx + 1, "name")
+                challenges.filter { it.approveMember.size >= (totalMember / 2) }.sortedBy { it.createdAt }.forEachIndexed { idx, history ->
+                    RankingItem(idx + 1, history.user)
                 }
             }
         }
@@ -321,7 +341,7 @@ fun RankingListView(
 @Composable
 fun RankingItem(
     rank: Int,
-    nickName: String,
+    userScore: UserScore,
 ) {
     Column {
         Row(
@@ -336,9 +356,9 @@ fun RankingItem(
                 style = BetterAndroidTheme.typography.title,
                 modifier = Modifier.padding(end = 16.dp),
             )
-            CircleRankProfile(score = 2100, modifier = Modifier.size(35.dp))
+            CircleRankProfile(score = userScore.score, modifier = Modifier.size(35.dp))
             Text(
-                text = nickName,
+                text = userScore.nickname,
                 style = BetterAndroidTheme.typography.subtitle,
                 modifier = Modifier
                     .weight(1f)
@@ -403,13 +423,6 @@ fun PreviewReportScreen() {
         createdAt = "",
         taskGroupList = arrayListOf(),
     )
-    val groupRankHistory = GroupRankHistory(
-        groupRankHistoryId = 1,
-        score = 38,
-        participantsNumber = 4,
-        totalNumber = 6,
-        groupRank = testGroupRank,
-        taskGroup = testTaskGroup,
-    )
+
 //    ReportDetailScreen(study = testStudy, groupRankHistoryList = listOf(groupRankHistory, groupRankHistory.copy(score = 79)))
 }

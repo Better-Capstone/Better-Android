@@ -301,7 +301,7 @@ fun StudySortingToggle(
 
 @Composable
 fun UserRankProfile(
-    rank: Int,
+    rank: Long,
 ) {
     Surface(
         shape = CircleShape,

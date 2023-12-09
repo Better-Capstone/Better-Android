@@ -32,7 +32,7 @@ fun StudyCategory.getIcon(): Int {
     }
 }
 
-fun getUserRankIcon(score: Int) = when (score) {
+fun getUserRankIcon(score: Long) = when (score) {
     in 0..3999 -> R.drawable.ic_candle_empty
     in 4000..5999 -> R.drawable.ic_candle
     in 6000..7999 -> R.drawable.ic_fire_base
