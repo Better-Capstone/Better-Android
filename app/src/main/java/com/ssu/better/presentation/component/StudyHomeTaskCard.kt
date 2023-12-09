@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssu.better.R
@@ -73,7 +74,7 @@ fun StudyHomeTaskCard(
                     .padding(end = 8.dp),
             )
             Text(
-                text = study.title,
+                text = stringResource(id = R.string.task_add_title),
                 style = BetterAndroidTheme.typography.headline3,
                 modifier = Modifier
                     .weight(1f)
