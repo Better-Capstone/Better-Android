@@ -35,7 +35,7 @@ fun StudyCard(
     Surface(
         shadowElevation = 3.dp,
         shape = RoundedCornerShape(10.dp),
-        modifier = modifier.clickable {
+        modifier = modifier.padding(1.dp).clickable {
             if (onClick != null) {
                 onClick(study.studyId)
             }
@@ -77,6 +77,7 @@ fun StudyCard(
                     study.title
                 },
                 style = BetterAndroidTheme.typography.headline2,
+                maxLines = 1,
             )
             Row(
                 modifier = Modifier.padding(bottom = 30.dp, top = 7.dp),
