@@ -58,7 +58,7 @@ fun StudyMyChallengeScreen(
                 modifier = Modifier.shadow(elevation = 3.dp),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.study_home_my_tasks),
+                        text = stringResource(id = R.string.study_home_my_challenge),
                         style = BetterAndroidTheme.typography.headline3,
                         color = BetterColors.Black,
                     )

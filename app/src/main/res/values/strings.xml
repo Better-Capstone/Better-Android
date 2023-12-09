@@ -52,7 +52,7 @@
     <string name="task_add_fail">진행 중인 테스크가 있습니다.</string>
     <string name="task_add_title">이번 회차 테스크</string>
     <string name="task_my_progress">%s님의 스터디 현황</string>
-    <string name="study_home_my_tasks">내 테스크 모아보기</string>
+    <string name="study_home_my_tasks">내 태스크 모아보기</string>
     <string name="study_home_my_challenge">내 인증 모아보기</string>
 
     <string name="study_home_my_info_percent">인증율</string>
