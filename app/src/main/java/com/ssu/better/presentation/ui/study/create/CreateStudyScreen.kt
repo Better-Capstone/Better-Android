@@ -49,6 +49,7 @@ import com.ssu.better.presentation.component.BetterButton
 import com.ssu.better.presentation.component.BetterButtonType
 import com.ssu.better.presentation.component.BetterTextBox
 import com.ssu.better.presentation.component.BetterTextField
+import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import kotlinx.coroutines.flow.collectLatest
@@ -69,9 +70,10 @@ fun CreateStudyScreen(
     val completeButtonEnabled by viewModel.buttonEnabled.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.event.collectLatest { event ->
-            if (event is CreateStudyViewModel.Event.Finish) {
+            if (event is CreateStudyViewModel.Event.Success) {
                 navHostController.popBackStack()
                 navHostController.popBackStack()
+                navHostController.navigate(Screen.StudyDetail.route + "?studyId=${event.study.studyId}")
             }
         }
     }

@@ -73,7 +73,9 @@ fun StudyDetailScreen(
         viewModel.setStudyId(studyId)
     }
     StudyDetailContent(
-        onClickFinish = {},
+        onClickFinish = {
+            navHostController.popBackStack()
+        },
         onClickReport = { navHostController.navigate(Screen.Report.ReportList.route + "?studyId=$studyId") },
         studyEvent = studyEvent,
         onClickMember = {
