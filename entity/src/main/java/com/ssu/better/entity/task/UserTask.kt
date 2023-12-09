@@ -4,12 +4,15 @@ import com.google.gson.annotations.SerializedName
 import com.ssu.better.entity.challenge.Challenge
 import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.user.UserRankHistory
+import com.ssu.better.entity.user.UserScore
 
 data class UserTask(
     @SerializedName("study")
     val study: UserTaskStudy,
     @SerializedName("id")
     val id: Long,
+    @SerializedName("user")
+    val user: UserScore,
     @SerializedName("title")
     val title: String,
     @SerializedName("member")

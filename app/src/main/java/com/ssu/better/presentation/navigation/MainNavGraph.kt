@@ -153,7 +153,6 @@ fun MainNavGraph(navController: NavHostController) {
             CreateTaskScreen(
                 navHostController = navController,
                 studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0,
-                studyTitle = navBackStackEntry.arguments?.getString("title") ?: "",
             )
         }
 
