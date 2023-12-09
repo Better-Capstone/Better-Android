@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -54,6 +53,7 @@ import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
 import com.ssu.better.entity.user.UserRankHistory
 import com.ssu.better.presentation.component.BetterRoundChip
+import com.ssu.better.presentation.component.CircleRankProfile
 import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
@@ -68,6 +68,7 @@ fun ChallengeApproveScreen(
     challengeId: Long,
     studyId: Long,
     userName: String,
+    userScore: Int,
 ) {
     val viewModel: ChallengeApproveViewModel = hiltViewModel()
 
@@ -79,6 +80,7 @@ fun ChallengeApproveScreen(
     ChallengeApproveContent(
         event = event,
         userName = userName,
+        userScore = userScore,
         onClickFinish = viewModel::onClickFinish,
         finishEvent = { navController.popBackStack() },
         onClickApprove = viewModel::onClickApprove,
@@ -147,6 +149,7 @@ fun PreviewApproveScreen() {
     ChallengeApproveContent(
         event = ChallengeApproveViewModel.ChallengeApproveEvent.Success(challenge, testStudy),
         userName = "개발하는 북극곰",
+        userScore = 5000,
         onClickFinish = { },
         finishEvent = { },
         onClickApprove = { },
@@ -159,6 +162,7 @@ fun PreviewApproveScreen() {
 fun ChallengeApproveContent(
     event: ChallengeApproveViewModel.ChallengeApproveEvent,
     userName: String,
+    userScore: Int,
     onClickFinish: () -> Unit,
     finishEvent: () -> Unit,
     onClickApprove: () -> Unit,
@@ -216,18 +220,7 @@ fun ChallengeApproveContent(
                         modifier = Modifier.padding(start = 20.dp, top = 20.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(32.dp)
-                                .background(BetterColors.Gray20, shape = CircleShape),
-                        ) {
-                            Text(
-                                modifier = Modifier.size(32.dp),
-                                text = "1",
-                                style = BetterAndroidTheme.typography.title,
-                                textAlign = TextAlign.Center,
-                            )
-                        }
+                        CircleRankProfile(score = userScore, modifier = Modifier.size(40.dp))
 
                         Spacer(modifier = Modifier.width(10.dp))
 
@@ -242,7 +235,7 @@ fun ChallengeApproveContent(
                         modifier = Modifier.padding(start = 20.dp, top = 20.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        BetterRoundChip(enabled = true, text = "89회차", onClick = {})
+                        BetterRoundChip(enabled = true, text = "${event.study.taskGroupList.size}회차", onClick = {})
                         Text(
                             modifier = Modifier.padding(start = 8.dp),
                             text = "제목",
@@ -308,7 +301,7 @@ fun ChallengeApproveContent(
                             .padding(top = 20.dp, bottom = 20.dp)
                             .fillMaxWidth(),
                         text = "인증 확인까지 " + count + "회 남았습니다.",
-                        style = BetterAndroidTheme.typography.title,
+                        style = BetterAndroidTheme.typography.headline3,
                         textAlign = TextAlign.Center,
                     )
 

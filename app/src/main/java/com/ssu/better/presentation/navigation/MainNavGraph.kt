@@ -231,6 +231,10 @@ fun MainNavGraph(navController: NavHostController) {
                     type = NavType.LongType
                     defaultValue = 0L
                 },
+                navArgument("userScore") {
+                    type = NavType.IntType
+                    defaultValue = 0
+                },
             ),
         ) { navBackStackEntry ->
             ChallengeApproveScreen(
@@ -238,6 +242,7 @@ fun MainNavGraph(navController: NavHostController) {
                 challengeId = navBackStackEntry.arguments?.getLong("challengeId") ?: 0,
                 studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0,
                 userName = navBackStackEntry.arguments?.getString("userName") ?: "",
+                userScore = navBackStackEntry.arguments?.getInt("userScore") ?: 0,
             )
         }
     }

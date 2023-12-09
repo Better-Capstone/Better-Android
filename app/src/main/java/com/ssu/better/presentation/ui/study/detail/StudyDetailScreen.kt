@@ -95,7 +95,11 @@ fun StudyDetailScreen(
             navHostController.navigate(Screen.CreateChallenge.route + "?studyId=${task.study.studyId}&taskId=${task.taskId}")
         },
         onClickChallengeApprove = { task ->
-            navHostController.navigate(Screen.VerifyChallenge.route + "?studyId=${task.study.studyId}&challengeId=${task.challenge?.id}")
+            navHostController.navigate(
+                Screen.VerifyChallenge.route
+                    + "?studyId=${task.study.studyId}&challengeId=${task.challenge?.id}"
+                    + "&userName=${task.user.nickname}&userScore=${task.user.score}"
+            )
         },
     )
 }
