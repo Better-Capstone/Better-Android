@@ -26,4 +26,7 @@ data class GroupRankHistory(
     @SerializedName("challengeList")
     val challengeList: ArrayList<ChallengeHistory>,
 
+    @SerializedName("createdAt")
+    val createdAt: String,
+
 )

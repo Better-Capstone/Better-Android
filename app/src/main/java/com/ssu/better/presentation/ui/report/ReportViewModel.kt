@@ -30,7 +30,7 @@ class ReportViewModel @Inject constructor(
             getStudyUseCase.getStudy(studyId).zip(
                 other = getGroupRankHistoryUseCase.getGroupRankHistory(studyId),
                 transform = { study, history ->
-                    ReportUiState.Success(history, study)
+                    ReportUiState.Success(history.sortedByDescending { it.createdAt }, study)
                 },
             ).catch {
                 _uiState.emit(ReportUiState.Fail((it as HttpException).getHttpErrorMsg()))

@@ -1,7 +1,6 @@
 package com.ssu.better.presentation.ui.report
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,6 +50,7 @@ import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
+import com.ssu.better.util.noRippleClickable
 import com.ssu.better.util.toLocalDate
 import okhttp3.internal.format
 import java.time.LocalDate
@@ -122,10 +122,12 @@ fun ReportScreen(
                     ) {
                         itemsIndexed(reports) { idx, report ->
                             ReportItem(
-                                idx = idx,
+                                idx = idx + 1,
                                 groupRankHistory = report,
                                 onClick = {
-                                    navController.navigate(route = Screen.Report.ReportDetail.route)
+                                    navController.navigate(
+                                        route = Screen.Report.ReportDetail.route + "?studyId=$studyId&&historyId=${report.groupRankHistoryId}",
+                                    )
                                 },
                             )
                         }
@@ -146,7 +148,7 @@ fun ReportItem(
         modifier = Modifier
             .paint(painterResource(id = R.drawable.bg_report), contentScale = ContentScale.FillWidth)
             .padding(vertical = 20.dp)
-            .clickable { onClick() },
+            .noRippleClickable { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 

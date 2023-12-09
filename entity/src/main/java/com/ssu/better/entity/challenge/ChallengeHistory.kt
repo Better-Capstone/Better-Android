@@ -9,6 +9,7 @@ data class ChallengeHistory(
 
     val task: SimpleTask,
 
+    @SerializedName("user")
     val user: UserScore,
 
     @SerializedName("description")
