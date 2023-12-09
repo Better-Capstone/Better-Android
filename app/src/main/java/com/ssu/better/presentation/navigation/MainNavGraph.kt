@@ -20,6 +20,9 @@ import com.ssu.better.presentation.ui.report.ReportDetailScreen
 import com.ssu.better.presentation.ui.report.ReportScreen
 import com.ssu.better.presentation.ui.study.create.CreateStudyScreen
 import com.ssu.better.presentation.ui.study.detail.StudyDetailScreen
+import com.ssu.better.presentation.ui.study.detail.my.StudyDetailMyHomeScreen
+import com.ssu.better.presentation.ui.study.detail.my.StudyMyChallengeScreen
+import com.ssu.better.presentation.ui.study.detail.my.StudyMyTasksScreen
 import com.ssu.better.presentation.ui.study.join.StudyJoinScreen
 import com.ssu.better.presentation.ui.study.member_list.MemberListScreen
 import com.ssu.better.presentation.ui.study.select_category.SelectCategoryScreen
@@ -113,6 +116,51 @@ fun MainNavGraph(navController: NavHostController) {
             StudyDetailScreen(
                 navHostController = navController,
                 studyId = navBackStackEntry.arguments?.getInt("studyId") ?: 0,
+            )
+        }
+
+        composable(
+            route = Screen.StudyDetailMy.route + "?studyId={studyId}",
+            arguments = listOf(
+                navArgument("studyId") {
+                    type = NavType.LongType
+                    defaultValue = 0
+                },
+            ),
+        ) { navBackStackEntry ->
+            StudyDetailMyHomeScreen(
+                navHostController = navController,
+                studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0,
+            )
+        }
+
+        composable(
+            route = Screen.StudyDetailMyTask.route + "?studyId={studyId}",
+            arguments = listOf(
+                navArgument("studyId") {
+                    type = NavType.LongType
+                    defaultValue = 0
+                },
+            ),
+        ) { navBackStackEntry ->
+            StudyMyTasksScreen(
+                navHostController = navController,
+                studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0,
+            )
+        }
+
+        composable(
+            route = Screen.StudyDetailMyChallenge.route + "?studyId={studyId}",
+            arguments = listOf(
+                navArgument("studyId") {
+                    type = NavType.LongType
+                    defaultValue = 0
+                },
+            ),
+        ) { navBackStackEntry ->
+            StudyMyChallengeScreen(
+                navHostController = navController,
+                studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0,
             )
         }
 

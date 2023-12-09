@@ -99,6 +99,10 @@ fun StudyDetailScreen(
         onClickChallengeApprove = { task ->
             navHostController.navigate(Screen.VerifyChallenge.route + "?studyId=${task.study.studyId}&challengeId=${task.challenge?.id}")
         },
+        onClickMyStudy = {
+            navHostController.navigate(Screen.StudyDetailMy.route + "?studyId=${it.studyId}")
+        },
+
     )
 }
 
@@ -163,6 +167,7 @@ fun StudyDetailPreview() {
         onClickReport = {},
         studyEvent = StudyDetailViewModel.StudyEvent.Success(testStudy, tasks, testUserPref),
         onClickTaskAdd = { study, task -> },
+        onClickMyStudy = {},
     )
 }
 
@@ -177,6 +182,7 @@ fun StudyDetailContent(
     myTask: StudyTask? = null,
     onClickReport: () -> Unit,
     onClickTaskAdd: (Study, StudyTask?) -> Unit,
+    onClickMyStudy: (Study) -> Unit,
 ) {
     var tabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf(
@@ -259,6 +265,9 @@ fun StudyDetailContent(
                             },
                             onClickTaskAdd = {
                                 onClickTaskAdd(studyEvent.study, myTask)
+                            },
+                            onClickMyStudy = {
+                                onClickMyStudy(studyEvent.study)
                             },
                             userId = studyEvent.userPref.id,
                         )
