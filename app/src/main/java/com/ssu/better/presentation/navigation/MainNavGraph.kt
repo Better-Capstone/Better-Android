@@ -20,6 +20,7 @@ import com.ssu.better.presentation.ui.report.ReportDetailScreen
 import com.ssu.better.presentation.ui.report.ReportScreen
 import com.ssu.better.presentation.ui.study.create.CreateStudyScreen
 import com.ssu.better.presentation.ui.study.detail.StudyDetailScreen
+import com.ssu.better.presentation.ui.study.detail.my.StudyDetailMyHomeScreen
 import com.ssu.better.presentation.ui.study.join.StudyJoinScreen
 import com.ssu.better.presentation.ui.study.select_category.SelectCategoryScreen
 import com.ssu.better.presentation.ui.task.crate.CreateTaskScreen
@@ -112,6 +113,21 @@ fun MainNavGraph(navController: NavHostController) {
             StudyDetailScreen(
                 navHostController = navController,
                 studyId = navBackStackEntry.arguments?.getInt("studyId") ?: 0,
+            )
+        }
+
+        composable(
+            route = Screen.StudyDetailMy.route + "?studyId={studyId}",
+            arguments = listOf(
+                navArgument("studyId") {
+                    type = NavType.LongType
+                    defaultValue = 0
+                },
+            ),
+        ) { navBackStackEntry ->
+            StudyDetailMyHomeScreen(
+                navHostController = navController,
+                studyId = navBackStackEntry.arguments?.getLong("studyId") ?: 0,
             )
         }
 
