@@ -114,7 +114,12 @@ fun StudyDetailMyHomeScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 12.dp, horizontal = 10.dp),
+                                .padding(vertical = 12.dp, horizontal = 10.dp).noRippleClickable {
+                                    navHostController.navigate(
+                                        Screen.StudyDetailMyChallenge
+                                            .route + "?studyId=${state.study.studyId}",
+                                    )
+                                },
                         ) {
                             Text(text = stringResource(id = R.string.study_home_my_challenge), style = BetterAndroidTheme.typography.headline3)
                         }
