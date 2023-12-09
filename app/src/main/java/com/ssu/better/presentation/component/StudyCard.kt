@@ -48,7 +48,7 @@ fun StudyCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 StudyCardChip(text = study.period.kor)
                 Spacer(modifier = Modifier.width(4.dp))
-                StudyCardChip(text = "${study.maximumCount}회차")
+                StudyCardChip(text = "${study.taskGroupList.size}회차")
             }
 
             Row(

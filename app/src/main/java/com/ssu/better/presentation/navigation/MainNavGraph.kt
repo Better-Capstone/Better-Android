@@ -206,8 +206,24 @@ fun MainNavGraph(navController: NavHostController) {
                     studyId = navBackStackEntry.arguments?.getLong("studyId", 0) ?: 0,
                 )
             }
-            composable(route = Screen.Report.ReportDetail.route) {
-                ReportDetailScreen(navController)
+            composable(
+                route = Screen.Report.ReportDetail.route + "?studyId={studyId}&&historyId={historyId}",
+                arguments = listOf(
+                    navArgument("studyId") {
+                        type = NavType.LongType
+                        defaultValue = 0L
+                    },
+                    navArgument("historyId") {
+                        type = NavType.LongType
+                        defaultValue = 0L
+                    },
+                ),
+            ) { navBackStackEntry ->
+                ReportDetailScreen(
+                    navController,
+                    studyId = navBackStackEntry.arguments?.getLong("studyId", 0) ?: 0,
+                    historyId = navBackStackEntry.arguments?.getLong("historyId", 0) ?: 0,
+                )
             }
         }
 

@@ -1,6 +1,7 @@
 package com.ssu.better.entity.study
 
 import com.google.gson.annotations.SerializedName
+import com.ssu.better.entity.challenge.ChallengeHistory
 import com.ssu.better.entity.task.TaskGroup
 
 data class GroupRankHistory(
@@ -21,5 +22,11 @@ data class GroupRankHistory(
 
     @SerializedName("taskGroup")
     val taskGroup: TaskGroup,
+
+    @SerializedName("challengeList")
+    val challengeList: ArrayList<ChallengeHistory>,
+
+    @SerializedName("createdAt")
+    val createdAt: String,
 
 )

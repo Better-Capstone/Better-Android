@@ -1,7 +1,6 @@
 package com.ssu.better.presentation.ui.report
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,6 +50,7 @@ import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
+import com.ssu.better.util.noRippleClickable
 import com.ssu.better.util.toLocalDate
 import okhttp3.internal.format
 import java.time.LocalDate
@@ -105,25 +105,32 @@ fun ReportScreen(
             is ReportUiState.Fail -> (ErrorScreen(modifier = Modifier.fillMaxSize(), message = (uiState as ReportUiState.Fail).message))
 
             is ReportUiState.Success -> {
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .background(BetterColors.Gray00)
-                        .padding(top = it.calculateTopPadding() + 20.dp)
-                        .padding(horizontal = 20.dp)
-                        .padding(bottom = 20.dp)
-                        .fillMaxSize(),
-                    columns = GridCells.Fixed(2),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    itemsIndexed((uiState as ReportUiState.Success).list) { idx, report ->
-                        ReportItem(
-                            idx = idx,
-                            groupRankHistory = report,
-                            onClick = {
-                                navController.navigate(route = Screen.Report.ReportDetail.route)
-                            },
-                        )
+                val reports = (uiState as ReportUiState.Success).list
+                if (reports.isEmpty()) {
+                    ErrorScreen(modifier = Modifier.fillMaxSize(), message = stringResource(id = R.string.report_empty))
+                } else {
+                    LazyVerticalGrid(
+                        modifier = Modifier
+                            .background(BetterColors.Gray00)
+                            .padding(top = it.calculateTopPadding() + 20.dp)
+                            .padding(horizontal = 20.dp)
+                            .padding(bottom = 20.dp)
+                            .fillMaxSize(),
+                        columns = GridCells.Fixed(2),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        itemsIndexed(reports) { idx, report ->
+                            ReportItem(
+                                idx = idx + 1,
+                                groupRankHistory = report,
+                                onClick = {
+                                    navController.navigate(
+                                        route = Screen.Report.ReportDetail.route + "?studyId=$studyId&&historyId=${report.groupRankHistoryId}",
+                                    )
+                                },
+                            )
+                        }
                     }
                 }
             }
@@ -141,7 +148,7 @@ fun ReportItem(
         modifier = Modifier
             .paint(painterResource(id = R.drawable.bg_report), contentScale = ContentScale.FillWidth)
             .padding(vertical = 20.dp)
-            .clickable { onClick() },
+            .noRippleClickable { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
@@ -211,14 +218,6 @@ fun PreviewReportDetail() {
         groupRank = testGroupRank,
         createdAt = "",
         taskGroupList = arrayListOf(),
-    )
-    val groupRankHistory = GroupRankHistory(
-        groupRankHistoryId = 1,
-        score = 38,
-        participantsNumber = 4,
-        totalNumber = 6,
-        groupRank = testGroupRank,
-        taskGroup = testTaskGroup,
     )
 //    ReportScreen(
 //        history = List(10) { groupRankHistory }.mapIndexed { idx, report ->

@@ -28,7 +28,7 @@ fun MemberTaskItem(
         modifier = modifier.padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CircleRankProfile(score = userScore.score, modifier = Modifier.size(40.dp))
+        CircleRankProfile(score = userRank.score.toLong(), modifier = Modifier.size(40.dp))
         Column(modifier = Modifier.weight(1f).padding(horizontal = 12.dp)) {
             Text(
                 text = userScore.nickname,
