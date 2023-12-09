@@ -11,6 +11,7 @@ import com.ssu.better.domain.usecase.task.PostCreateChallengeUseCase
 import com.ssu.better.entity.challenge.ChallengeRequest
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.task.Task
+import com.ssu.better.presentation.state.IdleEvent
 import com.ssu.better.util.getHttpErrorMsg
 import com.ssu.better.util.getMultipartBodyFromUri
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,13 +43,15 @@ class ChallengeCreateViewModel @Inject constructor(
     val event: StateFlow<ChallengeCreateEvent>
         get() = _event
 
+    private val _idleEvent: MutableStateFlow<IdleEvent> = MutableStateFlow(IdleEvent.Idle)
+    val idleEvent
+        get() = _idleEvent
+
     private var study: Study? = null
     private var task: Task? = null
 
     sealed class ChallengeCreateEvent() {
         object Load : ChallengeCreateEvent()
-        object Finish : ChallengeCreateEvent()
-
         data class Success(val study: Study, val task: Task) : ChallengeCreateEvent()
     }
 
@@ -83,12 +86,6 @@ class ChallengeCreateViewModel @Inject constructor(
         }
     }
 
-    fun onClickFinish() {
-        viewModelScope.launch {
-            _event.emit(ChallengeCreateEvent.Finish)
-        }
-    }
-
     fun postChallenge() {
         task?.let {
             val request = ChallengeRequest(
@@ -103,7 +100,7 @@ class ChallengeCreateViewModel @Inject constructor(
                     }
                         .collectLatest {
                             Timber.d("태스크 생성 성공")
-                            _event.emit(ChallengeCreateEvent.Finish)
+                            _idleEvent.emit(IdleEvent.Finish)
                         }
                 }
             }
