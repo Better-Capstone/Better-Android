@@ -49,8 +49,7 @@ fun StudyHomeTaskCard(
     study: Study,
     taskList: ArrayList<StudyTask>?,
     baseDate: LocalDate,
-    onClickAdd: (Study) -> Unit,
-    onClickTask: (StudyTask) -> Unit,
+    onClickAdd: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -82,9 +81,7 @@ fun StudyHomeTaskCard(
                 color = BetterColors.Gray90,
             )
             IconButton(
-                onClick = {
-                    onClickAdd(study)
-                },
+                onClick = onClickAdd,
             ) {
                 Icon(
                     modifier = Modifier.size(20.dp),
@@ -97,14 +94,15 @@ fun StudyHomeTaskCard(
             LazyColumn(modifier = Modifier.heightIn(150.dp, 250.dp)) {
                 item {
                     taskList.forEach {
-                        TaskItem(
-                            modifier = Modifier.fillMaxWidth(),
-                            task = it,
-                            baseDate = baseDate,
+                        MemberTaskItem(
+                            taskId = it.taskId,
+                            taskTitle = it.title,
+                            userScore = it.user,
+                            isCompleted = it.challenge != null && it.challenge!!.approveMember.size >= (study.memberCount / 2),
                             onClick = {
-                                onClickTask(it)
                             },
                         )
+
                         Spacer(
                             modifier = Modifier
                                 .height(1.dp)
@@ -175,5 +173,4 @@ fun PreviewStudyHomeTaskCard() {
         createdAt = "",
         taskGroupList = arrayListOf(testTaskGroup),
     )
-    StudyHomeTaskCard(study = testStudy, baseDate = testTime, onClickAdd = {}, taskList = arrayListOf(), onClickTask = {})
 }

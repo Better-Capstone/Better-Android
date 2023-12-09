@@ -47,6 +47,7 @@ import com.ssu.better.entity.task.StudyTask
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.ScoreUser
 import com.ssu.better.entity.user.User
+import com.ssu.better.presentation.component.ErrorScreen
 import com.ssu.better.presentation.component.ShowLoadingAnimation
 import com.ssu.better.presentation.navigation.Screen
 import com.ssu.better.ui.theme.BetterAndroidTheme
@@ -64,6 +65,7 @@ fun StudyDetailScreen(
 ) {
     val studyEvent by viewModel.studyEventStateFlow.collectAsState()
     val myTask by viewModel.myTask.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         Timber.d("테스트")
@@ -73,8 +75,14 @@ fun StudyDetailScreen(
         onClickFinish = {},
         onClickReport = { navHostController.navigate(Screen.Report.ReportList.route + "?studyId=$studyId") },
         studyEvent = studyEvent,
-        onClickAdd = {},
         myTask = myTask,
+        onClickTaskAdd = { study, myTask ->
+            if (viewModel.isValidToAddTask(study, myTask)) {
+                navHostController.navigate(Screen.CreateTask.route + "?studyId=${study.studyId}")
+            } else {
+                Toast.makeText(context, context.getString(R.string.task_add_fail), Toast.LENGTH_SHORT).show()
+            }
+        },
         onClickChallengeAdd = { task ->
             navHostController.navigate(Screen.CreateChallenge.route + "?studyId=${task.study.studyId}&taskId=${task.taskId}")
         },
@@ -136,12 +144,11 @@ fun StudyDetailPreview() {
         taskGroupList = arrayListOf(),
 
     )
-    StudyDetailContent(
-        onClickFinish = { },
-        StudyDetailViewModel.StudyEvent.Success(testStudy, tasks),
-        onClickReport = {},
-        onClickAdd = {},
-    )
+//    StudyDetailContent(
+//        onClickFinish = { },
+//        StudyDetailViewModel.StudyEvent.Load,
+//        onClickReport = {},
+//    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -149,11 +156,11 @@ fun StudyDetailPreview() {
 fun StudyDetailContent(
     onClickFinish: () -> Unit,
     studyEvent: StudyDetailViewModel.StudyEvent,
-    onClickAdd: (Study) -> Unit,
     onClickChallengeAdd: (StudyTask) -> Unit = { },
     onClickChallengeApprove: (StudyTask) -> Unit = { },
     myTask: StudyTask? = null,
     onClickReport: () -> Unit,
+    onClickTaskAdd: (Study, StudyTask?) -> Unit,
 ) {
     var tabIndex by remember { mutableIntStateOf(1) }
     val tabs = listOf(
@@ -163,6 +170,10 @@ fun StudyDetailContent(
     )
 
     when (studyEvent) {
+        is StudyDetailViewModel.StudyEvent.Fail -> {
+            ErrorScreen(modifier = Modifier.fillMaxSize(), message = (studyEvent).message)
+        }
+
         is StudyDetailViewModel.StudyEvent.Load -> {
             ShowLoadingAnimation()
         }
@@ -227,7 +238,10 @@ fun StudyDetailContent(
                             onClickReport = {
                                 onClickReport()
                             },
-                            onClickAdd = onClickAdd,
+                            onClickTaskAdd = {
+                                onClickTaskAdd(studyEvent.study, myTask)
+                            },
+                            userId = studyEvent.userPref.id,
                         )
 
                         1 -> StudyChallengeScreen(

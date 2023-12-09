@@ -8,16 +8,15 @@ import com.ssu.better.data.util.HttpException
 import com.ssu.better.domain.usecase.study.GetStudyTaskListUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUseCase
 import com.ssu.better.entity.study.Study
-import com.ssu.better.entity.task.Task
-import com.ssu.better.util.convertToLocalDateByFormat
 import com.ssu.better.entity.task.StudyTask
+import com.ssu.better.entity.user.UserPref
+import com.ssu.better.util.convertToLocalDateByFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDate
@@ -34,8 +33,9 @@ class StudyDetailViewModel @Inject constructor(
     private var studyId: Int = 0
 
     sealed class StudyEvent {
-        data class Success(val study: Study, val taskList: ArrayList<StudyTask>) : StudyEvent()
+        data class Success(val study: Study, val taskList: ArrayList<StudyTask>, val userPref: UserPref) : StudyEvent()
         object Load : StudyEvent()
+        data class Fail(val message: String) : StudyEvent()
     }
 
     private val _myTask: MutableStateFlow<StudyTask?> = MutableStateFlow(null)
@@ -53,40 +53,50 @@ class StudyDetailViewModel @Inject constructor(
 
     private fun load() {
         viewModelScope.launch {
-            getStudyUseCase.getStudy(studyId = studyId.toLong())
-                .combine(getStudyTaskListUseCase.getStudyTaskList(studyId = studyId.toLong())) { study: Study, taskList: ArrayList<StudyTask> ->
-
-                    return@combine StudyEvent.Success(study, taskList)
-                }
-                .catch { t ->
-                    if (t is HttpException) {
-                        Timber.e(t.message)
-                        when (t.code) {
-                            401 -> Timber.e("401")
-                            403 -> Timber.e("403 Forbidden")
-                        }
+            combine(
+                userManager.getUserPref(),
+                getStudyUseCase.getStudy(studyId = studyId.toLong()),
+                getStudyTaskListUseCase.getStudyTaskList(
+                    studyId = studyId
+                        .toLong(),
+                ),
+                ::Triple,
+            ).catch { t ->
+                if (t is HttpException) {
+                    Timber.e(t.message)
+                    when (t.code) {
+                        401 -> Timber.e("401")
+                        403 -> Timber.e("403 Forbidden")
                     }
                 }
-                .collectLatest { event ->
-                    val user = userManager.getUserPref().first()
-                    val list = event.taskList.filter { it.user.userId == user?.id }
-                    _myTask.emit(if (list.isEmpty()) null else list[0])
-                    _studyEventStateFlow.emit(event)
+            }.collectLatest { res ->
+                if (res.first == null) {
+                    _studyEventStateFlow.emit(StudyEvent.Fail("유저 정보 실패"))
+                    return@collectLatest
                 }
+                val list = res.third.toList().filter { it.user.userId == res.first?.id }.sortedByDescending { it.createdAt }
+                _myTask.emit(if (list.isEmpty()) null else list[0])
+                _studyEventStateFlow.emit(StudyEvent.Success(study = res.second, taskList = res.third, userPref = res.first!!))
+            }
         }
     }
 
-    fun isValidToAddTask(study: Study): Boolean {
+    fun isValidToAddTask(study: Study, task: StudyTask?): Boolean {
         val lastTask = study.taskGroupList.sortedByDescending { it.startDate }.firstOrNull()
-        Timber.e("lastTask $lastTask")
-        if (lastTask == null) {
+
+        Timber.d("lastTask $lastTask")
+        Timber.d("myTask $task")
+
+        if (lastTask == null || task == null) {
             return true
         } else {
+            val start = convertToLocalDateByFormat(lastTask.startDate, "yyyy-MM-dd") ?: return false
             val end = convertToLocalDateByFormat(lastTask.endDate, "yyyy-MM-dd") ?: return false
-            // endDate 가 현 시점보다 이후일 경우
-            if (Period.between(end, LocalDate.now()).isNegative) {
-                return false
-            }
+            val lastMyTaskStartDay = convertToLocalDateByFormat(task.createdAt, "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+
+            if (task.taskGroup.taskGroupId == lastTask.taskGroupId) return false
+            if (Period.between(LocalDate.now(), end).isNegative) return false
+            if (Period.between(lastMyTaskStartDay, start).isNegative) return false
         }
         return true
     }
