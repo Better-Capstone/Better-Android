@@ -11,47 +11,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ssu.better.R
-import com.ssu.better.entity.task.Task
-import com.ssu.better.entity.user.UserRank
+import com.ssu.better.entity.user.ScoreUser
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
-import com.ssu.better.util.convertToLocalDateByFormat
-import java.time.LocalDate
-import java.time.Period
 
 @Composable
 fun MemberTaskItem(
     modifier: Modifier = Modifier,
-    task: Task,
-    userRank: UserRank,
+    taskId: Long,
+    taskTitle: String,
+    userScore: ScoreUser,
+    isCompleted: Boolean,
     onClick: () -> Unit,
 ) {
-    val taskEnabled = Period.between(LocalDate.now(), convertToLocalDateByFormat(task.taskGroup.endDate, "yyyy-MM-dd")).days >= 0
-
     Row(
         modifier = modifier.padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CircleRankProfile(score = userRank.score, modifier = Modifier.size(40.dp))
+        CircleRankProfile(score = userScore.score, modifier = Modifier.size(40.dp))
         Column(modifier = Modifier.weight(1f).padding(horizontal = 12.dp)) {
             Text(
-                text = userRank.user.nickname,
+                text = userScore.nickname,
                 style = BetterAndroidTheme.typography.caption,
                 color = BetterColors.Gray70,
             )
             Text(
-                text = task.title,
+                text = taskTitle,
                 style = BetterAndroidTheme.typography.caption,
                 color = BetterColors.Gray30,
             )
         }
 
         BetterRoundChip(
-            enabled = taskEnabled,
-            text = if (taskEnabled) {
-                stringResource(id = R.string.task_inprogress)
-            } else {
+            enabled = !isCompleted,
+            text = if (isCompleted) {
                 stringResource(id = R.string.task_end)
+            } else {
+                stringResource(id = R.string.task_inprogress)
             },
             onClick = onClick,
         )

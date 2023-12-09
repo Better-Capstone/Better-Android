@@ -36,17 +36,17 @@ import com.ssu.better.presentation.component.StudyHomeTaskCard
 import com.ssu.better.ui.theme.BetterAndroidTheme
 import com.ssu.better.ui.theme.BetterColors
 import java.time.LocalDate
-import java.time.ZoneOffset
 
 @Composable
 fun StudyHomeScreen(
+    userId: Long,
     study: Study,
     taskList: ArrayList<StudyTask>,
     onClickMember: () -> Unit = { },
     onClickReport: () -> Unit = { },
     onClickMyStudy: () -> Unit = { },
-    onClickAdd: (Study) -> Unit = { },
-    onClickTask: (StudyTask) -> Unit = { },
+    onClickTaskAdd: () -> Unit = {},
+
 ) {
     Column {
         LazyColumn {
@@ -221,13 +221,11 @@ fun StudyHomeScreen(
                     }
                 }
 
-                val testTime = LocalDate.now().atStartOfDay(ZoneOffset.UTC).toLocalDate()
                 StudyHomeTaskCard(
                     modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 10.dp),
                     study = study,
-                    baseDate = testTime,
-                    onClickAdd = onClickAdd,
-                    onClickTask = onClickTask,
+                    baseDate = LocalDate.now(),
+                    onClickAdd = onClickTaskAdd,
                     taskList = taskList,
                 )
             }
