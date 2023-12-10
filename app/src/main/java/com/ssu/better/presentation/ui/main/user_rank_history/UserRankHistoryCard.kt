@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
+import com.ssu.better.entity.study.SimpleStudy
 import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
@@ -49,6 +51,14 @@ fun UserRankHistoryCard(userRankHistory: UserRankHistory) {
                     Text(
                         text = "${calendar?.get(Calendar.MONTH)}.${calendar?.get(Calendar.DAY_OF_MONTH)}",
                         color = BetterColors.Primary20,
+                        style = BetterAndroidTheme.typography.option,
+                    )
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Text(
+                        text = userRankHistory.study.title,
+                        color = BetterColors.Gray30,
                         style = BetterAndroidTheme.typography.option,
                     )
                 }
@@ -101,12 +111,13 @@ fun PerviewUserRankHistoryCard() {
         title = "",
     )
     val testUserRankHistory = UserRankHistory(
-        1,
-        50,
-        "50점 추가",
-        testTask,
-        "2023-12-04T00:00:02.815615",
-        "2023-12-04T00:00:02.815615",
+        id = 1,
+        study = SimpleStudy(studyId = 1, title = "알고리즘 스터디"),
+        score = 50,
+        description = "50점 추가",
+        task = testTask,
+        createdAt = "2023-12-04T00:00:02.815615",
+        updatedAt = "2023-12-04T00:00:02.815615",
     )
     UserRankHistoryCard(userRankHistory = testUserRankHistory)
 }

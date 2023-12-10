@@ -57,7 +57,7 @@ class ChallengeApproveViewModel @Inject constructor(
                         Timber.i(t.toString())
                     }
                 }
-                .collectLatest {
+                .collect {
                     _event.emit(it)
                 }
         }
