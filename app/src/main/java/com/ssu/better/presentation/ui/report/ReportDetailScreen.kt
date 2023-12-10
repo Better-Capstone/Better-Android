@@ -50,6 +50,7 @@ import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
 import com.ssu.better.entity.study.GroupRankHistory
+import com.ssu.better.entity.study.SimpleStudy
 import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
@@ -400,7 +401,15 @@ fun PreviewReportScreen() {
         updatedAt = time,
         title = "",
     )
-    val testUserRankHistory = UserRankHistory(1, 50, "50점 추가", testTask, "", "")
+    val testUserRankHistory = UserRankHistory(
+        1,
+        SimpleStudy(1, "알고리즘 스터디"),
+        50,
+        "50점 추가",
+        testTask,
+        "2023-12-04T00:00:02.815615",
+        "2023-12-04T00:00:02.815615",
+    )
     val testCategory = StudyCategory(1, Category.IT.name)
     val testGroupRank = GroupRank(1, 80)
     val tasks = List(5) { testTask }.toMutableList()

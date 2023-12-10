@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.ssu.better.R
 import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
+import com.ssu.better.entity.study.SimpleStudy
 import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
@@ -67,6 +68,7 @@ fun PreviewUserRankHistory() {
     )
     val testUserRankHistory = UserRankHistory(
         1,
+        SimpleStudy(1, "알고리즘 스터디"),
         50,
         "50점 추가",
         testTask,

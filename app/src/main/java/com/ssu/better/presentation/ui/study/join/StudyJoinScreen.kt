@@ -32,6 +32,7 @@ import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.SimpleStudy
 import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
@@ -93,6 +94,7 @@ fun PreviewStudyJoin() {
     )
     val testUserRankHistory = UserRankHistory(
         1,
+        SimpleStudy(1, "알고리즘 스터디"),
         50,
         "50점 추가",
         testTask,

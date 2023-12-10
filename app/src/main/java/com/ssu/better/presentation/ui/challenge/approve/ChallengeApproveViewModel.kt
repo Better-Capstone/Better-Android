@@ -56,7 +56,7 @@ class ChallengeApproveViewModel @Inject constructor(
                 .combine(getStudyUseCase.getStudy(studyId)) { challenge, study ->
                     ChallengeApproveEvent.Success(challenge, study)
                 }
-                .collectLatest {
+                .collect {
                     _event.emit(it)
                 }
         }
