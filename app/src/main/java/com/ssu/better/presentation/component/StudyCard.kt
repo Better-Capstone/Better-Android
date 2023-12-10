@@ -94,12 +94,12 @@ fun StudyCard(
             ) {
                 Text(
                     text = "${
-                    when (study.minRank) {
-                        1 -> "꺼진촛불"
-                        2 -> "촛불"
-                        3 -> "불꽃"
-                        else -> "모닥불"
-                    }
+                        when (study.minRank) {
+                            in 0..3999 -> "꺼진촛불"
+                            in 4000..5999 -> "촛불"
+                            in 6000..7999 -> "불꽃"
+                            else -> "모닥불"
+                        }
                     }이상",
                     style = BetterAndroidTheme.typography.subtitle,
                     color = BetterColors.Gray20,
