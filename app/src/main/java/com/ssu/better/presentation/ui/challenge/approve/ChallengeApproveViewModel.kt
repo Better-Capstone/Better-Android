@@ -48,13 +48,14 @@ class ChallengeApproveViewModel @Inject constructor(
         this.challengeId = challengeId
         viewModelScope.launch {
             getChallengeUseCase.getChallenge(challengeId)
-                .catch { t ->
-                    if (t is HttpException) {
-                        Timber.e(t.getHttpErrorMsg())
-                    }
-                }
                 .combine(getStudyUseCase.getStudy(studyId)) { challenge, study ->
                     ChallengeApproveEvent.Success(challenge, study)
+                }.catch { t ->
+                    if (t is HttpException) {
+                        Timber.e(t.getHttpErrorMsg())
+                    } else {
+                        Timber.i(t.toString())
+                    }
                 }
                 .collectLatest {
                     _event.emit(it)
