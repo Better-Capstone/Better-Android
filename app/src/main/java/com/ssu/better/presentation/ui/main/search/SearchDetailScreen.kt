@@ -101,6 +101,7 @@ fun SearchDetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(BetterColors.Bg)
                 .padding(12.dp),
         ) {
             Row(

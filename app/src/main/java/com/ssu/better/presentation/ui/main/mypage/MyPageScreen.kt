@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -33,11 +34,11 @@ import com.ssu.better.entity.member.Member
 import com.ssu.better.entity.member.MemberType
 import com.ssu.better.entity.study.Category
 import com.ssu.better.entity.study.GroupRank
+import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.study.Study
 import com.ssu.better.entity.study.StudyCategory
 import com.ssu.better.entity.study.StudyCheckDay
 import com.ssu.better.entity.study.StudyPeriod
-import com.ssu.better.entity.study.Status
 import com.ssu.better.entity.task.Task
 import com.ssu.better.entity.task.TaskGroup
 import com.ssu.better.entity.user.User
@@ -111,13 +112,13 @@ fun MyPage(
     onClickStudy: (Study) -> Unit,
     onClickHistory: () -> Unit,
 ) {
-    Surface(color = BetterColors.Gray00) {
+    Surface(color = BetterColors.Bg) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
             UserRankCard(
-                userName = "배현빈",
+                userName = userRank.user.nickname,
                 userRank = userRank,
                 onClickHistory = onClickHistory,
             )
@@ -137,8 +138,8 @@ fun MyPage(
                     val item = studyList[index]
                     StudyCard(
                         modifier = Modifier
-                            .width(141.dp)
-                            .height(165.dp),
+                            .width(141.dp).wrapContentHeight(),
+
                         study = item,
                         onClick = {
                             onClickStudy(item)
@@ -147,32 +148,32 @@ fun MyPage(
                 }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
-            ) {
-                Text(
-                    text = "알림 설정",
-                    style = BetterAndroidTheme.typography.headline3,
-                    color = BetterColors.Black,
-                )
-
-                Spacer(Modifier.weight(1f))
-
-                Text(
-                    modifier = Modifier.clickable { onClickNotifyEnabledChange(true) },
-                    text = "ON",
-                    color = if (isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
-                )
-                Text(
-                    modifier = Modifier
-                        .padding(start = 10.dp)
-                        .clickable { onClickNotifyEnabledChange(false) },
-                    text = "OFF",
-                    color = if (!isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
-                )
-            }
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+//            ) {
+//                Text(
+//                    text = "알림 설정",
+//                    style = BetterAndroidTheme.typography.headline3,
+//                    color = BetterColors.Black,
+//                )
+//
+//                Spacer(Modifier.weight(1f))
+//
+//                Text(
+//                    modifier = Modifier.clickable { onClickNotifyEnabledChange(true) },
+//                    text = "ON",
+//                    color = if (isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
+//                )
+//                Text(
+//                    modifier = Modifier
+//                        .padding(start = 10.dp)
+//                        .clickable { onClickNotifyEnabledChange(false) },
+//                    text = "OFF",
+//                    color = if (!isNotifyEnabled) BetterColors.Primary50 else BetterColors.Gray20,
+//                )
+//            }
 
             Text(
                 modifier = Modifier

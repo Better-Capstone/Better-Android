@@ -104,7 +104,7 @@ fun HomeScreen(
         }
 
         Column(
-            modifier = Modifier
+            modifier = Modifier.fillMaxSize().background(BetterColors.Bg)
                 .padding(16.dp)
                 .padding(bottom = 60.dp),
         ) {

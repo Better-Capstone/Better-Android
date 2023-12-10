@@ -224,7 +224,7 @@ fun ChallengeApproveContent(
                         modifier = Modifier.padding(start = 20.dp, top = 20.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        CircleRankProfile(score = userScore, modifier = Modifier.size(40.dp))
+                        CircleRankProfile(score = userScore.toLong(), modifier = Modifier.size(40.dp))
 
                         Spacer(modifier = Modifier.width(10.dp))
 
