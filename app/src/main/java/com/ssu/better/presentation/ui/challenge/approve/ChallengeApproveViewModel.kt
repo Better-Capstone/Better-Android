@@ -3,6 +3,7 @@ package com.ssu.better.presentation.ui.challenge.approve
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.ssu.better.data.datasources.UserPrefManager
 import com.ssu.better.data.util.HttpException
 import com.ssu.better.domain.usecase.challenge.GetChallengeUseCase
 import com.ssu.better.domain.usecase.challenge.PostChallengeCommentUseCase
@@ -28,10 +29,11 @@ class ChallengeApproveViewModel @Inject constructor(
     private val getStudyUseCase: GetStudyUseCase,
     private val getChallengeUseCase: GetChallengeUseCase,
     private val postChallengeComment: PostChallengeCommentUseCase,
+    private val userPrefManager: UserPrefManager,
 ) : AndroidViewModel(application) {
     sealed class ChallengeApproveEvent {
         object Load : ChallengeApproveEvent()
-        data class Success(val challenge: Challenge, val study: Study) : ChallengeApproveEvent()
+        data class Success(val challenge: Challenge, val study: Study, val isChecked: Boolean) : ChallengeApproveEvent()
     }
 
     private val _event: MutableStateFlow<ChallengeApproveEvent> = MutableStateFlow(ChallengeApproveEvent.Load)
@@ -47,19 +49,30 @@ class ChallengeApproveViewModel @Inject constructor(
     fun load(studyId: Long, challengeId: Long) {
         this.challengeId = challengeId
         viewModelScope.launch {
-            getChallengeUseCase.getChallenge(challengeId)
-                .combine(getStudyUseCase.getStudy(studyId)) { challenge, study ->
-                    ChallengeApproveEvent.Success(challenge, study)
-                }.catch { t ->
-                    if (t is HttpException) {
-                        Timber.e(t.getHttpErrorMsg())
-                    } else {
-                        Timber.i(t.toString())
-                    }
+            userPrefManager.getUserPref().collectLatest { pref ->
+                pref?.let {
+                    getChallengeUseCase.getChallenge(challengeId)
+                        .combine(getStudyUseCase.getStudy(studyId)) { challenge, study ->
+                            ChallengeApproveEvent.Success(
+                                challenge,
+                                study,
+                                challenge.approveMember.contains(pref.id) || challenge.rejectMember
+                                    .contains(
+                                        pref.id,
+                                    ),
+                            )
+                        }.catch { t ->
+                            if (t is HttpException) {
+                                Timber.e(t.getHttpErrorMsg())
+                            } else {
+                                Timber.i(t.toString())
+                            }
+                        }
+                        .collect {
+                            _event.emit(it)
+                        }
                 }
-                .collect {
-                    _event.emit(it)
-                }
+            }
         }
     }
 
