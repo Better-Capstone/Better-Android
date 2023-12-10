@@ -158,7 +158,7 @@ fun PreviewApproveScreen() {
         updatedAt = "2023-11-26T12:51:34.239234",
     )
     ChallengeApproveContent(
-        event = ChallengeApproveViewModel.ChallengeApproveEvent.Success(challenge, testStudy),
+        event = ChallengeApproveViewModel.ChallengeApproveEvent.Success(challenge, testStudy, true),
         idleEvent = IdleEvent.Idle,
         userName = "개발하는 북극곰",
         userScore = 5000,
@@ -334,6 +334,7 @@ fun ChallengeApproveContent(
                                 disabledContainerColor = BetterColors.Gray20,
                             ),
                             shape = RoundedCornerShape(10.dp),
+                            enabled = !event.isChecked,
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_thumb_up),
@@ -352,6 +353,7 @@ fun ChallengeApproveContent(
                                 disabledContainerColor = BetterColors.Primary10,
                             ),
                             shape = RoundedCornerShape(10.dp),
+                            enabled = !event.isChecked,
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_thumb_down),
