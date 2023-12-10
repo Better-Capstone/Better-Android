@@ -107,6 +107,11 @@ fun convertToLocalDateByFormat(text: String, pattern: String): LocalDate? {
         localDate
     } catch (e: ParseException) {
         e.printStackTrace()
-        null
+        try {
+            val localDate = LocalDate.parse(text, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSS"))
+            localDate
+        } catch (e: ParseException) {
+            null
+        }
     }
 }
