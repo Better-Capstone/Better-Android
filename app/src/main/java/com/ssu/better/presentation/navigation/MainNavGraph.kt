@@ -165,11 +165,11 @@ fun MainNavGraph(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.MemberList.route,
+            route = Screen.MemberList.route + "?studyId={studyId}&title={title}",
             arguments = listOf(
                 navArgument("studyId") {
                     type = NavType.LongType
-                    defaultValue = 0L
+                    defaultValue = 0
                 },
 
                 navArgument("title") {
