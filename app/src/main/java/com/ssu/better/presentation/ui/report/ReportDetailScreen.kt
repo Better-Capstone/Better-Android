@@ -160,7 +160,7 @@ fun ReportDetailScreen(
                         ) {
                             ChallengePercent(
                                 modifier = Modifier.weight(1f),
-                                percent = curHistory.participantsNumber / curHistory.totalNumber * 100,
+                                percent = 100 * curHistory.participantsNumber / curHistory.totalNumber,
                                 text = stringResource(id = R.string.report_team_percent),
                                 color = BetterColors.Gray90,
                             )

@@ -155,7 +155,7 @@ fun ReportItem(
 
     ) {
         Text(
-            text = "${groupRankHistory.participantsNumber / groupRankHistory.totalNumber * 100}%",
+            text = "${100 * groupRankHistory.participantsNumber / groupRankHistory.totalNumber}%",
             style = BetterAndroidTheme.typography.headline0,
             modifier = Modifier.padding(vertical = 10.dp),
 
