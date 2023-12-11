@@ -123,7 +123,7 @@ fun ReportScreen(
                     ) {
                         itemsIndexed(reports) { idx, report ->
                             ReportItem(
-                                idx = idx + 1,
+                                idx = reports.size - idx,
                                 groupRankHistory = report,
                                 onClick = {
                                     navController.navigate(
