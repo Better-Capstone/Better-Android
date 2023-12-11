@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SelectCategoryViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
-    val categoryList = Category.values().toList()
+    val categoryList = Category.values().toList().subList(0, 6)
 
     sealed class Event {
         data class CategoryClick(val category: Category) : Event()
