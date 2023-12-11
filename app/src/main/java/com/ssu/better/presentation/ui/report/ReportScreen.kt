@@ -123,7 +123,7 @@ fun ReportScreen(
                     ) {
                         itemsIndexed(reports) { idx, report ->
                             ReportItem(
-                                idx = idx + 1,
+                                idx = reports.size - idx,
                                 groupRankHistory = report,
                                 onClick = {
                                     navController.navigate(
@@ -155,7 +155,7 @@ fun ReportItem(
 
     ) {
         Text(
-            text = "${groupRankHistory.participantsNumber / groupRankHistory.totalNumber * 100}%",
+            text = "${100 * groupRankHistory.participantsNumber / groupRankHistory.totalNumber}%",
             style = BetterAndroidTheme.typography.headline0,
             modifier = Modifier.padding(vertical = 10.dp),
 

@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.Period
 import javax.inject.Inject
 
 @HiltViewModel
@@ -72,7 +73,12 @@ class CreateTaskViewModel @Inject constructor(
 
             StudyPeriod.WEEKLY -> {
                 if (lastTaskDate != null) {
-                    convertToLocalDateByFormat(lastTaskDate.endDate, "yyyy-MM-dd")?.plusWeeks(1)
+                    val end = convertToLocalDateByFormat(lastTaskDate.endDate, "yyyy-MM-dd") ?: LocalDate.now()
+                    if (Period.between(LocalDate.now(), end).isNegative) {
+                        convertToLocalDateByFormat(lastTaskDate.endDate, "yyyy-MM-dd")?.plusWeeks(1)
+                    } else {
+                        end
+                    }
                 } else {
                     // 첫 테스크인 경우
                     getDaysOfWeek(LocalDate.now()).first { it.dayOfWeek == study.checkDay.toDayOfWeek() }
@@ -81,7 +87,12 @@ class CreateTaskViewModel @Inject constructor(
 
             StudyPeriod.BIWEEKLY -> {
                 if (lastTaskDate != null) {
-                    convertToLocalDateByFormat(lastTaskDate.endDate, "yyyy-MM-dd")?.plusWeeks(2)
+                    val end = convertToLocalDateByFormat(lastTaskDate.endDate, "yyyy-MM-dd") ?: LocalDate.now()
+                    if (Period.between(LocalDate.now(), end).isNegative) {
+                        convertToLocalDateByFormat(lastTaskDate.endDate, "yyyy-MM-dd")?.plusWeeks(2)
+                    } else {
+                        end
+                    }
                 } else {
                     // 첫 테스크인 경우
                     getDaysOfWeek(LocalDate.now()).first { it.dayOfWeek == study.checkDay.toDayOfWeek() }

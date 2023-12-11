@@ -126,8 +126,9 @@ fun ReportDetailScreen(
             is ReportDetailUiState.Success -> {
                 with(uiState as ReportDetailUiState.Success) {
                     val study = this.study
-                    val history = this.history
+                    val history = this.history.sortedByDescending { it.taskGroup.endDate }
                     val curHistory = this.history.first { it.groupRankHistoryId == historyId }
+                    val chpater = this.history.indexOfFirst { it.groupRankHistoryId == historyId }
                     val myScore = this.userScore
 
                     Column(
@@ -160,7 +161,7 @@ fun ReportDetailScreen(
                         ) {
                             ChallengePercent(
                                 modifier = Modifier.weight(1f),
-                                percent = curHistory.participantsNumber / curHistory.totalNumber * 100,
+                                percent = 100 * curHistory.participantsNumber / curHistory.totalNumber,
                                 text = stringResource(id = R.string.report_team_percent),
                                 color = BetterColors.Gray90,
                             )
@@ -287,7 +288,11 @@ fun StudyRankingCard(
                 modifier = Modifier.width(200.dp),
             )
             Text(text = growth, modifier = Modifier.padding(vertical = 16.dp), style = BetterAndroidTheme.typography.subtitle)
-            BetterRoundChip(enabled = true, text = format(stringResource(id = R.string.study_count), endTasks.indexOf(curHistory) + 1), onClick = {})
+            BetterRoundChip(
+                enabled = true,
+                text = format(stringResource(id = R.string.study_count), history.size - endTasks.indexOf(curHistory)),
+                onClick = {},
+            )
         }
     }
 }
