@@ -3,7 +3,7 @@ package com.ssu.better.presentation.ui.study.detail.my
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssu.better.data.datasources.UserPrefManager
-import com.ssu.better.domain.usecase.study.GetStudyTaskListUseCase
+import com.ssu.better.domain.usecase.study.GetGroupRankHistoryUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUserListUseCase
 import com.ssu.better.entity.study.Study
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class StudyDetailMyHomeViewModel @Inject constructor(
     private val userPrefManager: UserPrefManager,
     private val getStudyUseCase: GetStudyUseCase,
-    private val getStudyTaskListUseCase: GetStudyTaskListUseCase,
+    private val getGroupRankHistoryUseCase: GetGroupRankHistoryUseCase,
     private val getStudyUserListUseCase: GetStudyUserListUseCase,
 ) : ViewModel() {
 
@@ -31,7 +31,7 @@ class StudyDetailMyHomeViewModel @Inject constructor(
                 it?.let { userPref ->
                     combine(
                         getStudyUseCase.getStudy(studyId),
-                        getStudyTaskListUseCase.getStudyTaskList(studyId),
+                        getGroupRankHistoryUseCase.getGroupRankHistory(studyId),
                         getStudyUserListUseCase.getStudyUserList(studyId),
                         ::Triple,
                     ).collectLatest {
@@ -42,7 +42,8 @@ class StudyDetailMyHomeViewModel @Inject constructor(
                         val kickCount = memebers.find { user -> user.userId == userPref.id }?.let { myStudys ->
                             study.memberList.find { myStudys.memberList.contains(it) }?.kickCount ?: 0
                         } ?: 0
-                        val userChallenges = historys.filter { h -> h.user.userId == userPref.id }.mapNotNull { it.challenge }
+                        val userChallenges =
+                            historys.flatMap { it.challengeList }.filter { h -> h.user.userId == userPref.id }
                         val challengeCount = userChallenges.size
                         val percent = userChallenges.count() * 100 / (
                             study.taskGroupList
