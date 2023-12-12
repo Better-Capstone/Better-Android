@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ssu.better.data.datasources.UserPrefManager
 import com.ssu.better.domain.usecase.study.GetStudyTaskListUseCase
 import com.ssu.better.domain.usecase.study.GetStudyUseCase
+import com.ssu.better.domain.usecase.study.GetStudyUserListUseCase
 import com.ssu.better.entity.study.Study
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,7 @@ class StudyDetailMyHomeViewModel @Inject constructor(
     private val userPrefManager: UserPrefManager,
     private val getStudyUseCase: GetStudyUseCase,
     private val getStudyTaskListUseCase: GetStudyTaskListUseCase,
+    private val getStudyUserListUseCase: GetStudyUserListUseCase,
 ) : ViewModel() {
 
     private val _uistate = MutableStateFlow<StudyDetailMyUiState>(StudyDetailMyUiState.Loading)
@@ -27,20 +29,26 @@ class StudyDetailMyHomeViewModel @Inject constructor(
         viewModelScope.launch {
             userPrefManager.getUserPref().collectLatest {
                 it?.let { userPref ->
-                    getStudyUseCase.getStudy(studyId).combine(
+                    combine(
+                        getStudyUseCase.getStudy(studyId),
                         getStudyTaskListUseCase.getStudyTaskList(studyId),
-                    ) { study, historys ->
+                        getStudyUserListUseCase.getStudyUserList(studyId),
+                        ::Triple,
+                    ).collectLatest {
+                        val study = it.first
+                        val historys = it.second
+                        val memebers = it.third
 
-                        val kickCount = study.memberList.find { it.memberId == userPref.id }?.kickCount ?: 0
-                        val userChallenges = historys.filter { it.user.userId == userPref.id && it.challenge != null }.mapNotNull { it.challenge }
+                        val kickCount = memebers.find { user -> user.userId == userPref.id }?.let { myStudys ->
+                            study.memberList.find { myStudys.memberList.contains(it) }?.kickCount ?: 0
+                        } ?: 0
+                        val userChallenges = historys.filter { h -> h.user.userId == userPref.id }.mapNotNull { it.challenge }
                         val challengeCount = userChallenges.size
-                        val percent = userChallenges.map { it.approveMember.size >= study.memberCount / 2 }.count() / (
+                        val percent = userChallenges.count() * 100 / (
                             study.taskGroupList
                                 .size
-                            ) * 100
-                        StudyDetailMyUiState.Success(study, userPref.nickname, percent, challengeCount, kickCount)
-                    }.collectLatest {
-                        _uistate.emit(it)
+                            )
+                        _uistate.emit(StudyDetailMyUiState.Success(study, userPref.nickname, percent, challengeCount, kickCount))
                     }
                 }
             }
