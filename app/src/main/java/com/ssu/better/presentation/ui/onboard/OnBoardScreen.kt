@@ -1,6 +1,7 @@
 package com.ssu.better.presentation.ui.onboard
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -67,10 +68,18 @@ fun OnBoardScreen(
             viewModel.saveToken(token)
 
             viewModel.events.collectLatest {
-                delay(500)
-                navController.navigate(Screen.Home.route) {
-                    popUpTo(Screen.OnBoard.route) {
-                        inclusive = true
+                when (it) {
+                    is OnBoardViewModel.OnBoardEvent.NavToMain -> {
+                        delay(500)
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.OnBoard.route) {
+                                inclusive = true
+                            }
+                        }
+                    }
+
+                    is OnBoardViewModel.OnBoardEvent.ShowToast -> {
+                        Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
