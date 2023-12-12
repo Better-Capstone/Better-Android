@@ -105,7 +105,10 @@ fun MemberList(userList: ArrayList<StudyUser>) {
             style = BetterAndroidTheme.typography.headline2,
         )
         Spacer(modifier = Modifier.height(10.dp))
-        LazyVerticalGrid(columns = GridCells.Fixed(4)) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(4),
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+        ) {
             items(userList.size) { index ->
                 val item = userList[index]
                 StudyUserItem(user = item)
