@@ -58,5 +58,6 @@
     <string name="study_home_my_info_percent">인증율</string>
     <string name="study_home_my_info_challenge">누적 인증</string>
     <string name="study_home_my_info_count">남은 기회</string>
+    <string name="empty_challenge">아직 등록된 인증이 없습니다.</string>
 
 </resources>

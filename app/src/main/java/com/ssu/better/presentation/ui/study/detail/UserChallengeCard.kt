@@ -44,15 +44,13 @@ fun UserChallengeCard(
     Box(
         modifier = Modifier
             .width(80.dp)
-            .height(141.dp)
+            .height(160.dp)
             .padding(10.dp)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
             ) {
-                if (studyTask.challenge != null) {
-                    onClick(studyTask)
-                }
+                onClick(studyTask)
             },
     ) {
         val isCompleted = studyTask.challenge != null && (studyTask.challenge!!.approveMember.size >= memberCount / 2)
