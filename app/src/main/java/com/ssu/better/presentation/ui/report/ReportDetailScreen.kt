@@ -262,7 +262,7 @@ fun StudyRankingCard(
             }
             Image(
                 painter = painterResource(
-                    id = when (curHistory.score) {
+                    id = when (curHistory.groupRank.score) {
                         in 0..19 -> {
                             R.drawable.ic_report_level1
                         }

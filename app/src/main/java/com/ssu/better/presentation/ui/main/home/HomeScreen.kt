@@ -79,7 +79,7 @@ fun HomeScreen(
                 onDismissRequest = {
                     isDialogOpen = !isDialogOpen
                 },
-                ANIMATION_DURATION = 500L, // animation enter & exit duration
+                ANIMATION_DURATION = 100L, // animation enter & exit duration
                 DISMISS_DURATION = 1000L, // dialog dismiss duration
                 modifier = Modifier
                     .customDialogModifier(CustomDialogPosition.TOP)
