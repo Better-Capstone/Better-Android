@@ -225,7 +225,7 @@ fun StudyRankingCard(
 
     val growth = if (history.size > 1) {
         val prev = endTasks[1]
-        val score = curHistory.score - prev.score
+        val score = (curHistory.score)
         if (score >= 0) {
             format(stringResource(id = R.string.study_rank_up), score)
         } else {

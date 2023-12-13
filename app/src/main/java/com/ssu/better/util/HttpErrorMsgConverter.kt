@@ -20,6 +20,7 @@ fun HttpException.getHttpErrorMsg(): String {
             404 -> this.message?.convertToNotFoundError()?.data ?: unknownErrorMsg
             403 -> this.message?.convertToValidationError()?.data.toString()
             415 -> this.message?.convertToValidationError()?.error.toString()
+            400 -> this.message?.convertToNotFoundError()?.data.toString()
             else -> unknownErrorMsg
         }
     } catch (e: Exception) {
