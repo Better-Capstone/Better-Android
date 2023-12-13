@@ -34,8 +34,12 @@ class OnBoardViewModel @Inject constructor(
     val isLoading get() = _isLoading
 
     fun inputNickname(value: String) {
-        Timber.d("name : $value")
-        _uiState.update { it.copy(nickname = value) }
+        viewModelScope.launch {
+            if (value.length > 10) {
+                _events.emit(OnBoardEvent.ShowToast("닉네임은 최대 10자까지 입력 가능합니다."))
+            }
+            _uiState.update { it.copy(nickname = value) }
+        }
     }
 
     fun saveToken(token: String) {
@@ -70,5 +74,6 @@ class OnBoardViewModel @Inject constructor(
 
     sealed class OnBoardEvent {
         object NavToMain : OnBoardEvent()
+        data class ShowToast(val message: String) : OnBoardEvent()
     }
 }

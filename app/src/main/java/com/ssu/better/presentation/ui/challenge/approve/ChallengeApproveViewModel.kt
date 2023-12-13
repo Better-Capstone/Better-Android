@@ -14,6 +14,7 @@ import com.ssu.better.entity.study.Study
 import com.ssu.better.presentation.state.IdleEvent
 import com.ssu.better.util.getHttpErrorMsg
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -45,6 +46,9 @@ class ChallengeApproveViewModel @Inject constructor(
     private val _idleEvent: MutableStateFlow<IdleEvent> = MutableStateFlow(IdleEvent.Idle)
     val idleEvent: StateFlow<IdleEvent>
         get() = _idleEvent
+
+    private val _toastEvent = MutableSharedFlow<String>()
+    val toastEvent get() = _toastEvent
 
     fun load(studyId: Long, challengeId: Long) {
         this.challengeId = challengeId
@@ -82,6 +86,7 @@ class ChallengeApproveViewModel @Inject constructor(
                 .catch { t ->
                     if (t is HttpException) {
                         Timber.e(t.getHttpErrorMsg())
+                        _toastEvent.emit(t.getHttpErrorMsg())
                     }
                 }
                 .collectLatest {
@@ -97,6 +102,7 @@ class ChallengeApproveViewModel @Inject constructor(
                 .catch { t ->
                     if (t is HttpException) {
                         Timber.e(t.getHttpErrorMsg())
+                        _toastEvent.emit(t.getHttpErrorMsg())
                     }
                 }
                 .collectLatest {
