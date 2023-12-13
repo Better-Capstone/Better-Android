@@ -9,15 +9,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ssu.better.entity.study.StudyCheckDay
+import com.ssu.better.entity.study.StudyPeriod
 import com.ssu.better.presentation.component.BetterTextBox
 import com.ssu.better.ui.theme.BetterColors
+import timber.log.Timber
 
 @Composable
 fun StudyCheckDayCard(
     checkDay: StudyCheckDay,
+    period: StudyPeriod,
     onClick: (StudyCheckDay) -> Unit = { },
     topPadding: Dp = 30.dp,
 ) {
+    Timber.i("checkDay : " + checkDay.toString())
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -26,7 +30,7 @@ fun StudyCheckDayCard(
     ) {
         BetterTextBox(
             text = "월",
-            backgroundColor = if ((checkDay == StudyCheckDay.MON || checkDay == StudyCheckDay.EVERYDAY)) {
+            backgroundColor = if ((checkDay == StudyCheckDay.MON || StudyPeriod.EVERYDAY == period)) {
                 BetterColors.Primary00
             } else {
                 BetterColors.Gray00
@@ -42,7 +46,7 @@ fun StudyCheckDayCard(
 
         BetterTextBox(
             text = "화",
-            backgroundColor = if ((checkDay == StudyCheckDay.TUE || checkDay == StudyCheckDay.EVERYDAY)) {
+            backgroundColor = if ((checkDay == StudyCheckDay.TUE || StudyPeriod.EVERYDAY == period)) {
                 BetterColors.Primary00
             } else {
                 BetterColors.Gray00
@@ -57,7 +61,7 @@ fun StudyCheckDayCard(
 
         BetterTextBox(
             text = "수",
-            backgroundColor = if ((checkDay == StudyCheckDay.WED || checkDay == StudyCheckDay.EVERYDAY)) {
+            backgroundColor = if ((checkDay == StudyCheckDay.WED || StudyPeriod.EVERYDAY == period)) {
                 BetterColors.Primary00
             } else {
                 BetterColors.Gray00
@@ -72,7 +76,7 @@ fun StudyCheckDayCard(
 
         BetterTextBox(
             text = "목",
-            backgroundColor = if ((checkDay == StudyCheckDay.THU || checkDay == StudyCheckDay.EVERYDAY)) {
+            backgroundColor = if ((checkDay == StudyCheckDay.THU || StudyPeriod.EVERYDAY == period)) {
                 BetterColors.Primary00
             } else {
                 BetterColors.Gray00
@@ -87,7 +91,7 @@ fun StudyCheckDayCard(
 
         BetterTextBox(
             text = "금",
-            backgroundColor = if ((checkDay == StudyCheckDay.FRI || checkDay == StudyCheckDay.EVERYDAY)) {
+            backgroundColor = if ((checkDay == StudyCheckDay.FRI || StudyPeriod.EVERYDAY == period)) {
                 BetterColors.Primary00
             } else {
                 BetterColors.Gray00
@@ -102,7 +106,7 @@ fun StudyCheckDayCard(
 
         BetterTextBox(
             text = "토",
-            backgroundColor = if ((checkDay == StudyCheckDay.SAT || checkDay == StudyCheckDay.EVERYDAY)) {
+            backgroundColor = if ((checkDay == StudyCheckDay.SAT || StudyPeriod.EVERYDAY == period)) {
                 BetterColors.Primary00
             } else {
                 BetterColors.Gray00
@@ -117,7 +121,7 @@ fun StudyCheckDayCard(
 
         BetterTextBox(
             text = "일",
-            backgroundColor = if ((checkDay == StudyCheckDay.SUN || checkDay == StudyCheckDay.EVERYDAY)) {
+            backgroundColor = if ((checkDay == StudyCheckDay.SUN || StudyPeriod.EVERYDAY == period)) {
                 BetterColors.Primary00
             } else {
                 BetterColors.Gray00

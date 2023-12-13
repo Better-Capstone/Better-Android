@@ -276,7 +276,7 @@ fun StudyJoin(
                         style = BetterAndroidTheme.typography.subtitle,
                     )
 
-                    StudyCheckDayCard(study.checkDay)
+                    StudyCheckDayCard(study.checkDay, study.period)
 
                     Row(modifier = Modifier.padding(start = 20.dp, top = 30.dp)) {
                         Text(
