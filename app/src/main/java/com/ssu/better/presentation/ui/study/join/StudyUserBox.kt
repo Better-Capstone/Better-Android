@@ -52,7 +52,8 @@ fun StudyUserBox(studyUser: StudyUser) {
 
             Text(
                 modifier = Modifier.padding(top = 15.dp),
-                text = studyUser.name,
+                maxLines = 1,
+                text = studyUser.nickname,
                 style = BetterAndroidTheme.typography.body,
                 color = BetterColors.Black,
             )

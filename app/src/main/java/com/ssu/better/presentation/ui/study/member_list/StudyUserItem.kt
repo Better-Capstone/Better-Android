@@ -60,8 +60,8 @@ fun StudyUserContent(nickname: String) {
 
             Text(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(28.dp),
+                    .fillMaxWidth(),
+                maxLines = 1,
                 text = nickname,
                 style = BetterAndroidTheme.typography.body,
                 color = BetterColors.Black,
