@@ -87,6 +87,8 @@ dependencies {
 
     // data
     implementation(project(":data"))
+    // domain
+    implementation(project(":domain"))
 
     // Hilt, Dagger
     implementation("com.google.dagger:hilt-android:${Versions.hilt}")
